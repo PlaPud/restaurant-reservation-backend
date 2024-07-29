@@ -1,0 +1,36 @@
+{
+  "name": "restaurant-reserve-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.ts",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/main.js",
+    "dev": "nodemon src/main.ts",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.16.2",
+    "@types/inversify": "^2.0.33",
+    "@types/reflect-metadata": "^0.1.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "inversify": "^6.0.2",
+    "joi": "^17.13.3",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.14.10",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "prisma": "^5.16.2",
+    "ts-jest": "^29.2.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
+  }
+}
