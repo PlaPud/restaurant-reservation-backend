@@ -1,12 +1,19 @@
+import "reflect-metadata";
 import { Prisma, PrismaClient } from "@prisma/client";
 import { Customer } from "../domain/Customer";
 import { ICustomerRepository } from "../shared/ICustomerRepository";
 import { EntityNotFoundError } from "../errors/DomainError";
 import { DataIntegrityError, RepositoryError } from "../errors/RepositoryError";
 import { InternalServerError } from "../errors/HttpError";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../shared/types";
 
+@injectable()
 export class PrismaCustomerRepository implements ICustomerRepository {
-  public constructor(private readonly _client: PrismaClient) {}
+  public constructor(
+    @inject(TYPES.PrismaClient)
+    private readonly _client: PrismaClient
+  ) {}
 
   public async find(id: string): Promise<Customer> {
     const result = await this._client.customer.findUnique({
@@ -22,7 +29,7 @@ export class PrismaCustomerRepository implements ICustomerRepository {
   public async findAll(): Promise<Customer[]> {
     const results = await this._client.customer.findMany();
 
-    if (!results) throw new DataIntegrityError();
+    if (results.length === 0) throw new EntityNotFoundError();
 
     return results.map((obj) => Customer.fromJSON(obj));
   }

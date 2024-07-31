@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { STATUS_CODES } from "http";
 import { CustomerJSON } from "../../domain/Customer";
 import { ICustomerRepository } from "../../shared/ICustomerRepository";

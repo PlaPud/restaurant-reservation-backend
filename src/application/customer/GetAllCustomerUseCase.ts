@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { STATUS_CODES } from "http";
 import { CustomerJSON } from "../../domain/Customer";
 import { ICustomerRepository } from "../../shared/ICustomerRepository";
@@ -22,7 +23,7 @@ export class GetAllCustomerUseCase
   public async execute(): Promise<IGetAllCustomerResult> {
     const data = await this._customerRepository.findAll();
 
-    if (!data) throw new NotFoundError();
+    if (!data || data.length === 0) throw new NotFoundError();
 
     const results = data.map((c) => c.toJSON());
 

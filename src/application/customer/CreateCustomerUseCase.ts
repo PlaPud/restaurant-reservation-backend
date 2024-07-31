@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { randomUUID } from "crypto";
 import { Customer } from "../../domain/Customer";
 import { ICustomerRepository } from "../../shared/ICustomerRepository";

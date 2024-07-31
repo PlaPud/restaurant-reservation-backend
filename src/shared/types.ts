@@ -7,4 +7,6 @@ export const TYPES = {
   UpdateCustomerUseCase: Symbol.for("UpdateCustomerUseCase"),
   DeleteCustomerUseCase: Symbol.for("DeleteCustomerUseCase"),
   DeleteAllCustomerUseCase: Symbol.for("DeleteAllCustomerUseCase"),
+  PrismaClient: Symbol.for("PrismaClient"),
+  PrismaCustomerRepository: Symbol.for("PrismaCustomerRepository"),
 };

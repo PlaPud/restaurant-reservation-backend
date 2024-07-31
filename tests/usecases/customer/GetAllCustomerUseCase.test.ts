@@ -78,7 +78,7 @@ describe("GetAllCustomerUseCase", () => {
   });
 
   it("Should throw not found error when result is null", async () => {
-    mockedCustomerRepo.findAll.mockResolvedValue(null);
+    mockedCustomerRepo.findAll.mockResolvedValue([]);
 
     await expect(useCase.execute(null)).rejects.toThrow(NotFoundError);
   });

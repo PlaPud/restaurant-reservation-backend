@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { inject, injectable } from "inversify";
 import { BadRequestError } from "../../errors/HttpError";
 import { ICustomerRepository } from "../../shared/ICustomerRepository";

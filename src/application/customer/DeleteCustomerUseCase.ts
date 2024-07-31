@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { inject, injectable } from "inversify";
 import { NotFoundError } from "../../errors/HttpError";
 import { ICustomerRepository } from "../../shared/ICustomerRepository";

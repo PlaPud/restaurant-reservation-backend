@@ -5,20 +5,19 @@ import { InMemoryCustomerRepository } from "./infrastructure/InMemoryCustomerRep
 import { PrismaCustomerRepository } from "./infrastructure/PrismaCustomerRepository";
 import { CustomerControllers } from "./presentation/controllers/Customer.Controllers";
 import { CustomerUseCases } from "./application/Customer.UseCases";
+import { Repositories } from "./infrastructure/Repositories";
+import prisma from "../tests/infrastructure/client";
 
 dotenv.config();
 
 const port = Number(process.env.PORT) || 3000;
 
 export const main = async (): Promise<void> => {
-  const prismaClient = new PrismaClient();
+  const repositories = new Repositories(prisma);
 
-  const prismaRepo = new PrismaCustomerRepository(prismaClient);
-  const inMemoryRepo = new InMemoryCustomerRepository();
-
-  const repository = prismaRepo;
-
-  const customerUseCases = new CustomerUseCases(repository);
+  const customerUseCases = new CustomerUseCases(
+    repositories.prismaCustomerRepo
+  );
 
   const customerControllers = new CustomerControllers(customerUseCases);
 

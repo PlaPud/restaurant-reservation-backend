@@ -5,4 +5,5 @@ module.exports = {
   transform: {
     "^.+.tsx?$": ["ts-jest", {}],
   },
+  setupFilesAfterEnv: ["./tests/infrastructure/mockSingleton.ts"],
 };
