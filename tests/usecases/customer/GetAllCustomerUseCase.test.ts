@@ -7,7 +7,7 @@ import {
 } from "../../../src/application/customer/GetAllCustomerUseCase";
 import { Customer } from "../../../src/domain/Customer";
 import { NotFoundError } from "../../../src/errors/HttpError";
-import { ICustomerRepository } from "../../../src/shared/ICustomerRepository";
+import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../../src/shared/IUseCase";
 import { TYPES } from "../../../src/shared/types";
 

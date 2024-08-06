@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { STATUS_CODES } from "http";
 import { Customer } from "../../domain/Customer";
-import { ICustomerRepository } from "../../shared/ICustomerRepository";
+import { ICustomerRepository } from "../../infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../shared/IUseCase";
 import { ICreateCustomerDto } from "./CreateCustomerUseCase";
 import { BadRequestError, NotFoundError } from "../../errors/HttpError";

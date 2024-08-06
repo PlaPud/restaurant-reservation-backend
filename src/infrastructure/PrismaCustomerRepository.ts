@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Prisma, PrismaClient } from "@prisma/client";
-import { Customer } from "../domain/Customer";
-import { ICustomerRepository } from "../shared/ICustomerRepository";
+import { Customer, CustomerJSON } from "../domain/Customer";
+import { ICustomerRepository } from "./interfaces/ICustomerRepository";
 import { EntityNotFoundError } from "../errors/DomainError";
 import { DataIntegrityError, RepositoryError } from "../errors/RepositoryError";
 import { InternalServerError } from "../errors/HttpError";
@@ -18,6 +18,9 @@ export class PrismaCustomerRepository implements ICustomerRepository {
   public async find(id: string): Promise<Customer> {
     const result = await this._client.customer.findUnique({
       where: { customerId: id },
+      include: {
+        reservations: true,
+      },
     });
 
     if (!result)
@@ -27,7 +30,11 @@ export class PrismaCustomerRepository implements ICustomerRepository {
   }
 
   public async findAll(): Promise<Customer[]> {
-    const results = await this._client.customer.findMany();
+    const results = await this._client.customer.findMany({
+      include: {
+        reservations: true,
+      },
+    });
 
     if (results.length === 0) throw new EntityNotFoundError();
 
@@ -36,8 +43,14 @@ export class PrismaCustomerRepository implements ICustomerRepository {
 
   public async save(customer: Customer): Promise<boolean> {
     try {
+      const { fName, lName, email, phone } = customer.toJSON();
       const result = await this._client.customer.create({
-        data: customer.toJSON(),
+        data: {
+          fName: fName,
+          lName: lName,
+          email: email,
+          phone: phone,
+        },
       });
       return true;
     } catch (err) {
@@ -46,12 +59,18 @@ export class PrismaCustomerRepository implements ICustomerRepository {
       throw new RepositoryError("Repository Error");
     }
   }
-
   public async update(id: string, data: Customer): Promise<Customer> {
     try {
+      const { fName, lName, email, phone } = data.toJSON();
       const result = await this._client.customer.update({
         where: { customerId: id },
-        data: data.toJSON(),
+        data: {
+          fName,
+          lName,
+          email,
+          phone,
+        },
+        include: { reservations: true },
       });
 
       return data;

@@ -5,7 +5,7 @@ import {
   UpdateCustomerUseCase,
 } from "../../../application/customer/UpdateCustomerUseCase";
 import { handleControllerError } from "../../../shared/HandleControllerError";
-import { customerSchema } from "../../../domain/schemas/Customer.Schema";
+import { customerSchema } from "../../../domain/validation_schemas/Customer.Schema";
 import { BadRequestError } from "../../../errors/HttpError";
 
 export class UpdatedCustomerDto implements IUpdateCustomerResult {

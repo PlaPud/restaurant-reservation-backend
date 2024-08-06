@@ -5,7 +5,7 @@ import {
   ICreateCustomerResult,
 } from "../../../application/customer/CreateCustomerUseCase";
 import { StatusCode } from "../../../shared/enum/StatusCode";
-import { customerSchema } from "../../../domain/schemas/Customer.Schema";
+import { customerSchema } from "../../../domain/validation_schemas/Customer.Schema";
 import { handleControllerError } from "../../../shared/HandleControllerError";
 import { BadRequestError } from "../../../errors/HttpError";
 

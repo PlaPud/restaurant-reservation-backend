@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 
 import { IUseCase } from "../../../src/shared/IUseCase";
 import { TYPES } from "../../../src/shared/types";
-import { ICustomerRepository } from "../../../src/shared/ICustomerRepository";
+import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
 import { Container } from "inversify";
 import {
   IUpdateCustomerDto,

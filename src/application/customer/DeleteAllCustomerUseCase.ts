@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { inject, injectable } from "inversify";
 import { BadRequestError } from "../../errors/HttpError";
-import { ICustomerRepository } from "../../shared/ICustomerRepository";
+import { ICustomerRepository } from "../../infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../shared/IUseCase";
 import { TYPES } from "../../shared/types";
 

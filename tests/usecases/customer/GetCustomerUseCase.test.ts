@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { ICustomerRepository } from "../../../src/shared/ICustomerRepository";
+import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../../src/shared/IUseCase";
 import { Container } from "inversify";
 import { Customer, CustomerJSON } from "../../../src/domain/Customer";

@@ -1,5 +1,5 @@
 import { GetAllCustomerController } from "../presentation/controllers/customer/GetAllCustomerController";
-import { ICustomerRepository } from "../shared/ICustomerRepository";
+import { ICustomerRepository } from "../infrastructure/interfaces/ICustomerRepository";
 import { CreateCustomerUseCase } from "./customer/CreateCustomerUseCase";
 import { DeleteAllCustomerUseCase } from "./customer/DeleteAllCustomerUseCase";
 import { DeleteCustomerUseCase } from "./customer/DeleteCustomerUseCase";

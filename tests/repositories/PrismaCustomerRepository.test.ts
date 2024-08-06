@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { randomUUID } from "crypto";
-import { Container } from "inversify";
+import { Container, id } from "inversify";
 import "reflect-metadata";
 import { ICreateCustomerDto } from "../../src/application/customer/CreateCustomerUseCase";
 import { IUpdateCustomerDto } from "../../src/application/customer/UpdateCustomerUseCase";
@@ -10,7 +10,7 @@ import { EntityNotFoundError } from "../../src/errors/DomainError";
 import { InternalServerError } from "../../src/errors/HttpError";
 import { RepositoryError } from "../../src/errors/RepositoryError";
 import { PrismaCustomerRepository } from "../../src/infrastructure/PrismaCustomerRepository";
-import { ICustomerRepository } from "../../src/shared/ICustomerRepository";
+import { ICustomerRepository } from "../../src/infrastructure/interfaces/ICustomerRepository";
 import { TYPES } from "../../src/shared/types";
 import {
   Context,
@@ -18,47 +18,47 @@ import {
   MockContext,
 } from "../infrastructure/context";
 import { prismaMock } from "../infrastructure/mockSingleton";
+import { getMockedUUIDString } from "../shared/mockUUID";
 
-jest.mock("crypto", () => ({
-  randomUUID: jest.fn(),
-}));
+let mockCtx: MockContext;
+let ctx: Context;
+let testContainer: Container;
+let idCount: number;
 
-const getMockedUUIDString = (n: number) => `${n}-${n}-${n}-${n}-${n}`;
+let sut: PrismaCustomerRepository;
+
+const setUp = () => {
+  mockCtx = createMockContext();
+  testContainer = new Container();
+  idCount = 0;
+
+  testContainer
+    .bind<PrismaClient>(TYPES.PrismaClient)
+    .toConstantValue(mockCtx.prisma);
+
+  testContainer
+    .bind<ICustomerRepository>(TYPES.PrismaCustomerRepository)
+    .to(PrismaCustomerRepository);
+
+  (randomUUID as jest.Mock).mockImplementation(() => {
+    let mockedUUID = getMockedUUIDString(idCount);
+    idCount++;
+    return mockedUUID;
+  });
+
+  sut = testContainer.get<PrismaCustomerRepository>(
+    TYPES.PrismaCustomerRepository
+  );
+};
 
 describe("[CREATE] PrimaCustomerRepository", () => {
-  let mockCtx: MockContext;
-  let ctx: Context;
-  let testContainer: Container;
-  let mockedUUID: string;
-  let idCount = 0;
-
-  let sut: PrismaCustomerRepository;
-
   beforeEach(() => {
-    mockCtx = createMockContext();
-    testContainer = new Container();
-
-    testContainer
-      .bind<PrismaClient>(TYPES.PrismaClient)
-      .toConstantValue(prismaMock);
-
-    testContainer
-      .bind<ICustomerRepository>(TYPES.PrismaCustomerRepository)
-      .to(PrismaCustomerRepository);
-
-    (randomUUID as jest.Mock).mockImplementation(() => {
-      mockedUUID = getMockedUUIDString(idCount);
-      idCount++;
-      return mockedUUID;
-    });
-
-    sut = testContainer.get<PrismaCustomerRepository>(
-      TYPES.PrismaCustomerRepository
-    );
+    setUp();
   });
 
   afterEach(() => {
     testContainer.unbindAll();
+    idCount = 0;
   });
 
   it("Should call save and return true as result.", async () => {
@@ -86,7 +86,12 @@ describe("[CREATE] PrimaCustomerRepository", () => {
       "1234"
     );
 
-    mockCtx.prisma.customer.create.mockRejectedValue(new Error());
+    mockCtx.prisma.customer.create.mockRejectedValue(
+      new PrismaClientKnownRequestError("Mock Error", {
+        code: "P2022",
+        clientVersion: "",
+      })
+    );
 
     try {
       await sut.save(customerData);
@@ -115,34 +120,8 @@ describe("[CREATE] PrimaCustomerRepository", () => {
 });
 
 describe("[GET] PrismaCustomerRepository", () => {
-  let mockCtx: MockContext;
-  let testContainer: Container;
-  let mockedUUID: string;
-  let idCount = 0;
-
-  let sut: PrismaCustomerRepository;
-
   beforeEach(() => {
-    mockCtx = createMockContext();
-    testContainer = new Container();
-
-    testContainer
-      .bind<PrismaClient>(TYPES.PrismaClient)
-      .toConstantValue(mockCtx.prisma);
-
-    testContainer
-      .bind<ICustomerRepository>(TYPES.PrismaCustomerRepository)
-      .to(PrismaCustomerRepository);
-
-    (randomUUID as jest.Mock).mockImplementation(() => {
-      mockedUUID = getMockedUUIDString(idCount);
-      idCount++;
-      return mockedUUID;
-    });
-
-    sut = testContainer.get<PrismaCustomerRepository>(
-      TYPES.PrismaCustomerRepository
-    );
+    setUp();
   });
 
   afterEach(() => {
@@ -165,6 +144,7 @@ describe("[GET] PrismaCustomerRepository", () => {
 
     expect(mockCtx.prisma.customer.findUnique).toHaveBeenCalledWith({
       where: { customerId: getMockedUUIDString(idCount - 1) },
+      include: { reservations: true },
     });
     expect(result).toEqual(customerData);
   });
@@ -209,38 +189,13 @@ describe("[GET] PrismaCustomerRepository", () => {
 });
 
 describe("[UPDATE] PrismaCustomerRepository", () => {
-  let mockCtx: MockContext;
-  let testContainer: Container;
-  let mockedUUID: string;
-  let idCount = 0;
-
-  let sut: PrismaCustomerRepository;
-
   beforeEach(() => {
-    mockCtx = createMockContext();
-    testContainer = new Container();
-
-    testContainer
-      .bind<PrismaClient>(TYPES.PrismaClient)
-      .toConstantValue(mockCtx.prisma);
-
-    testContainer
-      .bind<ICustomerRepository>(TYPES.PrismaCustomerRepository)
-      .to(PrismaCustomerRepository);
-
-    (randomUUID as jest.Mock).mockImplementation(() => {
-      mockedUUID = getMockedUUIDString(idCount);
-      idCount++;
-      return mockedUUID;
-    });
-
-    sut = testContainer.get<PrismaCustomerRepository>(
-      TYPES.PrismaCustomerRepository
-    );
+    setUp();
   });
 
   afterEach(() => {
     testContainer.unbindAll();
+    idCount = 0;
   });
 
   it("Should return updated customer data successfully by customerID", async () => {
@@ -274,9 +229,12 @@ describe("[UPDATE] PrismaCustomerRepository", () => {
 
     const result = await sut.update(updatedData.customerId, updatedData);
 
+    const { fName, lName, email, phone } = updatedData.toJSON();
+
     expect(mockCtx.prisma.customer.update).toHaveBeenCalledWith({
       where: { customerId: updatedData.customerId },
-      data: updatedData.toJSON(),
+      data: { fName, lName, email, phone },
+      include: { reservations: true },
     });
 
     expect(result.fName).toEqual(updateDto.data.fName);
@@ -326,34 +284,8 @@ describe("[UPDATE] PrismaCustomerRepository", () => {
 });
 
 describe("[DELETE] PrismaCustomerRepository", () => {
-  let mockCtx: MockContext;
-  let testContainer: Container;
-  let mockedUUID: string;
-  let idCount = 0;
-
-  let sut: PrismaCustomerRepository;
-
   beforeEach(() => {
-    mockCtx = createMockContext();
-    testContainer = new Container();
-
-    testContainer
-      .bind<PrismaClient>(TYPES.PrismaClient)
-      .toConstantValue(mockCtx.prisma);
-
-    testContainer
-      .bind<ICustomerRepository>(TYPES.PrismaCustomerRepository)
-      .to(PrismaCustomerRepository);
-
-    (randomUUID as jest.Mock).mockImplementation(() => {
-      mockedUUID = getMockedUUIDString(idCount);
-      idCount++;
-      return mockedUUID;
-    });
-
-    sut = testContainer.get<PrismaCustomerRepository>(
-      TYPES.PrismaCustomerRepository
-    );
+    setUp();
   });
 
   afterEach(() => {
