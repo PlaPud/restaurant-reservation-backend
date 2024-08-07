@@ -11,7 +11,7 @@ import { InternalServerError } from "../../src/errors/HttpError";
 import { RepositoryError } from "../../src/errors/RepositoryError";
 import { PrismaCustomerRepository } from "../../src/infrastructure/PrismaCustomerRepository";
 import { ICustomerRepository } from "../../src/infrastructure/interfaces/ICustomerRepository";
-import { TYPES } from "../../src/shared/types";
+import { CUSTOMER_T } from "../../src/shared/inversify/customer.types";
 import {
   Context,
   createMockContext,
@@ -19,6 +19,7 @@ import {
 } from "../infrastructure/context";
 import { prismaMock } from "../infrastructure/mockSingleton";
 import { getMockedUUIDString } from "../shared/mockUUID";
+import { TYPES } from "../../src/shared/inversify/types";
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -37,7 +38,7 @@ const setUp = () => {
     .toConstantValue(mockCtx.prisma);
 
   testContainer
-    .bind<ICustomerRepository>(TYPES.PrismaCustomerRepository)
+    .bind<ICustomerRepository>(CUSTOMER_T.PrismaCustomerRepository)
     .to(PrismaCustomerRepository);
 
   (randomUUID as jest.Mock).mockImplementation(() => {
@@ -47,7 +48,7 @@ const setUp = () => {
   });
 
   sut = testContainer.get<PrismaCustomerRepository>(
-    TYPES.PrismaCustomerRepository
+    CUSTOMER_T.PrismaCustomerRepository
   );
 };
 
@@ -160,7 +161,9 @@ describe("[GET] PrismaCustomerRepository", () => {
 
     const customers = [customerData];
 
-    mockCtx.prisma.customer.findMany.mockResolvedValue(customers);
+    mockCtx.prisma.customer.findMany.mockResolvedValue(
+      customers.map((c) => c.toJSON())
+    );
 
     const result = await sut.findAll();
 
@@ -178,13 +181,10 @@ describe("[GET] PrismaCustomerRepository", () => {
     }
   });
 
-  it("Should throw data integrity error if no result array", async () => {
+  it("Should also return empty array if prisma return empty array", async () => {
     mockCtx.prisma.customer.findMany.mockResolvedValue([]);
-    try {
-      await sut.findAll();
-    } catch (err) {
-      expect(err).toBeInstanceOf(EntityNotFoundError);
-    }
+    const result = await sut.findAll();
+    expect(result.length).toBe(0);
   });
 });
 

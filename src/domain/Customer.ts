@@ -27,7 +27,7 @@ export class Customer {
       jsonObj.lName,
       jsonObj.email,
       jsonObj.phone,
-      jsonObj.reservations.map((r) => Reservation.fromJSON(r))
+      jsonObj.reservations?.map((r) => Reservation.fromJSON(r))
     );
   }
 

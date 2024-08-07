@@ -7,7 +7,7 @@ import {
   BusinessRuleViolationError,
   UseCaseError,
 } from "../../../errors/UseCaseError";
-import { handleControllerError } from "../../../shared/HandleControllerError";
+import { sendErrorResponse } from "../../../shared/sendErrorResponse";
 
 class DeleteAllCustomerDto implements IDeleteCustomerResult {
   public constructor(public readonly deletionComplete: boolean) {}
@@ -22,9 +22,9 @@ export class DeleteAllCustomerController {
       const response: DeleteAllCustomerDto = new DeleteAllCustomerDto(
         result.deletionComplete
       );
-      res.status(StatusCode.SUCCESS).json(response);
+      res.status(StatusCode.OK).json(response);
     } catch (err) {
-      handleControllerError(res, err);
+      sendErrorResponse(res, err);
     }
   }
 }

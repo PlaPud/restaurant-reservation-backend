@@ -9,7 +9,7 @@ import { Customer } from "../../../src/domain/Customer";
 import { NotFoundError } from "../../../src/errors/HttpError";
 import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../../src/shared/IUseCase";
-import { TYPES } from "../../../src/shared/types";
+import { CUSTOMER_T } from "../../../src/shared/inversify/customer.types";
 
 jest.mock("crypto", () => ({
   randomUUID: jest.fn(),
@@ -37,15 +37,17 @@ describe("GetAllCustomerUseCase", () => {
     testContainer = new Container();
 
     testContainer
-      .bind<ICustomerRepository>(TYPES.InMemoryCustomerRepository)
+      .bind<ICustomerRepository>(CUSTOMER_T.InMemoryCustomerRepository)
       .toConstantValue(mockedCustomerRepo);
 
     testContainer
-      .bind<IUseCase<null, IGetAllCustomerResult>>(TYPES.GetAllCustomerUseCase)
+      .bind<IUseCase<null, IGetAllCustomerResult>>(
+        CUSTOMER_T.GetAllCustomerUseCase
+      )
       .to(GetAllCustomerUseCase);
 
     useCase = testContainer.get<IUseCase<null, IGetAllCustomerResult>>(
-      TYPES.GetAllCustomerUseCase
+      CUSTOMER_T.GetAllCustomerUseCase
     );
 
     (randomUUID as jest.Mock).mockImplementation(() => {
@@ -75,11 +77,5 @@ describe("GetAllCustomerUseCase", () => {
     expect(result.data).not.toBeNull();
 
     expect(result.data[0]).toEqual(Customer.fromJSON(createdCustomer));
-  });
-
-  it("Should throw not found error when result is null", async () => {
-    mockedCustomerRepo.findAll.mockResolvedValue([]);
-
-    await expect(useCase.execute(null)).rejects.toThrow(NotFoundError);
   });
 });

@@ -1,12 +1,12 @@
-import "reflect-metadata";
 import { Prisma, PrismaClient } from "@prisma/client";
-import { Customer, CustomerJSON } from "../domain/Customer";
-import { ICustomerRepository } from "./interfaces/ICustomerRepository";
-import { EntityNotFoundError } from "../errors/DomainError";
-import { DataIntegrityError, RepositoryError } from "../errors/RepositoryError";
-import { InternalServerError } from "../errors/HttpError";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../shared/types";
+import "reflect-metadata";
+import { Customer } from "../domain/Customer";
+import { EntityNotFoundError } from "../errors/DomainError";
+import { InternalServerError } from "../errors/HttpError";
+import { RepositoryError } from "../errors/RepositoryError";
+import { TYPES } from "../shared/inversify/types";
+import { ICustomerRepository } from "./interfaces/ICustomerRepository";
 
 @injectable()
 export class PrismaCustomerRepository implements ICustomerRepository {
@@ -35,8 +35,6 @@ export class PrismaCustomerRepository implements ICustomerRepository {
         reservations: true,
       },
     });
-
-    if (results.length === 0) throw new EntityNotFoundError();
 
     return results.map((obj) => Customer.fromJSON(obj));
   }

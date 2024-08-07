@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { randomUUID } from "crypto";
 
 import { IUseCase } from "../../../src/shared/IUseCase";
-import { TYPES } from "../../../src/shared/types";
+import { CUSTOMER_T } from "../../../src/shared/inversify/customer.types";
 import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
 import { Container } from "inversify";
 import {
@@ -39,18 +39,18 @@ describe("UpdateCustomerUseCase", () => {
     testContainer = new Container();
 
     testContainer
-      .bind<ICustomerRepository>(TYPES.InMemoryCustomerRepository)
+      .bind<ICustomerRepository>(CUSTOMER_T.InMemoryCustomerRepository)
       .toConstantValue(mockedCustomerRepo);
 
     testContainer
       .bind<IUseCase<IUpdateCustomerDto, IUpdateCustomerResult>>(
-        TYPES.UpdateCustomerUseCase
+        CUSTOMER_T.UpdateCustomerUseCase
       )
       .to(UpdateCustomerUseCase);
 
     useCase = testContainer.get<
       IUseCase<IUpdateCustomerDto, IUpdateCustomerResult>
-    >(TYPES.UpdateCustomerUseCase);
+    >(CUSTOMER_T.UpdateCustomerUseCase);
 
     (randomUUID as jest.Mock).mockImplementation(() => {
       mockedUUID = getMockedUUIDString(idCount);

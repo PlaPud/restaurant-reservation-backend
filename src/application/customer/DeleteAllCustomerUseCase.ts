@@ -3,7 +3,7 @@ import { inject, injectable } from "inversify";
 import { BadRequestError } from "../../errors/HttpError";
 import { ICustomerRepository } from "../../infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../shared/IUseCase";
-import { TYPES } from "../../shared/types";
+import { CUSTOMER_T } from "../../shared/inversify/customer.types";
 
 export interface IDeleteAllCustomerResult {
   deletionComplete: boolean;
@@ -14,7 +14,7 @@ export class DeleteAllCustomerUseCase
   implements IUseCase<null, IDeleteAllCustomerResult>
 {
   public constructor(
-    @inject(TYPES.InMemoryCustomerRepository)
+    @inject(CUSTOMER_T.InMemoryCustomerRepository)
     private readonly _customerRepository: ICustomerRepository
   ) {}
 

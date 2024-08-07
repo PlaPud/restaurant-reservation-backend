@@ -3,9 +3,9 @@ import { STATUS_CODES } from "http";
 import { CustomerJSON } from "../../domain/Customer";
 import { ICustomerRepository } from "../../infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../shared/IUseCase";
-import { NotFoundError } from "../../errors/HttpError";
+import { InternalServerError, NotFoundError } from "../../errors/HttpError";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../../shared/types";
+import { CUSTOMER_T } from "../../shared/inversify/customer.types";
 
 export interface IGetAllCustomerResult {
   data: CustomerJSON[];
@@ -16,14 +16,14 @@ export class GetAllCustomerUseCase
   implements IUseCase<null, IGetAllCustomerResult>
 {
   public constructor(
-    @inject(TYPES.InMemoryCustomerRepository)
+    @inject(CUSTOMER_T.InMemoryCustomerRepository)
     private readonly _customerRepository: ICustomerRepository
   ) {}
 
   public async execute(): Promise<IGetAllCustomerResult> {
     const data = await this._customerRepository.findAll();
 
-    if (!data || data.length === 0) throw new NotFoundError();
+    if (!data) throw new InternalServerError();
 
     const results = data.map((c) => c.toJSON());
 
