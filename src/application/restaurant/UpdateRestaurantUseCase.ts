@@ -1,7 +1,10 @@
+import "reflect-metadata";
 import { Restaurant } from "../../domain/Restaurant";
 import { InternalServerError } from "../../errors/HttpError";
 import { IRestaurantRepository } from "../../infrastructure/interfaces/IRestaurantRepository";
 import { IUseCase } from "../../shared/IUseCase";
+import { inject, injectable } from "inversify";
+import { RESTAURANT_T } from "../../shared/inversify/restaurant.types";
 
 export interface IUpdateRestaurantDto {
   restaurantId: string;
@@ -24,8 +27,12 @@ export interface IUpdateRestaurantUseCase
   execute(input: IUpdateRestaurantDto): Promise<IUpdateRestaurantResult>;
 }
 
+@injectable()
 export class UpdateRestaurantUseCase implements IUpdateRestaurantUseCase {
-  public constructor(private readonly _repository: IRestaurantRepository) {}
+  public constructor(
+    @inject(RESTAURANT_T.InMemoryRestaurantRepository)
+    private readonly _repository: IRestaurantRepository
+  ) {}
 
   public async execute(
     input: IUpdateRestaurantDto

@@ -1,8 +1,10 @@
 import { Reservation } from "@prisma/client";
-import { IUseCase } from "../../shared/IUseCase";
+import { inject, injectable } from "inversify";
+import "reflect-metadata";
+import { InternalServerError } from "../../errors/HttpError";
 import { IRestaurantRepository } from "../../infrastructure/interfaces/IRestaurantRepository";
-import { InternalServerError, NotFoundError } from "../../errors/HttpError";
-
+import { RESTAURANT_T } from "../../shared/inversify/restaurant.types";
+import { IUseCase } from "../../shared/IUseCase";
 export interface IGetRestaurantDto {
   restaurantId: string;
 }
@@ -20,8 +22,12 @@ export interface IGetRestaurantUseCase
   execute(input: IGetRestaurantDto): Promise<IGetRestaurantResult>;
 }
 
+@injectable()
 export class GetRestaurantUseCase implements IGetRestaurantUseCase {
-  constructor(private readonly _repository: IRestaurantRepository) {}
+  constructor(
+    @inject(RESTAURANT_T.InMemoryRestaurantRepository)
+    private readonly _repository: IRestaurantRepository
+  ) {}
 
   public async execute(
     input: IGetRestaurantDto

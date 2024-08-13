@@ -20,6 +20,8 @@ import { RepositoryError } from "../../src/errors/RepositoryError";
 import { InternalServerError } from "../../src/errors/HttpError";
 import { EntityNotFoundError } from "../../src/errors/DomainError";
 import { afterEach } from "node:test";
+import { PrismaErrCode } from "../../src/shared/enum/PrismaCode";
+import { getMockRestaurant } from "../shared/mockInstances";
 let mockCtx: MockContext;
 let ctx: Context;
 let testContainer: Container;
@@ -51,14 +53,6 @@ const clearDown = () => {
   testContainer.unbindAll();
   idCount = 0;
 };
-
-const getMockRestaurant = (): Restaurant =>
-  new Restaurant(
-    undefined,
-    faker.company.name(),
-    faker.phone.number(),
-    faker.location.street()
-  );
 
 const latestId = () => getMockedUUIDString(idCount - 1);
 
@@ -197,5 +191,147 @@ describe("[UPDATE] PrismaRestaurantRepository", () => {
     const result = await sut.update(restaurantId, updatedData);
 
     expect(result!.name).toEqual(updatedData.name);
+  });
+
+  it("Should throw entity not found error if prisma throw not found error", async () => {
+    mockCtx.prisma.restaurant.update.mockImplementation(() => {
+      throw new PrismaClientKnownRequestError("Mock Error", {
+        code: PrismaErrCode.NOT_FOUND,
+        clientVersion: "",
+      });
+    });
+
+    try {
+      await sut.update("1", getMockRestaurant());
+    } catch (err) {
+      expect(err).toBeInstanceOf(EntityNotFoundError);
+    }
+  });
+
+  it("Should throw internal server error if other error was thrown", async () => {
+    mockCtx.prisma.restaurant.update.mockImplementation(() => {
+      throw new Error();
+    });
+
+    try {
+      await sut.update("1", getMockRestaurant());
+    } catch (err) {
+      expect(err).toBeInstanceOf(InternalServerError);
+    }
+  });
+
+  it("Should throw repository error if other prisma error was thrown", async () => {
+    mockCtx.prisma.restaurant.update.mockImplementation(() => {
+      throw new PrismaClientKnownRequestError("Mock Error", {
+        code: "P2022",
+        clientVersion: "",
+      });
+    });
+
+    try {
+      await sut.update("1", getMockRestaurant());
+    } catch (err) {
+      expect(err).toBeInstanceOf(RepositoryError);
+    }
+  });
+});
+
+describe("[DELETE] PrismaCustomerRepository", () => {
+  beforeEach(() => {
+    setUp();
+  });
+
+  afterEach(() => {
+    clearDown();
+  });
+
+  it("Should return true if prisma return deleted data", async () => {
+    const existedData = getMockRestaurant();
+    mockCtx.prisma.restaurant.delete.mockResolvedValue(existedData.toJSON());
+
+    const result = await sut.delete(latestId());
+
+    expect(result).toBeTruthy();
+  });
+
+  it("Should throw entity not found error if prisma throw not found error", async () => {
+    const existedData = getMockRestaurant();
+
+    mockCtx.prisma.restaurant.delete.mockImplementation(() => {
+      throw new PrismaClientKnownRequestError("Mock Error", {
+        code: PrismaErrCode.NOT_FOUND,
+        clientVersion: "",
+      });
+    });
+
+    try {
+      await sut.delete(latestId());
+    } catch (err) {
+      expect(err).toBeInstanceOf(EntityNotFoundError);
+    }
+  });
+
+  it("Should throw internal server error if other error was thrown", async () => {
+    const existedData = getMockRestaurant();
+
+    mockCtx.prisma.restaurant.delete.mockImplementation(() => {
+      throw new Error();
+    });
+
+    try {
+      const result = await sut.delete(latestId());
+    } catch (err) {
+      expect(err).toBeInstanceOf(InternalServerError);
+    }
+  });
+
+  it("Should throw repository error if prisma throw other known error", async () => {
+    const existedData = getMockRestaurant();
+
+    mockCtx.prisma.restaurant.delete.mockImplementation(() => {
+      throw new PrismaClientKnownRequestError("Mock Error", {
+        code: "P2022",
+        clientVersion: "",
+      });
+    });
+
+    try {
+      const result = await sut.delete(latestId());
+    } catch (err) {
+      expect(err).toBeInstanceOf(RepositoryError);
+    }
+  });
+
+  it("Should return true if prisma delete all successful ", async () => {
+    mockCtx.prisma.restaurant.deleteMany.mockResolvedValue({ count: 1 });
+
+    const result = await sut.deleteAll();
+
+    expect(result).toBeTruthy();
+  });
+  it("Should throw internal server error if other error was thrown", async () => {
+    mockCtx.prisma.restaurant.deleteMany.mockImplementation(() => {
+      throw new Error("");
+    });
+
+    try {
+      await sut.deleteAll();
+    } catch (err) {
+      expect(err).toBeInstanceOf(InternalServerError);
+    }
+  });
+  it("Should throw repository error if prisma error was thrown", async () => {
+    mockCtx.prisma.restaurant.deleteMany.mockImplementation(() => {
+      throw new PrismaClientKnownRequestError("Mock Error", {
+        code: "P2022",
+        clientVersion: "",
+      });
+    });
+
+    try {
+      await sut.deleteAll();
+    } catch (err) {
+      expect(err).toBeInstanceOf(RepositoryError);
+    }
   });
 });

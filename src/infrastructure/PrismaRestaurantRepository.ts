@@ -73,7 +73,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
 
       return Restaurant.fromJSON(result);
     } catch (err) {
-      throw getExternalError(err);
+      throw getExternalError(err, id);
     }
   }
 
@@ -84,7 +84,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
       });
       return result ? true : false;
     } catch (err) {
-      throw getExternalError(err);
+      throw getExternalError(err, id);
     }
   }
   public async deleteAll(): Promise<boolean> {

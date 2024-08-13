@@ -1,8 +1,9 @@
-import { Restaurant } from "@prisma/client";
-import { IUseCase } from "../../shared/IUseCase";
-import { IRestaurantRepository } from "../../infrastructure/interfaces/IRestaurantRepository";
+import { inject, injectable } from "inversify";
+import "reflect-metadata";
 import { InternalServerError } from "../../errors/HttpError";
-
+import { IRestaurantRepository } from "../../infrastructure/interfaces/IRestaurantRepository";
+import { RESTAURANT_T } from "../../shared/inversify/restaurant.types";
+import { IUseCase } from "../../shared/IUseCase";
 export interface IDeleteAllRestaurantResult {
   deletionComplete: boolean;
 }
@@ -12,11 +13,15 @@ export interface IDeleteAllRestaurantUseCase
   execute(input: null): Promise<IDeleteAllRestaurantResult>;
 }
 
+@injectable()
 export class DeleteAllRestaurantUseCase implements IDeleteAllRestaurantUseCase {
-  public constructor(private readonly _repository: IRestaurantRepository) {}
+  public constructor(
+    @inject(RESTAURANT_T.InMemoryRestaurantRepository)
+    private readonly _repository: IRestaurantRepository
+  ) {}
 
   public async execute(input: null): Promise<IDeleteAllRestaurantResult> {
-    const result = this._repository.deleteAll();
+    const result = await this._repository.deleteAll();
 
     if (!result) throw new InternalServerError();
 
