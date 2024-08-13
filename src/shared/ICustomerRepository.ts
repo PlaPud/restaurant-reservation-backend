@@ -1,4 +1,4 @@
-import { Customer } from "../../domain/Customer";
+import { Customer } from "../domain/Customer";
 
 export interface ICustomerRepository {
   find(id: string): Promise<Customer | null>;

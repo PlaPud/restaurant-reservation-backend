@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { STATUS_CODES } from "http";
 import { GetCustomerUseCase } from "../../../application/customer/GetCustomerUseCase";
 import { StatusCode } from "../../../shared/enum/StatusCode";
-import { sendErrorResponse } from "../../../shared/sendErrorResponse";
+import { handleControllerError } from "../../../shared/HandleControllerError";
 import { NotFoundError } from "../../../errors/HttpError";
 import { UseCaseError } from "../../../errors/UseCaseError";
 
@@ -16,9 +16,9 @@ export class GetCustomerController {
       };
 
       const result = await this._useCase.execute(userInput);
-      res.status(StatusCode.OK).json(result);
+      res.status(StatusCode.SUCCESS).json(result);
     } catch (err) {
-      sendErrorResponse(res, err);
+      handleControllerError(res, err);
     }
   }
 }

@@ -1,9 +1,9 @@
 import "reflect-metadata";
 import { inject, injectable } from "inversify";
 import { BadRequestError } from "../../errors/HttpError";
-import { ICustomerRepository } from "../../infrastructure/interfaces/ICustomerRepository";
+import { ICustomerRepository } from "../../shared/ICustomerRepository";
 import { IUseCase } from "../../shared/IUseCase";
-import { CUSTOMER_T } from "../../shared/inversify/customer.types";
+import { TYPES } from "../../shared/types";
 
 export interface IDeleteAllCustomerResult {
   deletionComplete: boolean;
@@ -14,7 +14,7 @@ export class DeleteAllCustomerUseCase
   implements IUseCase<null, IDeleteAllCustomerResult>
 {
   public constructor(
-    @inject(CUSTOMER_T.InMemoryCustomerRepository)
+    @inject(TYPES.InMemoryCustomerRepository)
     private readonly _customerRepository: ICustomerRepository
   ) {}
 

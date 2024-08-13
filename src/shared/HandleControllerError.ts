@@ -6,12 +6,7 @@ import {
 } from "../errors/UseCaseError";
 import { StatusCode } from "./enum/StatusCode";
 import { Response } from "express";
-import {
-  BadRequestError,
-  HttpError,
-  InternalServerError,
-  NotFoundError,
-} from "../errors/HttpError";
+import { BadRequestError, HttpError, NotFoundError } from "../errors/HttpError";
 import {
   DomainError,
   DomainValidationError,
@@ -24,7 +19,7 @@ import {
 } from "../errors/RepositoryError";
 import { error } from "console";
 
-export const sendErrorResponse = async (
+export const handleControllerError = async (
   res: Response,
   err: unknown
 ): Promise<void> => {
@@ -61,10 +56,6 @@ const httpErrHandler = (res: Response, err: unknown): void => {
 
   if (err instanceof BadRequestError) {
     res.status(StatusCode.BAD_REQUEST).json({ error: err.message });
-  }
-
-  if (err instanceof InternalServerError) {
-    res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ error: err.message });
   }
 };
 

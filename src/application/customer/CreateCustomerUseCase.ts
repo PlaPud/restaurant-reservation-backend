@@ -1,12 +1,12 @@
 import "reflect-metadata";
 import { randomUUID } from "crypto";
 import { Customer } from "../../domain/Customer";
-import { ICustomerRepository } from "../../infrastructure/interfaces/ICustomerRepository";
+import { ICustomerRepository } from "../../shared/ICustomerRepository";
 import { IUseCase } from "../../shared/IUseCase";
 import { STATUS_CODES } from "http";
 import { BadRequestError } from "../../errors/HttpError";
 import { inject, injectable } from "inversify";
-import { CUSTOMER_T } from "../../shared/inversify/customer.types";
+import { TYPES } from "../../shared/types";
 
 export interface ICreateCustomerDto {
   fName: string;
@@ -27,7 +27,7 @@ export class CreateCustomerUseCase
   implements IUseCase<ICreateCustomerDto, ICreateCustomerResult>
 {
   public constructor(
-    @inject(CUSTOMER_T.InMemoryCustomerRepository)
+    @inject(TYPES.InMemoryCustomerRepository)
     private readonly _customerRepository: ICustomerRepository
   ) {}
 

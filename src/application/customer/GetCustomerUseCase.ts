@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import { STATUS_CODES } from "http";
 import { CustomerJSON } from "../../domain/Customer";
-import { ICustomerRepository } from "../../infrastructure/interfaces/ICustomerRepository";
+import { ICustomerRepository } from "../../shared/ICustomerRepository";
 import { IUseCase } from "../../shared/IUseCase";
-import { InternalServerError, NotFoundError } from "../../errors/HttpError";
+import { NotFoundError } from "../../errors/HttpError";
 import { inject, injectable } from "inversify";
-import { CUSTOMER_T } from "../../shared/inversify/customer.types";
+import { TYPES } from "../../shared/types";
 
 export interface IGetCustomerDto {
   customerId: string;
@@ -16,14 +16,14 @@ export class GetCustomerUseCase
   implements IUseCase<IGetCustomerDto, CustomerJSON>
 {
   public constructor(
-    @inject(CUSTOMER_T.InMemoryCustomerRepository)
+    @inject(TYPES.InMemoryCustomerRepository)
     private readonly _customerRepository: ICustomerRepository
   ) {}
 
   public async execute(input: IGetCustomerDto): Promise<CustomerJSON> {
     const result = await this._customerRepository.find(input.customerId);
 
-    if (!result) throw new InternalServerError();
+    if (!result) throw new NotFoundError();
 
     return result.toJSON();
   }

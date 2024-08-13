@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { Reservation, ReservationJSON } from "./Reservation";
+import { Reservation } from "./Reservation";
 
 export interface CustomerJSON {
   customerId: string;
@@ -7,7 +7,7 @@ export interface CustomerJSON {
   lName: string;
   email: string;
   phone: string;
-  reservations: ReservationJSON[];
+  reservations: number;
 }
 
 export class Customer {
@@ -17,7 +17,7 @@ export class Customer {
     public readonly lName: string,
     public readonly email: string,
     public readonly phone: string,
-    public readonly reservations: Reservation[] = []
+    public readonly reservations: number = 0
   ) {}
 
   public static fromJSON(jsonObj: CustomerJSON): Customer {
@@ -27,7 +27,7 @@ export class Customer {
       jsonObj.lName,
       jsonObj.email,
       jsonObj.phone,
-      jsonObj.reservations?.map((r) => Reservation.fromJSON(r))
+      jsonObj.reservations
     );
   }
 
@@ -38,7 +38,7 @@ export class Customer {
       lName: this.lName,
       email: this.email,
       phone: this.phone,
-      reservations: this.reservations.map((r) => r.toJSON()),
+      reservations: this.reservations,
     };
   }
 }

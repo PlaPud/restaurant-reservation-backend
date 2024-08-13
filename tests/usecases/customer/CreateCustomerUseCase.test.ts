@@ -8,9 +8,9 @@ import {
 } from "../../../src/application/customer/CreateCustomerUseCase";
 import { Customer } from "../../../src/domain/Customer";
 import { BadRequestError } from "../../../src/errors/HttpError";
-import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
+import { ICustomerRepository } from "../../../src/shared/ICustomerRepository";
 import { IUseCase } from "../../../src/shared/IUseCase";
-import { CUSTOMER_T } from "../../../src/shared/inversify/customer.types";
+import { TYPES } from "../../../src/shared/types";
 
 jest.mock("crypto", () => ({
   randomUUID: jest.fn(),
@@ -38,18 +38,18 @@ describe("CreateCustomerUseCase", () => {
     testContainer = new Container();
 
     testContainer
-      .bind<ICustomerRepository>(CUSTOMER_T.InMemoryCustomerRepository)
+      .bind<ICustomerRepository>(TYPES.InMemoryCustomerRepository)
       .toConstantValue(mockedCustomerRepo);
 
     testContainer
       .bind<IUseCase<ICreateCustomerDto, ICreateCustomerResult>>(
-        CUSTOMER_T.CreateCustomerUseCase
+        TYPES.CreateCustomerUseCase
       )
       .to(CreateCustomerUseCase);
 
     useCase = testContainer.get<
       IUseCase<ICreateCustomerDto, ICreateCustomerResult>
-    >(CUSTOMER_T.CreateCustomerUseCase);
+    >(TYPES.CreateCustomerUseCase);
 
     (randomUUID as jest.Mock).mockImplementation(() => {
       mockedUUID = getMockedUUIDString(idCount);

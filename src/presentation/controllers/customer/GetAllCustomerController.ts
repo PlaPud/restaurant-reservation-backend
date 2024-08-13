@@ -5,8 +5,7 @@ import {
   IGetAllCustomerResult,
 } from "../../../application/customer/GetAllCustomerUseCase";
 import { CustomerJSON } from "../../../domain/Customer";
-import { sendErrorResponse } from "../../../shared/sendErrorResponse";
-import { StatusCode } from "../../../shared/enum/StatusCode";
+import { handleControllerError } from "../../../shared/HandleControllerError";
 
 export class GetAllCustomerDto implements IGetAllCustomerResult {
   constructor(public readonly data: CustomerJSON[]) {}
@@ -20,14 +19,9 @@ export class GetAllCustomerController {
       const result = await this._useCase.execute();
       const response: GetAllCustomerDto = new GetAllCustomerDto(result.data);
 
-      if (response.data.length <= 0) {
-        res.sendStatus(StatusCode.NO_CONTENT);
-        return;
-      }
-
-      res.status(StatusCode.OK).json(response);
+      res.status(200).json(response);
     } catch (err) {
-      sendErrorResponse(res, err);
+      handleControllerError(res, err);
     }
   }
 }

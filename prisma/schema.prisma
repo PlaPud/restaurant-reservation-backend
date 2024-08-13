@@ -17,28 +17,7 @@ model Customer {
   customerId String @id @default(uuid())
   fName String 
   lName String
-  email String @unique
-  phone String @unique
-  reservations Reservation[]
-}
-
-model Restaurant {
-  restaurantId String @id @default(uuid())
-  name String
+  email String
   phone String
-  address String
-  currentReserves Reservation[]
-}
-
-model Reservation {
-  reserveId String @id @default(uuid())
-  customerId String 
-  customer Customer @relation(fields: [customerId], references: [customerId], onDelete: Cascade)
-  restaurantId String
-  restaurant Restaurant @relation(fields: [restaurantId], references: [restaurantId], onDelete: Cascade)
-  date String
-  reserveDate String
-  payImgUrl String
-  isPayed Boolean
-  isAttended Boolean
+  reservations Int @default(0)
 }
