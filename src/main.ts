@@ -7,6 +7,8 @@ import { CustomerControllers } from "./presentation/controllers/Customer.Control
 import { CustomerUseCases } from "./application/Customer.UseCases";
 import { Repositories } from "./infrastructure/Repositories";
 import prisma from "../tests/infrastructure/client";
+import { RestaurantUseCases } from "./application/Restaurant.UseCases";
+import { RestaurantControllers } from "./presentation/controllers/Restaurant.Controllers";
 
 dotenv.config();
 
@@ -18,10 +20,14 @@ export const main = async (): Promise<void> => {
   const customerUseCases = new CustomerUseCases(
     repositories.prismaCustomerRepo
   );
+  const restaurantUseCases = new RestaurantUseCases(
+    repositories.prismaRestaurantRepo
+  );
 
   const customerControllers = new CustomerControllers(customerUseCases);
+  const restaurantControllers = new RestaurantControllers(restaurantUseCases);
 
-  await ApiServer.run(port, customerControllers);
+  await ApiServer.run(port, customerControllers, restaurantControllers);
 };
 
 main();

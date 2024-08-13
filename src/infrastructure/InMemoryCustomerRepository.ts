@@ -1,6 +1,6 @@
 import { STATUS_CODES } from "http";
 import { Customer } from "../domain/Customer";
-import { ICustomerRepository } from "../shared/ICustomerRepository";
+import { ICustomerRepository } from "./interfaces/ICustomerRepository";
 import { EntityNotFoundError } from "../errors/DomainError";
 import { DataIntegrityError, RepositoryError } from "../errors/RepositoryError";
 import { injectable } from "inversify";

@@ -1,8 +1,8 @@
 import "reflect-metadata";
-import { ICustomerRepository } from "../../../src/shared/ICustomerRepository";
+import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../../src/shared/IUseCase";
 import { Container } from "inversify";
-import { TYPES } from "../../../src/shared/types";
+import { CUSTOMER_T } from "../../../src/shared/inversify/customer.types";
 import { randomUUID } from "crypto";
 import { NotFoundError } from "../../../src/errors/HttpError";
 
@@ -37,18 +37,18 @@ describe("DeleteCustomerUseCase", () => {
     testContainer = new Container();
 
     testContainer
-      .bind<ICustomerRepository>(TYPES.InMemoryCustomerRepository)
+      .bind<ICustomerRepository>(CUSTOMER_T.InMemoryCustomerRepository)
       .toConstantValue(mockedCustomerRepo);
 
     testContainer
       .bind<IUseCase<IDeleteCustomerDto, IDeleteCustomerResult>>(
-        TYPES.DeleteCustomerUseCase
+        CUSTOMER_T.DeleteCustomerUseCase
       )
       .to(DeleteCustomerUseCase);
 
     useCase = testContainer.get<
       IUseCase<IDeleteCustomerDto, IDeleteCustomerResult>
-    >(TYPES.DeleteCustomerUseCase);
+    >(CUSTOMER_T.DeleteCustomerUseCase);
 
     (randomUUID as jest.Mock).mockImplementation(() => {
       mockedUUID = getMockedUUIDString(idCount);
