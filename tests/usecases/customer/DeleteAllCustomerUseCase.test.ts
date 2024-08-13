@@ -6,9 +6,9 @@ import {
   IDeleteAllCustomerResult,
 } from "../../../src/application/customer/DeleteAllCustomerUseCase";
 import { BadRequestError } from "../../../src/errors/HttpError";
-import { ICustomerRepository } from "../../../src/shared/ICustomerRepository";
+import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../../src/shared/IUseCase";
-import { TYPES } from "../../../src/shared/types";
+import { CUSTOMER_T } from "../../../src/shared/inversify/customer.types";
 
 jest.mock("crypto", () => ({
   randomUUID: jest.fn(),
@@ -35,17 +35,17 @@ describe("DeleteAllCustomerUseCase", () => {
     testContainer = new Container();
 
     testContainer
-      .bind<ICustomerRepository>(TYPES.InMemoryCustomerRepository)
+      .bind<ICustomerRepository>(CUSTOMER_T.InMemoryCustomerRepository)
       .toConstantValue(mockedCustomerRepo);
 
     testContainer
       .bind<IUseCase<null, IDeleteAllCustomerResult>>(
-        TYPES.DeleteAllCustomerUseCase
+        CUSTOMER_T.DeleteAllCustomerUseCase
       )
       .to(DeleteAllCustomerUseCase);
 
     useCase = testContainer.get<IUseCase<null, IDeleteAllCustomerResult>>(
-      TYPES.DeleteAllCustomerUseCase
+      CUSTOMER_T.DeleteAllCustomerUseCase
     );
 
     (randomUUID as jest.Mock).mockImplementation(() => {

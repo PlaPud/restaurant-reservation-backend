@@ -1,15 +1,15 @@
-import "reflect-metadata";
-import { ICustomerRepository } from "../../../src/shared/ICustomerRepository";
-import { IUseCase } from "../../../src/shared/IUseCase";
-import { Container } from "inversify";
-import { Customer, CustomerJSON } from "../../../src/domain/Customer";
-import { TYPES } from "../../../src/shared/types";
 import { randomUUID } from "crypto";
+import { Container } from "inversify";
+import "reflect-metadata";
 import {
   GetCustomerUseCase,
   IGetCustomerDto,
 } from "../../../src/application/customer/GetCustomerUseCase";
-import { NotFoundError } from "../../../src/errors/HttpError";
+import { Customer, CustomerJSON } from "../../../src/domain/Customer";
+import { InternalServerError } from "../../../src/errors/HttpError";
+import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
+import { IUseCase } from "../../../src/shared/IUseCase";
+import { CUSTOMER_T } from "../../../src/shared/inversify/customer.types";
 
 jest.mock("crypto", () => ({
   randomUUID: jest.fn(),
@@ -37,15 +37,17 @@ describe("GetCustomerUseCase", () => {
     testContainer = new Container();
 
     testContainer
-      .bind<ICustomerRepository>(TYPES.InMemoryCustomerRepository)
+      .bind<ICustomerRepository>(CUSTOMER_T.InMemoryCustomerRepository)
       .toConstantValue(mockedCustomerRepo);
 
     testContainer
-      .bind<IUseCase<IGetCustomerDto, CustomerJSON>>(TYPES.GetCustomerUseCase)
+      .bind<IUseCase<IGetCustomerDto, CustomerJSON>>(
+        CUSTOMER_T.GetCustomerUseCase
+      )
       .to(GetCustomerUseCase);
 
     useCase = testContainer.get<IUseCase<IGetCustomerDto, CustomerJSON>>(
-      TYPES.GetCustomerUseCase
+      CUSTOMER_T.GetCustomerUseCase
     );
 
     (randomUUID as jest.Mock).mockImplementation(() => {
@@ -81,11 +83,11 @@ describe("GetCustomerUseCase", () => {
     expect(result).toMatchObject(createdCustomer);
   });
 
-  it("Should throw not found error when result is null", async () => {
+  it("Should throw internal server error when result is null", async () => {
     mockedCustomerRepo.find.mockResolvedValue(null);
 
     expect(
       useCase.execute({ customerId: getMockedUUIDString(idCount) })
-    ).rejects.toThrow(NotFoundError);
+    ).rejects.toThrow(InternalServerError);
   });
 });

@@ -4,12 +4,14 @@ import {
   IUpdateCustomerResult,
   UpdateCustomerUseCase,
 } from "../../../application/customer/UpdateCustomerUseCase";
-import { handleControllerError } from "../../../shared/HandleControllerError";
-import { customerSchema } from "../../../domain/schemas/Customer.Schema";
+import { sendErrorResponse } from "../../../shared/sendErrorResponse";
+import { customerSchema } from "../../../domain/validation_schemas/Customer.Schema";
 import { BadRequestError } from "../../../errors/HttpError";
+import { StatusCode } from "../../../shared/enum/StatusCode";
 
 export class UpdatedCustomerDto implements IUpdateCustomerResult {
   public constructor(
+    public customerId: string,
     public readonly fName: string,
     public readonly lName: string,
     public readonly email: string,
@@ -41,15 +43,16 @@ export class UpdateCustomerController {
       const result = await this._useCase.execute(userInput);
 
       const response: UpdatedCustomerDto = new UpdatedCustomerDto(
+        result.customerId,
         result.fName,
         result.lName,
         result.email,
         result.phone
       );
 
-      res.status(200).json(response);
+      res.status(StatusCode.OK).json(response);
     } catch (err) {
-      handleControllerError(res, err);
+      sendErrorResponse(res, err);
     }
   }
 }

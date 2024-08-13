@@ -4,7 +4,7 @@ import {
   IDeleteCustomerResult,
 } from "../../../application/customer/DeleteCustomerUseCase";
 import { STATUS_CODES } from "http";
-import { handleControllerError } from "../../../shared/HandleControllerError";
+import { sendErrorResponse } from "../../../shared/sendErrorResponse";
 import { BadRequestError } from "../../../errors/HttpError";
 
 export class DeletedCustomerDto implements IDeleteCustomerResult {
@@ -28,7 +28,7 @@ export class DeleteCustomerController {
 
       res.status(200).json(response);
     } catch (err) {
-      handleControllerError(res, err);
+      sendErrorResponse(res, err);
     }
   }
 }

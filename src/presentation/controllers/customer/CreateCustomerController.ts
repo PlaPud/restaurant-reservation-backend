@@ -5,8 +5,8 @@ import {
   ICreateCustomerResult,
 } from "../../../application/customer/CreateCustomerUseCase";
 import { StatusCode } from "../../../shared/enum/StatusCode";
-import { customerSchema } from "../../../domain/schemas/Customer.Schema";
-import { handleControllerError } from "../../../shared/HandleControllerError";
+import { customerSchema } from "../../../domain/validation_schemas/Customer.Schema";
+import { sendErrorResponse } from "../../../shared/sendErrorResponse";
 import { BadRequestError } from "../../../errors/HttpError";
 
 export class CreatedCustomerDto implements ICreateCustomerResult {
@@ -37,7 +37,7 @@ export class CreateCustomerController {
 
       res.status(StatusCode.CREATED).json(response);
     } catch (err) {
-      handleControllerError(res, err);
+      sendErrorResponse(res, err);
     }
   }
 }

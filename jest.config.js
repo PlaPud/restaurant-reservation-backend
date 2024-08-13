@@ -5,5 +5,8 @@ module.exports = {
   transform: {
     "^.+.tsx?$": ["ts-jest", {}],
   },
-  setupFilesAfterEnv: ["./tests/infrastructure/mockSingleton.ts"],
+  setupFilesAfterEnv: [
+    "./tests/infrastructure/mockSingleton.ts",
+    "./tests/shared/mockUUID.ts",
+  ],
 };
