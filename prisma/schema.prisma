@@ -37,6 +37,7 @@ model Reservation {
   restaurantId String
   restaurant Restaurant @relation(fields: [restaurantId], references: [restaurantId], onDelete: Cascade)
   date String
+  seats Int
   reserveDate String
   payImgUrl String
   isPayed Boolean
