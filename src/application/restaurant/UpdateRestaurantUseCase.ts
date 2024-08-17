@@ -37,12 +37,12 @@ export class UpdateRestaurantUseCase implements IUpdateRestaurantUseCase {
   public async execute(
     input: IUpdateRestaurantDto
   ): Promise<IUpdateRestaurantResult> {
-    const restaurant = new Restaurant(
-      input.restaurantId,
-      input.data.name,
-      input.data.phone,
-      input.data.address
-    );
+    const restaurant = new Restaurant({
+      restaurantId: input.restaurantId,
+      name: input.data.name,
+      phone: input.data.phone,
+      address: input.data.address,
+    });
 
     const result = await this._repository.update(
       input.restaurantId,

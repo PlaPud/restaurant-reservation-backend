@@ -1,11 +1,58 @@
+import { faker } from "@faker-js/faker";
 import { Reservation } from "../domain/Reservation";
+import { Restaurant } from "../domain/Restaurant";
 import { EntityNotFoundError } from "../errors/DomainError";
 import { NotFoundError } from "../errors/HttpError";
 import { DataIntegrityError, RepositoryError } from "../errors/RepositoryError";
 import { IReserveRepository } from "./interfaces/IReserveRepository";
 
 export class InMemoryReserveRepository implements IReserveRepository {
-  private readonly _reserves: Reservation[] = [];
+  private readonly _reserves: Reservation[] = [
+    new Reservation({
+      restaurantId: "1",
+      seats: 3,
+      reserveDate: Date.now().toString(),
+    }),
+    new Reservation({
+      restaurantId: "1",
+      seats: 6,
+      reserveDate: Date.now().toString(),
+      isPayed: true,
+    }),
+    new Reservation({
+      restaurantId: "1",
+      seats: 4,
+      reserveDate: Date.now().toString(),
+      isPayed: true,
+      isAttended: true,
+    }),
+    new Reservation({
+      restaurantId: "1",
+      seats: 7,
+      reserveDate: Date.now().toString(),
+      isPayed: true,
+    }),
+  ];
+  private readonly _restaurants: Restaurant[] = [
+    new Restaurant({
+      restaurantId: "1",
+      name: "restaurant1",
+      phone: "123",
+      address: "Mock Street",
+      currentReserves: [
+        ...this._reserves.filter((r) => r.restaurantId === "1"),
+      ],
+    }),
+    new Restaurant({
+      restaurantId: "2",
+      name: "restaurant2",
+      phone: "123",
+      address: "Mock Street",
+      currentReserves: [
+        ...this._reserves.filter((r) => r.restaurantId === "2"),
+      ],
+    }),
+  ];
 
   public constructor() {}
 
@@ -20,7 +67,15 @@ export class InMemoryReserveRepository implements IReserveRepository {
   public async findAvailReserves(
     restaurantId: string
   ): Promise<Reservation[] | null> {
-    const result: Reservation[] = this._reserves.filter((r) => r.isPayed!);
+    const restaurant = this._restaurants.find(
+      (rs) => rs.restaurantId === restaurantId
+    );
+
+    if (!restaurant) throw new EntityNotFoundError();
+
+    const result: Reservation[] = restaurant.currentReserves.filter(
+      (r) => r.isPayed!
+    );
 
     if (!result) throw new DataIntegrityError();
 
@@ -30,7 +85,31 @@ export class InMemoryReserveRepository implements IReserveRepository {
   public async findBookedReserves(
     restaurantId: string
   ): Promise<Reservation[] | null> {
-    const result: Reservation[] = this._reserves.filter((r) => r.isPayed);
+    const restaurant = this._restaurants.find(
+      (rs) => rs.restaurantId === restaurantId
+    );
+
+    if (!restaurant) throw new EntityNotFoundError();
+
+    const result: Reservation[] = restaurant?.currentReserves.filter(
+      (r) => r.isPayed
+    );
+
+    if (!result) throw new DataIntegrityError();
+
+    return result;
+  }
+
+  public async findAttendReserves(
+    restaurantId: string
+  ): Promise<Reservation[] | null> {
+    const restaurant = this._restaurants.find(
+      (rs) => rs.restaurantId === restaurantId
+    );
+
+    if (!restaurant) throw new EntityNotFoundError();
+
+    const result: Reservation[] = this._reserves.filter((r) => r.isAttended);
 
     if (!result) throw new DataIntegrityError();
 
@@ -120,6 +199,7 @@ export class InMemoryReserveRepository implements IReserveRepository {
     this._reserves.splice(idx, 1);
     return true;
   }
+
   public async deleteAll(): Promise<boolean> {
     this._reserves.splice(0, this._reserves.length);
     return true;

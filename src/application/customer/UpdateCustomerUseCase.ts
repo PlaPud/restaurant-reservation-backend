@@ -39,13 +39,13 @@ export class UpdateCustomerUseCase
   public async execute(
     input: IUpdateCustomerDto
   ): Promise<IUpdateCustomerResult> {
-    const customer = new Customer(
-      input.customerId,
-      input.data.fName,
-      input.data.lName,
-      input.data.email,
-      input.data.phone
-    );
+    const customer = new Customer({
+      customerId: input.customerId,
+      fName: input.data.fName,
+      lName: input.data.lName,
+      email: input.data.email,
+      phone: input.data.phone,
+    });
 
     const result = await this._customerRepository.update(
       input.customerId,

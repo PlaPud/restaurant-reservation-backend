@@ -10,6 +10,7 @@ import { InternalServerError } from "../../../src/errors/HttpError";
 import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../../src/shared/IUseCase";
 import { CUSTOMER_T } from "../../../src/shared/inversify/customer.types";
+import { getMockCustomer } from "../../shared/mockInstances";
 
 jest.mock("crypto", () => ({
   randomUUID: jest.fn(),
@@ -62,13 +63,7 @@ describe("GetCustomerUseCase", () => {
   });
 
   it("Should return customer that has the same customerID.", async () => {
-    const createdCustomer = new Customer(
-      undefined,
-      "John",
-      "Doe",
-      "john.d@mail.com",
-      "12345"
-    );
+    const createdCustomer: Customer = getMockCustomer();
 
     mockedCustomerRepo.find.mockResolvedValue(createdCustomer);
 
@@ -80,7 +75,7 @@ describe("GetCustomerUseCase", () => {
       expect.stringMatching(getMockedUUIDString(idCount))
     );
     expect(result.customerId).toBe(getMockedUUIDString(idCount - 1));
-    expect(result).toMatchObject(createdCustomer);
+    expect(result).toMatchObject(createdCustomer.toJSON());
   });
 
   it("Should throw internal server error when result is null", async () => {

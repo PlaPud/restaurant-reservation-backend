@@ -12,6 +12,7 @@ import {
 } from "../../../src/application/customer/UpdateCustomerUseCase";
 import { Customer } from "../../../src/domain/Customer";
 import { BadRequestError } from "../../../src/errors/HttpError";
+import { getMockCustomer } from "../../shared/mockInstances";
 
 jest.mock("crypto", () => ({
   randomUUID: jest.fn(),
@@ -64,16 +65,10 @@ describe("UpdateCustomerUseCase", () => {
   });
 
   it("Should update customer's data to be like input.", async () => {
-    const customer = new Customer(
-      "1",
-      "John",
-      "Doe",
-      "john.d@email.com",
-      "12345"
-    );
+    const customer = getMockCustomer();
 
     const input: IUpdateCustomerDto = {
-      customerId: "1",
+      customerId: customer.customerId,
       data: {
         fName: "Jane",
         lName: customer.lName,
@@ -84,14 +79,14 @@ describe("UpdateCustomerUseCase", () => {
 
     mockedCustomerRepo.update.mockImplementation(
       async (id: string, data: Customer) => {
-        return new Customer(
-          id,
-          data.fName,
-          data.lName,
-          data.email,
-          data.phone,
-          data.reservations
-        );
+        return new Customer({
+          customerId: id,
+          fName: data.fName,
+          lName: data.lName,
+          email: data.email,
+          phone: data.phone,
+          reservations: data.reservations,
+        });
       }
     );
 
@@ -101,16 +96,10 @@ describe("UpdateCustomerUseCase", () => {
   });
 
   it("Should throw bad request error if cannot update.", async () => {
-    const customer = new Customer(
-      "1",
-      "John",
-      "Doe",
-      "john.d@email.com",
-      "12345"
-    );
+    const customer = getMockCustomer();
 
     const input: IUpdateCustomerDto = {
-      customerId: "1",
+      customerId: customer.customerId,
       data: {
         fName: "Jane",
         lName: customer.lName,

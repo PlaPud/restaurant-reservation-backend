@@ -9,23 +9,39 @@ export interface RestaurantJSON {
   currentReserves: ReservationJSON[];
 }
 
+export type RestaurantConstrParams = {
+  restaurantId?: string;
+  name: string;
+  phone: string;
+  address: string;
+  currentReserves?: Reservation[];
+};
+
 export class Restaurant {
-  public constructor(
-    public readonly restaurantId: string = randomUUID(),
-    public readonly name: string,
-    public readonly phone: string,
-    public readonly address: string,
-    public readonly currentReserves: Reservation[] = []
-  ) {}
+  public readonly restaurantId: string = randomUUID();
+  public readonly name: string;
+  public readonly phone: string;
+  public readonly address: string;
+  public readonly currentReserves: Reservation[];
+
+  public constructor(private readonly _options: RestaurantConstrParams) {
+    this.restaurantId = this._options.restaurantId ?? randomUUID();
+    this.name = this._options.name ?? "";
+    this.phone = this._options.phone ?? "";
+    this.address = this._options.address ?? "";
+    this.currentReserves = this._options.currentReserves ?? [];
+  }
 
   public static fromJSON(jsonObj: RestaurantJSON): Restaurant {
-    return new Restaurant(
-      jsonObj.restaurantId,
-      jsonObj.name,
-      jsonObj.phone,
-      jsonObj.address,
-      jsonObj.currentReserves?.map((rsObj) => Reservation.fromJSON(rsObj))
-    );
+    return new Restaurant({
+      restaurantId: jsonObj.restaurantId,
+      name: jsonObj.name,
+      phone: jsonObj.phone,
+      address: jsonObj.address,
+      currentReserves: jsonObj.currentReserves?.map((rsObj) =>
+        Reservation.fromJSON(rsObj)
+      ),
+    });
   }
 
   public toJSON(): RestaurantJSON {

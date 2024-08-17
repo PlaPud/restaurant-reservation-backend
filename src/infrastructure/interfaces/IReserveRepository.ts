@@ -5,7 +5,9 @@ export interface IReserveRepository {
 
   findAvailReserves(restaurantId: string): Promise<Reservation[] | null>;
 
-  findBookedReserves(reservationId: string): Promise<Reservation[] | null>;
+  findBookedReserves(restaurantId: string): Promise<Reservation[] | null>;
+
+  findAttendReserves(restaurantId: string): Promise<Reservation[] | null>;
 
   findAll(): Promise<Reservation[] | null>;
 

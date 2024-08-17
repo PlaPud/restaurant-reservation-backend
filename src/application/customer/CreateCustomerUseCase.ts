@@ -34,13 +34,12 @@ export class CreateCustomerUseCase
   public async execute(
     input: ICreateCustomerDto
   ): Promise<ICreateCustomerResult> {
-    const customer = new Customer(
-      undefined,
-      input.fName,
-      input.lName,
-      input.email,
-      input.phone
-    );
+    const customer = new Customer({
+      fName: input.fName,
+      lName: input.lName,
+      email: input.email,
+      phone: input.phone,
+    });
 
     const result = await this._customerRepository.save(customer);
 
