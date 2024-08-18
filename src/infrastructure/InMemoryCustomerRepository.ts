@@ -35,14 +35,14 @@ export class InMemoryCustomerRepository implements ICustomerRepository {
       if (!indexFound(idx))
         throw new EntityNotFoundError(`Cannot Find Customer (ID: ${id})`);
 
-      this._customers[idx] = new Customer(
-        this._customers[idx].customerId,
-        data.fName,
-        data.lName,
-        data.email,
-        data.phone,
-        this._customers[idx].reservations
-      );
+      this._customers[idx] = new Customer({
+        customerId: this._customers[idx].customerId,
+        fName: data.fName,
+        lName: data.lName,
+        email: data.email,
+        phone: data.phone,
+        reservations: this._customers[idx].reservations,
+      });
 
       return this._customers[idx];
     } catch {

@@ -75,7 +75,11 @@ describe("CreateRestaurantUseCase", () => {
     };
 
     mockRestaurantRepo.save.mockImplementation(async (rs: Restaurant) => {
-      return new Restaurant(undefined, rs.name, rs.phone, rs.address);
+      return new Restaurant({
+        name: rs.name,
+        phone: rs.phone,
+        address: rs.address,
+      });
     });
 
     const result: ICreateRestaurantResult = await sut.execute(userInput);

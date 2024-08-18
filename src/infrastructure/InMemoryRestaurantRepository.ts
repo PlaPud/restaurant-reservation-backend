@@ -37,13 +37,13 @@ export class InMemoryRestaurantRepository implements IRestaurantRepository {
       throw new EntityNotFoundError(`Cannot Find Customer (ID: ${id})`);
 
     try {
-      this._restaurants[idx] = new Restaurant(
-        this._restaurants[idx].restaurantId,
-        data.name,
-        data.phone,
-        data.address,
-        data.currentReserves
-      );
+      this._restaurants[idx] = new Restaurant({
+        restaurantId: this._restaurants[idx].restaurantId,
+        name: data.name,
+        phone: data.phone,
+        address: data.address,
+        currentReserves: data.currentReserves,
+      });
 
       return this._restaurants[idx];
     } catch (err) {

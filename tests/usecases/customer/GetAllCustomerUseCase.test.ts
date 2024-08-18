@@ -10,6 +10,7 @@ import { NotFoundError } from "../../../src/errors/HttpError";
 import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../../src/shared/IUseCase";
 import { CUSTOMER_T } from "../../../src/shared/inversify/customer.types";
+import { getMockCustomer } from "../../shared/mockInstances";
 
 jest.mock("crypto", () => ({
   randomUUID: jest.fn(),
@@ -62,13 +63,7 @@ describe("GetAllCustomerUseCase", () => {
   });
 
   it("Should return JSON result sucessfully", async () => {
-    const createdCustomer = new Customer(
-      undefined,
-      "John",
-      "Doe",
-      "john.d@mail.com",
-      "12345"
-    );
+    const createdCustomer = getMockCustomer();
 
     mockedCustomerRepo.findAll.mockResolvedValue([createdCustomer]);
 
@@ -76,6 +71,6 @@ describe("GetAllCustomerUseCase", () => {
 
     expect(result.data).not.toBeNull();
 
-    expect(result.data[0]).toEqual(Customer.fromJSON(createdCustomer));
+    expect(result.data[0]).toEqual(createdCustomer.toJSON());
   });
 });
