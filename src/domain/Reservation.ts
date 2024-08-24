@@ -4,57 +4,58 @@ import { Restaurant, RestaurantJSON } from "./Restaurant";
 
 export interface ReservationJSON {
   reserveId: string;
-  customerId: string;
+  customerId: string | null;
   restaurantId: string;
-  date: string;
+  lastModified: string | null;
   seats: number;
   reserveDate: string;
-  payImgUrl: string;
+  payImgUrl: string | null;
   isPayed: boolean;
   isAttended: boolean;
-  customer?: CustomerJSON;
+  customer?: CustomerJSON | null;
   restaurant?: RestaurantJSON;
 }
 
 export type ReserveConstrParams = {
   reserveId?: string;
-  customerId?: string;
+  customerId?: string | null;
   restaurantId: string;
-  date?: string;
+  lastModified?: string | null;
   seats: number;
   reserveDate: string;
-  payImgUrl?: string;
+  payImgUrl?: string | null;
   isPayed?: boolean;
   isAttended?: boolean;
-  customer?: Customer;
+  customer?: Customer | null;
   restaurant?: Restaurant;
 };
 
 export class Reservation {
   public readonly reserveId: string = randomUUID();
-  public customerId: string;
+  public customerId: string | null;
   public restaurantId: string;
-  public date: string;
+  public lastModified: string;
   public seats: number = 2;
   public reserveDate: string = "";
-  public payImgUrl: string = "";
+  public payImgUrl: string | null;
   public isPayed: boolean = false;
   public isAttended: boolean = false;
-  public customer?: Customer;
+  public customer?: Customer | null;
   public restaurant?: Restaurant;
 
-  public constructor(private readonly _options: ReserveConstrParams) {
-    this.reserveId = this._options.reserveId ?? randomUUID();
-    this.customerId = this._options.customerId ?? "";
-    this.restaurantId = this._options.restaurantId ?? "";
-    this.date = this._options.date ?? Date.now().toString();
-    this.seats = this._options.seats ?? 2;
-    this.reserveDate = this._options.reserveDate ?? "";
-    this.payImgUrl = this._options.payImgUrl ?? "";
-    this.isPayed = this._options.isPayed ?? false;
-    this.isAttended = this._options.isAttended ?? false;
-    this.customer = this._options.customer;
-    this.restaurant = this._options.restaurant;
+  public constructor(public readonly options: ReserveConstrParams) {
+    this.reserveId = this.options.reserveId ?? randomUUID();
+    this.customerId = this.options.customerId ?? null;
+    this.restaurantId = this.options.restaurantId ?? "";
+    this.lastModified =
+      this.options.lastModified ?? new Date(Date.now()).toISOString();
+    this.seats = this.options.seats ?? 2;
+    this.reserveDate = this.options.reserveDate ?? "";
+    this.payImgUrl = this.options.payImgUrl ?? null;
+    this.isPayed = this.options.isPayed ?? false;
+    this.isAttended = this.options.isAttended ?? false;
+    this.customer = this.options.customer;
+    this.restaurant = this.options.restaurant;
   }
 
   public static fromJSON(jsonObj: ReservationJSON): Reservation {
@@ -62,7 +63,7 @@ export class Reservation {
       reserveId: jsonObj.reserveId,
       customerId: jsonObj.customerId,
       restaurantId: jsonObj.restaurantId,
-      date: jsonObj.date,
+      lastModified: jsonObj.lastModified,
       seats: jsonObj.seats,
       reserveDate: jsonObj.reserveDate,
       payImgUrl: jsonObj.payImgUrl,
@@ -82,7 +83,7 @@ export class Reservation {
       reserveId: this.reserveId,
       customerId: this.customerId,
       restaurantId: this.restaurantId,
-      date: this.date,
+      lastModified: this.lastModified,
       seats: this.seats,
       reserveDate: this.reserveDate,
       payImgUrl: this.payImgUrl,

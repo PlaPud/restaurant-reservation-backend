@@ -17,16 +17,8 @@ export class UpdateAttendUseCase
   public constructor(private readonly _repository: IReserveRepository) {}
 
   public async execute(input: IUpdateAttendDto): Promise<IUpdateAttendResult> {
-    const target = await this._repository.find(input.reserveId);
-
-    if (!target) throw new InternalServerError();
-
-    if (target.isAttended) return target.toJSON();
-
-    if (!target.isPayed) throw new BusinessRuleViolationError();
-
     const result = await this._repository.updateAttendance(
-      target.reserveId,
+      input.reserveId,
       input.isAttended
     );
 

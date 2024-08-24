@@ -8,6 +8,7 @@ import {
 import { BadRequestError } from "../../../errors/HttpError";
 import { StatusCode } from "../../../shared/enum/StatusCode";
 import { sendErrorResponse } from "../../../shared/sendErrorResponse";
+import { isRequestBodyEmpty } from "../../../shared/utilsFunc";
 
 export interface UpdatedPayUrlResponseDto extends IUpdatePayUrlResult {}
 
@@ -16,7 +17,8 @@ export class UpdatePayUrlController {
 
   public async handle(req: Request, res: Response) {
     try {
-      if (!req.query.reserveId || !req.body) throw new BadRequestError();
+      if (!req.query.reserveId || isRequestBodyEmpty(req))
+        throw new BadRequestError();
 
       const userInput: IUpdatePayUrlDto = {
         reserveId: req.query.reserveId as string,

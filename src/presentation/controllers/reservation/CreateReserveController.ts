@@ -37,13 +37,14 @@ export class CreateReserveController {
         reserveId: result.reserveId,
         restaurantId: result.restaurantId,
         seats: result.seats as number,
-        date: result.date,
+        lastModified: result.lastModified,
         reserveDate: result.reserveDate,
         restaurant: result.restaurant,
       };
 
       res.status(StatusCode.CREATED).json(response);
     } catch (err) {
+      console.log(err);
       sendErrorResponse(res, err);
     }
   }

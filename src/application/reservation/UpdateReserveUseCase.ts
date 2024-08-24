@@ -10,7 +10,6 @@ export interface IUpdateReserveDto {
   data: {
     customerId: string;
     restaurantId: string;
-    date: string;
     seats: number;
     reserveDate: string;
     payImgUrl: string;
@@ -33,7 +32,6 @@ export class UpdateReserveUseCase
       reserveId: input.reserveId,
       restaurantId: input.data.restaurantId,
       customerId: input.data.customerId,
-      date: input.data.date,
       seats: input.data.seats,
       reserveDate: input.data.reserveDate,
       payImgUrl: input.data.payImgUrl,

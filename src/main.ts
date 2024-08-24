@@ -26,7 +26,7 @@ export const main = async (): Promise<void> => {
     repositories.prismaRestaurantRepo
   );
   const reservationUseCases = new ReservationUseCases(
-    repositories.inMemoryReserveRepo
+    repositories.prismaReservationRepo
   );
 
   const customerControllers = new CustomerControllers(customerUseCases);

@@ -7,12 +7,12 @@ export const newReserveSchema = Joi.object({
 });
 
 export const updateReserveSchema = Joi.object({
-  customerId: Joi.string(),
+  customerId: Joi.string().allow(""),
   restaurantId: Joi.string().required(),
-  date: Joi.date().required(),
+  lastModified: Joi.date(),
   seats: Joi.number(),
   reserveDate: Joi.date().required(),
-  payImgUrl: Joi.string().required(),
+  payImgUrl: Joi.string().allow(""),
   isPayed: Joi.boolean().required(),
   isAttended: Joi.boolean().required(),
 });

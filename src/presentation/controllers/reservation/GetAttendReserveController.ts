@@ -15,7 +15,7 @@ export class GetAttendReserveController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
-      if (req.query.restaurantId) throw new BadRequestError();
+      if (!req.query.restaurantId) throw new BadRequestError();
 
       const userInput: IGetAttendReserveDto = {
         restaurantId: req.query.restaurantId as string,

@@ -32,14 +32,14 @@ model Restaurant {
 
 model Reservation {
   reserveId String @id @default(uuid())
-  customerId String 
-  customer Customer @relation(fields: [customerId], references: [customerId], onDelete: Cascade)
+  customerId String? 
+  customer Customer? @relation(fields: [customerId], references: [customerId], onDelete: Cascade)
   restaurantId String
   restaurant Restaurant @relation(fields: [restaurantId], references: [restaurantId], onDelete: Cascade)
-  date String
+  lastModified String?
   seats Int
   reserveDate String
-  payImgUrl String
-  isPayed Boolean
-  isAttended Boolean
+  payImgUrl String?
+  isPayed Boolean @default(false)
+  isAttended Boolean @default(false)
 }

@@ -48,12 +48,14 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
           phone,
           address,
         },
+        include: {
+          currentReserves: true,
+        },
       });
-      return Restaurant.fromJSON({ ...result, currentReserves: [] });
+      return Restaurant.fromJSON(result);
     } catch (err) {
-      getExternalError(err);
+      throw getExternalError(err);
     }
-    return null;
   }
   public async update(
     id: string,

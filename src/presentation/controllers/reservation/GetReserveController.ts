@@ -15,7 +15,7 @@ export class GetReserveController {
   public async handle(req: Request, res: Response): Promise<void> {
     try {
       const userInput: IGetReserveDto = {
-        reserveId: req.params.reserveId as string,
+        reserveId: req.query.reserveId as string,
       };
 
       const result = await this._useCase.execute(userInput);

@@ -7,7 +7,7 @@ export interface CustomerJSON {
   lName: string;
   email: string;
   phone: string;
-  reservations: ReservationJSON[];
+  reservations?: ReservationJSON[];
 }
 
 export type CustomerConstrParams = {
@@ -25,15 +25,15 @@ export class Customer {
   public readonly lName: string;
   public readonly email: string;
   public readonly phone: string;
-  public readonly reservations: Reservation[];
+  public readonly reservations?: Reservation[];
 
-  public constructor(private readonly _options: CustomerConstrParams) {
-    this.customerId = this._options.customerId ?? randomUUID();
-    this.reservations = this._options.reservations ?? [];
-    this.fName = this._options.fName ?? "";
-    this.lName = this._options.lName ?? "";
-    this.email = this._options.email ?? "";
-    this.phone = this._options.phone ?? "";
+  public constructor(public readonly options: CustomerConstrParams) {
+    this.customerId = this.options.customerId ?? randomUUID();
+    this.reservations = this.options.reservations;
+    this.fName = this.options.fName ?? "";
+    this.lName = this.options.lName ?? "";
+    this.email = this.options.email ?? "";
+    this.phone = this.options.phone ?? "";
   }
 
   public static fromJSON(jsonObj: CustomerJSON): Customer {
@@ -54,7 +54,7 @@ export class Customer {
       lName: this.lName,
       email: this.email,
       phone: this.phone,
-      reservations: this.reservations.map((r) => r.toJSON()),
+      reservations: this.reservations?.map((r) => r.toJSON()),
     };
   }
 }

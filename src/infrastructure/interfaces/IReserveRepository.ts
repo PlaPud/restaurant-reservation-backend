@@ -24,8 +24,6 @@ export interface IReserveRepository {
 
   updatePay(id: string, isPayed: boolean): Promise<Reservation | null>;
 
-  changeReserveDate(id: string, date: string): Promise<Reservation | null>;
-
   delete(id: string): Promise<boolean>;
 
   deleteAll(): Promise<boolean>;

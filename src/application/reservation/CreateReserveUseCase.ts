@@ -13,7 +13,7 @@ export interface ICreateReserveDto {
 export interface ICreateReserveResult {
   reserveId: string;
   restaurantId: string;
-  date: string;
+  lastModified: string;
   seats: number;
   reserveDate: string;
   restaurant: RestaurantJSON;
@@ -40,7 +40,7 @@ export class CreateReserveUseCase
     const body: ICreateReserveResult = {
       reserveId: result.reserveId,
       restaurantId: result.restaurantId,
-      date: result.date,
+      lastModified: result.lastModified,
       seats: result.seats,
       reserveDate: result.reserveDate,
       restaurant: result.restaurant

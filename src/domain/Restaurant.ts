@@ -6,7 +6,7 @@ export interface RestaurantJSON {
   name: string;
   phone: string;
   address: string;
-  currentReserves: ReservationJSON[];
+  currentReserves?: ReservationJSON[];
 }
 
 export type RestaurantConstrParams = {
@@ -22,14 +22,14 @@ export class Restaurant {
   public readonly name: string;
   public readonly phone: string;
   public readonly address: string;
-  public readonly currentReserves: Reservation[];
+  public readonly currentReserves?: Reservation[];
 
-  public constructor(private readonly _options: RestaurantConstrParams) {
-    this.restaurantId = this._options.restaurantId ?? randomUUID();
-    this.name = this._options.name ?? "";
-    this.phone = this._options.phone ?? "";
-    this.address = this._options.address ?? "";
-    this.currentReserves = this._options.currentReserves ?? [];
+  public constructor(public readonly options: RestaurantConstrParams) {
+    this.restaurantId = this.options.restaurantId ?? randomUUID();
+    this.name = this.options.name ?? "";
+    this.phone = this.options.phone ?? "";
+    this.address = this.options.address ?? "";
+    this.currentReserves = this.options.currentReserves;
   }
 
   public static fromJSON(jsonObj: RestaurantJSON): Restaurant {
@@ -50,7 +50,7 @@ export class Restaurant {
       name: this.name,
       phone: this.phone,
       address: this.address,
-      currentReserves: this.currentReserves.map((rs) => rs.toJSON()),
+      currentReserves: this.currentReserves?.map((rs) => rs.toJSON()),
     };
   }
 }

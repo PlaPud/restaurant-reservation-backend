@@ -2,37 +2,12 @@ import { faker } from "@faker-js/faker";
 import { Reservation } from "../domain/Reservation";
 import { Restaurant } from "../domain/Restaurant";
 import { EntityNotFoundError } from "../errors/DomainError";
-import { NotFoundError } from "../errors/HttpError";
+import { BadRequestError, NotFoundError } from "../errors/HttpError";
 import { DataIntegrityError, RepositoryError } from "../errors/RepositoryError";
 import { IReserveRepository } from "./interfaces/IReserveRepository";
 
 export class InMemoryReserveRepository implements IReserveRepository {
-  private readonly _reserves: Reservation[] = [
-    new Reservation({
-      restaurantId: "1",
-      seats: 3,
-      reserveDate: Date.now().toString(),
-    }),
-    new Reservation({
-      restaurantId: "1",
-      seats: 6,
-      reserveDate: Date.now().toString(),
-      isPayed: true,
-    }),
-    new Reservation({
-      restaurantId: "1",
-      seats: 4,
-      reserveDate: Date.now().toString(),
-      isPayed: true,
-      isAttended: true,
-    }),
-    new Reservation({
-      restaurantId: "1",
-      seats: 7,
-      reserveDate: Date.now().toString(),
-      isPayed: true,
-    }),
-  ];
+  private readonly _reserves: Reservation[] = [];
   private readonly _restaurants: Restaurant[] = [
     new Restaurant({
       restaurantId: "1",
@@ -59,7 +34,8 @@ export class InMemoryReserveRepository implements IReserveRepository {
   public async find(id: string): Promise<Reservation | null> {
     const result: Reservation | undefined = this._findById(id);
 
-    if (!result) throw new EntityNotFoundError();
+    if (!result)
+      throw new EntityNotFoundError(`Cannot Find Reservation (ID: ${id})`);
 
     return result;
   }
@@ -73,8 +49,8 @@ export class InMemoryReserveRepository implements IReserveRepository {
 
     if (!restaurant) throw new EntityNotFoundError();
 
-    const result: Reservation[] = restaurant.currentReserves.filter(
-      (r) => r.isPayed!
+    const result: Reservation[] = restaurant.currentReserves!.filter(
+      (r) => !r.isPayed
     );
 
     if (!result) throw new DataIntegrityError();
@@ -91,7 +67,7 @@ export class InMemoryReserveRepository implements IReserveRepository {
 
     if (!restaurant) throw new EntityNotFoundError();
 
-    const result: Reservation[] = restaurant?.currentReserves.filter(
+    const result: Reservation[] = restaurant.currentReserves!.filter(
       (r) => r.isPayed
     );
 
@@ -109,7 +85,9 @@ export class InMemoryReserveRepository implements IReserveRepository {
 
     if (!restaurant) throw new EntityNotFoundError();
 
-    const result: Reservation[] = this._reserves.filter((r) => r.isAttended);
+    const result: Reservation[] = restaurant.currentReserves!.filter(
+      (r) => r.isAttended
+    );
 
     if (!result) throw new DataIntegrityError();
 
@@ -125,7 +103,17 @@ export class InMemoryReserveRepository implements IReserveRepository {
   }
 
   public async save(reservation: Reservation): Promise<Reservation | null> {
+    const restaurant = this._restaurants.find(
+      (rs) => rs.restaurantId === reservation.restaurantId
+    );
+
+    if (!restaurant)
+      throw new BadRequestError(
+        `Cannot Create Reservation : Restaurant ID=${reservation.restaurantId} Not Found`
+      );
+
     try {
+      reservation.restaurant = restaurant;
       this._reserves.push(reservation);
       return reservation;
     } catch (e) {
@@ -188,6 +176,9 @@ export class InMemoryReserveRepository implements IReserveRepository {
     if (!indexFound(idx)) throw new NotFoundError();
 
     this._reserves[idx] = data;
+
+    // if reservation has customerId don't forget to populate the data
+
     return data;
   }
 

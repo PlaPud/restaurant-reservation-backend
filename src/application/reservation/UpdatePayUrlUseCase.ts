@@ -16,14 +16,8 @@ export class UpdatePayUrlUseCase
   public constructor(private readonly _repository: IReserveRepository) {}
 
   public async execute(input: IUpdatePayUrlDto): Promise<IUpdatePayUrlResult> {
-    const target = await this._repository.find(input.reserveId);
-
-    if (!target) throw new InternalServerError();
-
-    if (target.payImgUrl) return target.toJSON();
-
     const result = await this._repository.updatePaymentUrl(
-      target.reserveId,
+      input.reserveId,
       input.payImgUrl
     );
 
