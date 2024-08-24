@@ -79,12 +79,12 @@ describe("UpdateRestaurantUseCase", () => {
     };
 
     mockRestaurantRepo.update.mockResolvedValue(
-      new Restaurant(
-        userInput.restaurantId,
-        userInput.data.name,
-        userInput.data.phone,
-        userInput.data.address
-      )
+      new Restaurant({
+        restaurantId: userInput.restaurantId,
+        name: userInput.data.name,
+        phone: userInput.data.phone,
+        address: userInput.data.address,
+      })
     );
 
     const result: IUpdateRestaurantResult = await sut.execute(userInput);

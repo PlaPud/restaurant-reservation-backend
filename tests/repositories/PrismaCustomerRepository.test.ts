@@ -1,7 +1,8 @@
+import { faker } from "@faker-js/faker";
 import { PrismaClient } from "@prisma/client";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { randomUUID } from "crypto";
-import { Container, id } from "inversify";
+import { Container } from "inversify";
 import "reflect-metadata";
 import { ICreateCustomerDto } from "../../src/application/customer/CreateCustomerUseCase";
 import { IUpdateCustomerDto } from "../../src/application/customer/UpdateCustomerUseCase";
@@ -12,14 +13,14 @@ import { RepositoryError } from "../../src/errors/RepositoryError";
 import { PrismaCustomerRepository } from "../../src/infrastructure/PrismaCustomerRepository";
 import { ICustomerRepository } from "../../src/infrastructure/interfaces/ICustomerRepository";
 import { CUSTOMER_T } from "../../src/shared/inversify/customer.types";
+import { TYPES } from "../../src/shared/inversify/types";
 import {
   Context,
   createMockContext,
   MockContext,
 } from "../infrastructure/context";
-import { prismaMock } from "../infrastructure/mockSingleton";
 import { getMockedUUIDString } from "../shared/mockUUID";
-import { TYPES } from "../../src/shared/inversify/types";
+import { getMockCustomer } from "../shared/mockInstances";
 
 let mockCtx: MockContext;
 let ctx: Context;
@@ -52,24 +53,22 @@ const setUp = () => {
   );
 };
 
+const clearDown = () => {
+  testContainer.unbindAll();
+  idCount = 0;
+};
+
 describe("[CREATE] PrimaCustomerRepository", () => {
   beforeEach(() => {
     setUp();
   });
 
   afterEach(() => {
-    testContainer.unbindAll();
-    idCount = 0;
+    clearDown();
   });
 
   it("Should call save and return true as result.", async () => {
-    const customerData = new Customer(
-      undefined,
-      "John",
-      "Doe",
-      "john.d@mail.com",
-      "1234"
-    );
+    const customerData: Customer = getMockCustomer();
 
     mockCtx.prisma.customer.create.mockResolvedValue(customerData.toJSON());
 
@@ -79,13 +78,7 @@ describe("[CREATE] PrimaCustomerRepository", () => {
   });
 
   it("Should throw repository error if it's a prisma error.", async () => {
-    const customerData = new Customer(
-      undefined,
-      "John",
-      "Doe",
-      "john.d@mail.com",
-      "1234"
-    );
+    const customerData: Customer = getMockCustomer();
 
     mockCtx.prisma.customer.create.mockRejectedValue(
       new PrismaClientKnownRequestError("Mock Error", {
@@ -102,13 +95,7 @@ describe("[CREATE] PrimaCustomerRepository", () => {
   });
 
   it("Should throw internal server error if it's not prisma error", async () => {
-    const customerData = new Customer(
-      undefined,
-      "John",
-      "Doe",
-      "john.d@mail.com",
-      "1234"
-    );
+    const customerData = getMockCustomer();
 
     mockCtx.prisma.customer.create.mockRejectedValue(new Error());
 
@@ -126,18 +113,11 @@ describe("[GET] PrismaCustomerRepository", () => {
   });
 
   afterEach(() => {
-    testContainer.unbindAll();
-    idCount = 0;
+    clearDown();
   });
 
   it("Should return correct customer data by customerID ", async () => {
-    const customerData = new Customer(
-      undefined,
-      "John",
-      "Doe",
-      "john.d@mail.com",
-      "1234"
-    );
+    const customerData: Customer = getMockCustomer();
 
     mockCtx.prisma.customer.findUnique.mockResolvedValue(customerData.toJSON());
 
@@ -147,17 +127,11 @@ describe("[GET] PrismaCustomerRepository", () => {
       where: { customerId: getMockedUUIDString(idCount - 1) },
       include: { reservations: true },
     });
-    expect(result).toEqual(customerData);
+    expect(result.toJSON()).toStrictEqual(customerData.toJSON());
   });
 
   it("Should return all exists customer array", async () => {
-    const customerData = new Customer(
-      undefined,
-      "John",
-      "Doe",
-      "john.d@mail.com",
-      "1234"
-    );
+    const customerData: Customer = getMockCustomer();
 
     const customers = [customerData];
 
@@ -168,7 +142,7 @@ describe("[GET] PrismaCustomerRepository", () => {
     const result = await sut.findAll();
 
     expect(result.length).toBe(1);
-    expect(result[0]).toEqual(customerData);
+    expect(result[0].toJSON()).toEqual(customerData.toJSON());
   });
 
   it("Should throw entity not found error for invalid ID", async () => {
@@ -199,13 +173,7 @@ describe("[UPDATE] PrismaCustomerRepository", () => {
   });
 
   it("Should return updated customer data successfully by customerID", async () => {
-    const customerData = new Customer(
-      undefined,
-      "John",
-      "Doe",
-      "jane.d@mail.com",
-      "1234"
-    );
+    const customerData: Customer = getMockCustomer();
 
     const updateDto = {
       customerId: getMockedUUIDString(idCount),
@@ -217,13 +185,13 @@ describe("[UPDATE] PrismaCustomerRepository", () => {
       } as ICreateCustomerDto,
     } as IUpdateCustomerDto;
 
-    const updatedData = new Customer(
-      updateDto.customerId,
-      updateDto.data.fName,
-      updateDto.data.lName,
-      updateDto.data.email,
-      updateDto.data.phone
-    );
+    const updatedData = new Customer({
+      customerId: updateDto.customerId,
+      fName: updateDto.data.fName,
+      lName: updateDto.data.lName,
+      email: updateDto.data.email,
+      phone: updateDto.data.phone,
+    });
 
     mockCtx.prisma.customer.update.mockResolvedValue(updatedData.toJSON());
 
@@ -249,7 +217,7 @@ describe("[UPDATE] PrismaCustomerRepository", () => {
     });
 
     try {
-      await sut.update("1", new Customer(undefined, "", "", "", ""));
+      await sut.update("1", getMockCustomer());
     } catch (err) {
       expect(err).toBeInstanceOf(EntityNotFoundError);
     }
@@ -261,7 +229,7 @@ describe("[UPDATE] PrismaCustomerRepository", () => {
     });
 
     try {
-      await sut.update("1", new Customer(undefined, "", "", "", ""));
+      await sut.update("1", getMockCustomer());
     } catch (err) {
       expect(err).toBeInstanceOf(InternalServerError);
     }
@@ -276,7 +244,7 @@ describe("[UPDATE] PrismaCustomerRepository", () => {
     });
 
     try {
-      await sut.update("1", new Customer(undefined, "", "", "", ""));
+      await sut.update("1", getMockCustomer());
     } catch (err) {
       expect(err).toBeInstanceOf(RepositoryError);
     }
@@ -294,13 +262,7 @@ describe("[DELETE] PrismaCustomerRepository", () => {
   });
 
   it("Should return true if prisma delete the data successful.", async () => {
-    const existedData = new Customer(
-      undefined,
-      "John",
-      "Doe",
-      "john.d@mail.com",
-      "1234"
-    );
+    const existedData = getMockCustomer();
 
     mockCtx.prisma.customer.delete.mockResolvedValue(existedData);
 

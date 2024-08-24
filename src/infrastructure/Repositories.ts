@@ -3,18 +3,28 @@ import { InMemoryCustomerRepository } from "./InMemoryCustomerRepository";
 import { PrismaCustomerRepository } from "./PrismaCustomerRepository";
 import { InMemoryRestaurantRepository } from "./InMemoryRestaurantRepository";
 import { PrismaRestaurantRepository } from "./PrismaRestaurantRepository";
+import { InMemoryReserveRepository } from "./InMemoryReserveRepository";
+import { PrismaReservationRepository } from "./PrismaReservationRepository";
 
 export class Repositories {
   public readonly inMemoryCustomerRepo: InMemoryCustomerRepository;
-  public readonly prismaCustomerRepo: PrismaCustomerRepository;
   public readonly inMemoryRestaurantRepo: InMemoryRestaurantRepository;
+  public readonly inMemoryReserveRepo: InMemoryReserveRepository;
+
+  public readonly prismaCustomerRepo: PrismaCustomerRepository;
   public readonly prismaRestaurantRepo: PrismaRestaurantRepository;
+  public readonly prismaReservationRepo: PrismaReservationRepository;
 
   public constructor(private readonly _prismaClient: PrismaClient) {
     this.inMemoryCustomerRepo = new InMemoryCustomerRepository();
     this.inMemoryRestaurantRepo = new InMemoryRestaurantRepository();
+    this.inMemoryReserveRepo = new InMemoryReserveRepository();
+
     this.prismaCustomerRepo = new PrismaCustomerRepository(this._prismaClient);
     this.prismaRestaurantRepo = new PrismaRestaurantRepository(
+      this._prismaClient
+    );
+    this.prismaReservationRepo = new PrismaReservationRepository(
       this._prismaClient
     );
   }

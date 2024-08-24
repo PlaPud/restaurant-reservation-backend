@@ -34,12 +34,11 @@ export class CreateRestaurantUseCase implements ICreateRestaurantUseCase {
   public async execute(
     input: ICreateRestaurantDto
   ): Promise<ICreateRestaurantResult> {
-    const newRestaurant = new Restaurant(
-      undefined,
-      input.name,
-      input.phone,
-      input.address
-    );
+    const newRestaurant = new Restaurant({
+      name: input.name,
+      phone: input.phone,
+      address: input.address,
+    });
 
     const result = await this._repository.save(newRestaurant);
 

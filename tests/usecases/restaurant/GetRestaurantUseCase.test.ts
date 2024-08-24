@@ -84,7 +84,7 @@ describe("GetRestaurantUseCase", () => {
 
     expect(result.restaurantId).toEqual(latestId());
 
-    expect(result).toEqual(expect.objectContaining(existedData));
+    expect(result).toEqual(expect.objectContaining(existedData.toJSON()));
   });
 
   it("Should throw internal server error if result from repo is null", async () => {

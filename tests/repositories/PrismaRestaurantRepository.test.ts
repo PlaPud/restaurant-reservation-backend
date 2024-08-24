@@ -72,7 +72,7 @@ describe("[CREATE] PrismaRestaurantRepository", () => {
 
     const result = await sut.save(newRest);
 
-    expect(result).toEqual(newRest);
+    expect(result?.toJSON()).toStrictEqual(newRest.toJSON());
   });
 
   it("Should throw repository error if it's a prisma error", async () => {
@@ -122,7 +122,7 @@ describe("[GET] PrismaRestaurantRepository", () => {
 
     const result = await sut.find(latestId());
 
-    expect(result).toEqual(restData);
+    expect(result?.toJSON()).toEqual(restData.toJSON());
   });
 
   it("Should return all exists customer array successfully", async () => {
@@ -138,7 +138,7 @@ describe("[GET] PrismaRestaurantRepository", () => {
 
     expect(result.length).toBe(restaurants.length);
     expect(result[0]).toBeInstanceOf(Restaurant);
-    expect(result[0]).toStrictEqual(restData1);
+    expect(result[0].toJSON()).toStrictEqual(restData1.toJSON());
   });
 
   it("Should throw entity not found error for prisma result being null (Invalid Id)", async () => {
@@ -172,12 +172,12 @@ describe("[UPDATE] PrismaRestaurantRepository", () => {
   it("Should return updated restaurant data from prisma by restaurantId", async () => {
     const restData = getMockRestaurant();
 
-    const updatedData = new Restaurant(
-      restData.restaurantId,
-      "NewName",
-      restData.phone,
-      restData.address
-    );
+    const updatedData = new Restaurant({
+      restaurantId: restData.restaurantId,
+      name: "NewName",
+      phone: restData.phone,
+      address: restData.address,
+    });
 
     const { restaurantId, name, phone, address } = updatedData;
 
