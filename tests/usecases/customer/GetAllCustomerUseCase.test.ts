@@ -72,6 +72,6 @@ describe("GetAllCustomerUseCase", () => {
 
     expect(result.data).not.toBeNull();
 
-    expect(result.data[0]).toEqual(createdCustomer.toObject());
+    expect(result.data[0]).toEqual(createdCustomer.toJSONResponse());
   });
 });

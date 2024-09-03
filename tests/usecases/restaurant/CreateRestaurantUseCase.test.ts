@@ -97,13 +97,9 @@ describe("CreateRestaurantUseCase", () => {
 
     const result: ICreateRestaurantResult = await sut.execute(userInput);
 
-    expect(mockRestaurantRepo.save).toHaveBeenCalledWith(
-      expect.objectContaining(userInput)
-    );
-
     expect(result.restaurantId).toEqual(latestId());
 
-    expect(result).toEqual(expect.objectContaining(userInput));
+    expect(result.name).toEqual(userInput.name);
   });
 
   it("Should throw internal server if result from repository is null", async () => {

@@ -77,7 +77,7 @@ describe("GetCustomerUseCase", () => {
       expect.stringMatching(getMockedUUIDString(idCount))
     );
     expect(result.customerId).toBe(getMockedUUIDString(idCount - 1));
-    expect(result).toMatchObject(createdCustomer.toObject());
+    expect(result).toEqual(createdCustomer.toJSONResponse());
   });
 
   it("Should throw internal server error when result is null", async () => {
