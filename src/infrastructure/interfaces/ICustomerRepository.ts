@@ -5,6 +5,8 @@ export interface ICustomerRepository {
 
   findAll(): Promise<Customer[] | null>;
 
+  findByEmail(email: string): Promise<Customer | null>;
+
   update(id: string, data: Customer): Promise<Customer | null>;
 
   save(customer: Customer): Promise<boolean>;

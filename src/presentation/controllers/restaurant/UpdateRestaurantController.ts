@@ -19,7 +19,7 @@ export class UpdateRestaurantController {
       if (!req.query.restaurantId || !req.body.data)
         throw new BadRequestError();
 
-      const { name, phone, address } = req.body.data;
+      const { name, phone, address, email, password } = req.body.data;
 
       const userInput: IUpdateRestaurantDto = {
         restaurantId: req.query.restaurantId as string,
@@ -27,12 +27,14 @@ export class UpdateRestaurantController {
           name,
           phone,
           address,
+          email,
+          password,
         },
       };
 
       const { error, value } = restaurantSchema.validate(userInput.data);
 
-      if (error) throw new BadRequestError();
+      if (error) throw new BadRequestError(error.message);
 
       const result = await this._useCase.execute(userInput);
 
@@ -41,10 +43,12 @@ export class UpdateRestaurantController {
         name: result.name,
         phone: result.phone,
         address: result.address,
+        email: result.email,
       };
 
       res.status(StatusCode.OK).send(response);
     } catch (err) {
+      console.log(err);
       sendErrorResponse(res, err);
     }
   }

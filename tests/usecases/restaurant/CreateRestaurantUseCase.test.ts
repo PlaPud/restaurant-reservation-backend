@@ -14,6 +14,11 @@ import { getMockedUUIDString } from "../../shared/mockUUID";
 import { faker } from "@faker-js/faker";
 import { Restaurant } from "../../../src/domain/Restaurant";
 import { InternalServerError } from "../../../src/errors/HttpError";
+import { hash } from "bcrypt";
+
+jest.mock("bcrypt", () => ({
+  hash: jest.fn(),
+}));
 
 let mockRestaurantRepo: jest.Mocked<IRestaurantRepository>;
 let testContainer: Container;
@@ -27,6 +32,7 @@ const setUp = () => {
   mockRestaurantRepo = {
     find: jest.fn(),
     findAll: jest.fn(),
+    findByEmail: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
@@ -47,7 +53,9 @@ const setUp = () => {
     .to(CreateRestaurantUseCase);
 
   (randomUUID as jest.Mock).mockReturnValue(getMockedUUIDString(idCount++));
-
+  (hash as jest.Mock).mockImplementation(async (data: string, saltOrRounds) => {
+    return data;
+  });
   sut = testContainer.get<
     IUseCase<ICreateRestaurantDto, ICreateRestaurantResult>
   >(RESTAURANT_T.CreateRestaurantUseCase);
@@ -72,6 +80,8 @@ describe("CreateRestaurantUseCase", () => {
       name: faker.company.name(),
       phone: faker.phone.number(),
       address: faker.location.streetAddress(),
+      email: faker.internet.email(),
+      password: faker.string.alphanumeric({ length: 32 }),
     };
 
     mockRestaurantRepo.save.mockImplementation(async (rs: Restaurant) => {
@@ -79,6 +89,9 @@ describe("CreateRestaurantUseCase", () => {
         name: rs.name,
         phone: rs.phone,
         address: rs.address,
+        email: rs.email,
+        hashPassword: rs.hashPassword,
+        isVerified: rs.isVerified,
       });
     });
 
@@ -98,6 +111,8 @@ describe("CreateRestaurantUseCase", () => {
       name: faker.company.name(),
       phone: faker.phone.number(),
       address: faker.location.streetAddress(),
+      email: faker.internet.email(),
+      password: faker.string.alphanumeric({ length: 32 }),
     };
 
     mockRestaurantRepo.save.mockImplementation(async (rs: Restaurant) => {

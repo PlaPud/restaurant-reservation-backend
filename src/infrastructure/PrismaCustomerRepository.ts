@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
-import { Customer } from "../domain/Customer";
+import { Customer, CustomerObj } from "../domain/Customer";
 import { EntityNotFoundError } from "../errors/DomainError";
 import { InternalServerError } from "../errors/HttpError";
 import { RepositoryError } from "../errors/RepositoryError";
@@ -14,6 +14,20 @@ export class PrismaCustomerRepository implements ICustomerRepository {
     @inject(TYPES.PrismaClient)
     private readonly _client: PrismaClient
   ) {}
+
+  public async findByEmail(email: string): Promise<Customer | null> {
+    const result = await this._client.customer.findUnique({
+      where: { email },
+      include: {
+        reservations: true,
+      },
+    });
+
+    if (!result)
+      throw new EntityNotFoundError(`Cannot Find Customer (Email: ${email})`);
+
+    return Customer.fromJSON(result);
+  }
 
   public async find(id: string): Promise<Customer> {
     const result = await this._client.customer.findUnique({
@@ -41,13 +55,15 @@ export class PrismaCustomerRepository implements ICustomerRepository {
 
   public async save(customer: Customer): Promise<boolean> {
     try {
-      const { fName, lName, email, phone } = customer.toJSON();
+      const { fName, lName, email, phone, hashPassword } =
+        customer.toObject() as CustomerObj;
       const result = await this._client.customer.create({
         data: {
           fName: fName,
           lName: lName,
           email: email,
           phone: phone,
+          hashPassword: hashPassword,
         },
       });
       return true;
@@ -59,7 +75,8 @@ export class PrismaCustomerRepository implements ICustomerRepository {
   }
   public async update(id: string, data: Customer): Promise<Customer> {
     try {
-      const { fName, lName, email, phone } = data.toJSON();
+      const { fName, lName, email, phone, hashPassword } =
+        data.toObject() as CustomerObj;
       const result = await this._client.customer.update({
         where: { customerId: id },
         data: {
@@ -67,6 +84,7 @@ export class PrismaCustomerRepository implements ICustomerRepository {
           lName,
           email,
           phone,
+          hashPassword,
         },
         include: { reservations: true },
       });

@@ -1,5 +1,5 @@
-import { Reservation, ReservationJSON } from "../../domain/Reservation";
-import { RestaurantJSON } from "../../domain/Restaurant";
+import { Reservation, ReservationObj } from "../../domain/Reservation";
+import { RestaurantObj } from "../../domain/Restaurant";
 import { InternalServerError } from "../../errors/HttpError";
 import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepository";
 import { IUseCase } from "../../shared/IUseCase";
@@ -8,7 +8,7 @@ export interface IGetReserveDto {
   reserveId: string;
 }
 
-export interface IGetReserveResult extends ReservationJSON {}
+export interface IGetReserveResult extends ReservationObj {}
 
 export class GetReserveUseCase
   implements IUseCase<IGetReserveDto, IGetReserveResult>
@@ -20,7 +20,7 @@ export class GetReserveUseCase
 
     if (!result) throw new InternalServerError();
 
-    const body: IGetReserveResult = result.toJSON();
+    const body: IGetReserveResult = result.toObject();
 
     return body;
   }

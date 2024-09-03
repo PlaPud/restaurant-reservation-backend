@@ -25,6 +25,7 @@ const setUp = () => {
   mockRestaurantRepo = {
     find: jest.fn(),
     findAll: jest.fn(),
+    findByEmail: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
@@ -84,7 +85,7 @@ describe("GetRestaurantUseCase", () => {
 
     expect(result.restaurantId).toEqual(latestId());
 
-    expect(result).toEqual(expect.objectContaining(existedData.toJSON()));
+    expect(result).toEqual(expect.objectContaining(existedData.toObject()));
   });
 
   it("Should throw internal server error if result from repo is null", async () => {

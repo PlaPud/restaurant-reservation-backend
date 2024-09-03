@@ -1,4 +1,4 @@
-import { Reservation, ReservationJSON } from "../../domain/Reservation";
+import { Reservation, ReservationObj } from "../../domain/Reservation";
 import { InternalServerError } from "../../errors/HttpError";
 import { BusinessRuleViolationError } from "../../errors/UseCaseError";
 import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepository";
@@ -9,7 +9,7 @@ export interface IUpdatePayedDto {
   isPayed: boolean;
 }
 
-export interface IUpdatePayedResult extends ReservationJSON {}
+export interface IUpdatePayedResult extends ReservationObj {}
 
 export class UpdatePayedUseCase
   implements IUseCase<IUpdatePayedDto, IUpdatePayedResult>
@@ -24,7 +24,7 @@ export class UpdatePayedUseCase
 
     if (!result) throw new InternalServerError();
 
-    const body: IUpdatePayedResult = result.toJSON();
+    const body: IUpdatePayedResult = result.toObject();
 
     return body;
   }

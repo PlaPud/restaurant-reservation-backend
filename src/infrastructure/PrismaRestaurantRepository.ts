@@ -29,6 +29,21 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
 
     return Restaurant.fromJSON(result);
   }
+
+  public async findByEmail(email: string): Promise<Restaurant | null> {
+    const result = await this._client.restaurant.findUnique({
+      where: { email },
+      include: {
+        currentReserves: true,
+      },
+    });
+
+    if (!result)
+      throw new EntityNotFoundError(`Cannot Find Restaurant (Email: ${email})`);
+
+    return Restaurant.fromJSON(result);
+  }
+
   public async findAll(): Promise<Restaurant[]> {
     const results = await this._client.restaurant.findMany({
       include: {
@@ -41,12 +56,15 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
 
   public async save(restaurant: Restaurant): Promise<Restaurant | null> {
     try {
-      const { name, phone, address } = restaurant.toJSON();
+      const { name, phone, address, email, hashPassword } =
+        restaurant.toObject();
       const result = await this._client.restaurant.create({
         data: {
           name,
           phone,
           address,
+          email,
+          hashPassword,
         },
         include: {
           currentReserves: true,
@@ -62,7 +80,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
     data: Restaurant
   ): Promise<Restaurant | null> {
     try {
-      const { name, phone, address } = data.toJSON();
+      const { name, phone, address } = data.toObject();
       const result = await this._client.restaurant.update({
         where: { restaurantId: id },
         data: {

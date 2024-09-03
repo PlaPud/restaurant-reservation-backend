@@ -14,8 +14,14 @@ import { Customer } from "../../../src/domain/Customer";
 import { BadRequestError } from "../../../src/errors/HttpError";
 import { getMockCustomer } from "../../shared/mockInstances";
 
+import { hash } from "bcrypt";
+
 jest.mock("crypto", () => ({
   randomUUID: jest.fn(),
+}));
+
+jest.mock("bcrypt", () => ({
+  hash: jest.fn(),
 }));
 
 const getMockedUUIDString = (n: number) => `${n}-${n}-${n}-${n}-${n}`;
@@ -31,6 +37,7 @@ describe("UpdateCustomerUseCase", () => {
     mockedCustomerRepo = {
       find: jest.fn(),
       findAll: jest.fn(),
+      findByEmail: jest.fn(),
       save: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -58,6 +65,12 @@ describe("UpdateCustomerUseCase", () => {
       idCount++;
       return mockedUUID;
     });
+
+    (hash as jest.Mock).mockImplementation(
+      async (data: string, saltOrRounds) => {
+        return data;
+      }
+    );
   });
 
   afterEach(() => {
@@ -74,6 +87,7 @@ describe("UpdateCustomerUseCase", () => {
         lName: customer.lName,
         email: customer.email,
         phone: customer.phone,
+        password: customer.hashPassword,
       },
     };
 
@@ -86,6 +100,7 @@ describe("UpdateCustomerUseCase", () => {
           email: data.email,
           phone: data.phone,
           reservations: data.reservations,
+          hashPassword: data.hashPassword,
         });
       }
     );
@@ -105,6 +120,7 @@ describe("UpdateCustomerUseCase", () => {
         lName: customer.lName,
         email: customer.email,
         phone: customer.phone,
+        password: customer.hashPassword,
       },
     };
 

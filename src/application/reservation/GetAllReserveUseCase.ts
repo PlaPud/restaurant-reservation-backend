@@ -1,10 +1,10 @@
-import { Reservation, ReservationJSON } from "../../domain/Reservation";
+import { Reservation, ReservationObj } from "../../domain/Reservation";
 import { InternalServerError } from "../../errors/HttpError";
 import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepository";
 import { IUseCase } from "../../shared/IUseCase";
 
 export interface IGetAllReserveResult {
-  data: ReservationJSON[];
+  data: ReservationObj[];
 }
 
 export class GetAllReserveUseCase
@@ -18,7 +18,7 @@ export class GetAllReserveUseCase
     if (!result) throw new InternalServerError();
 
     const body: IGetAllReserveResult = {
-      data: result.map((r) => r.toJSON()),
+      data: result.map((r) => r.toObject()),
     };
 
     return body;

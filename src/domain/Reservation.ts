@@ -1,8 +1,12 @@
 import { randomUUID } from "crypto";
-import { Customer, CustomerJSON } from "./Customer";
-import { Restaurant, RestaurantJSON } from "./Restaurant";
+import { Customer, CustomerJSONResponse, CustomerObj } from "./Customer";
+import {
+  Restaurant,
+  RestaurantJSONResponse,
+  RestaurantObj,
+} from "./Restaurant";
 
-export interface ReservationJSON {
+export interface ReservationObj {
   reserveId: string;
   customerId: string | null;
   restaurantId: string;
@@ -12,8 +16,22 @@ export interface ReservationJSON {
   payImgUrl: string | null;
   isPayed: boolean;
   isAttended: boolean;
-  customer?: CustomerJSON | null;
-  restaurant?: RestaurantJSON;
+  customer?: CustomerObj | null;
+  restaurant?: RestaurantObj;
+}
+
+export interface ReservationJSONResponse {
+  reserveId: string;
+  customerId: string | null;
+  restaurantId: string;
+  lastModified: string | null;
+  seats: number;
+  reserveDate: string;
+  payImgUrl: string | null;
+  isPayed: boolean;
+  isAttended: boolean;
+  customer?: CustomerJSONResponse | null;
+  restaurant?: RestaurantJSONResponse;
 }
 
 export type ReserveConstrParams = {
@@ -58,7 +76,7 @@ export class Reservation {
     this.restaurant = this.options.restaurant;
   }
 
-  public static fromJSON(jsonObj: ReservationJSON): Reservation {
+  public static fromJSON(jsonObj: ReservationObj): Reservation {
     return new Reservation({
       reserveId: jsonObj.reserveId,
       customerId: jsonObj.customerId,
@@ -78,7 +96,7 @@ export class Reservation {
     });
   }
 
-  public toJSON(): ReservationJSON {
+  public toObject(): ReservationObj {
     return {
       reserveId: this.reserveId,
       customerId: this.customerId,
@@ -89,8 +107,20 @@ export class Reservation {
       payImgUrl: this.payImgUrl,
       isPayed: this.isPayed,
       isAttended: this.isAttended,
-      customer: this.customer ? this.customer.toJSON() : undefined,
-      restaurant: this.restaurant ? this.restaurant.toJSON() : undefined,
+      customer: this.customer ? this.customer.toObject() : undefined,
+      restaurant: this.restaurant ? this.restaurant.toObject() : undefined,
+    };
+  }
+
+  public toJSONResponse(): ReservationJSONResponse {
+    const { customer, restaurant, ...rest } = this.toObject();
+
+    return {
+      ...rest,
+      customer: this.customer ? this.customer.toJSONResponse() : undefined,
+      restaurant: this.restaurant
+        ? this.restaurant.toJSONResponse()
+        : undefined,
     };
   }
 }

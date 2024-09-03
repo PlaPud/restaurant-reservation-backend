@@ -1,6 +1,10 @@
-import { CustomerJSON } from "../../domain/Customer";
-import { Reservation, ReservationJSON } from "../../domain/Reservation";
-import { RestaurantJSON } from "../../domain/Restaurant";
+import { CustomerObj } from "../../domain/Customer";
+import {
+  Reservation,
+  ReservationJSONResponse,
+  ReservationObj,
+} from "../../domain/Reservation";
+import { RestaurantObj } from "../../domain/Restaurant";
 import { InternalServerError } from "../../errors/HttpError";
 import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepository";
 import { IUseCase } from "../../shared/IUseCase";
@@ -18,7 +22,7 @@ export interface IUpdateReserveDto {
   };
 }
 
-export interface IUpdateReserveResult extends ReservationJSON {}
+export interface IUpdateReserveResult extends ReservationJSONResponse {}
 
 export class UpdateReserveUseCase
   implements IUseCase<IUpdateReserveDto, IUpdateReserveResult>
@@ -43,7 +47,7 @@ export class UpdateReserveUseCase
 
     if (!result) throw new InternalServerError();
 
-    const body: IUpdateReserveResult = result.toJSON();
+    const body: IUpdateReserveResult = result.toJSONResponse();
 
     return body;
   }

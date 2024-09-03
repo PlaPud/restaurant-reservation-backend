@@ -68,11 +68,11 @@ describe("[CREATE] PrismaRestaurantRepository", () => {
   it("Should call save and return data as result", async () => {
     const newRest = getMockRestaurant();
 
-    mockCtx.prisma.restaurant.create.mockResolvedValue(newRest.toJSON());
+    mockCtx.prisma.restaurant.create.mockResolvedValue(newRest.toObject());
 
     const result = await sut.save(newRest);
 
-    expect(result?.toJSON()).toStrictEqual(newRest.toJSON());
+    expect(result?.toObject()).toStrictEqual(newRest.toObject());
   });
 
   it("Should throw repository error if it's a prisma error", async () => {
@@ -118,11 +118,11 @@ describe("[GET] PrismaRestaurantRepository", () => {
   it("Should return correct restaurant data by restaurantId", async () => {
     const restData = getMockRestaurant();
 
-    mockCtx.prisma.restaurant.findUnique.mockResolvedValue(restData.toJSON());
+    mockCtx.prisma.restaurant.findUnique.mockResolvedValue(restData.toObject());
 
     const result = await sut.find(latestId());
 
-    expect(result?.toJSON()).toEqual(restData.toJSON());
+    expect(result?.toObject()).toEqual(restData.toObject());
   });
 
   it("Should return all exists customer array successfully", async () => {
@@ -131,14 +131,14 @@ describe("[GET] PrismaRestaurantRepository", () => {
     const restaurants = [restData1];
 
     mockCtx.prisma.restaurant.findMany.mockResolvedValue(
-      restaurants.map((r) => r.toJSON())
+      restaurants.map((r) => r.toObject())
     );
 
     const result = await sut.findAll();
 
     expect(result.length).toBe(restaurants.length);
     expect(result[0]).toBeInstanceOf(Restaurant);
-    expect(result[0].toJSON()).toStrictEqual(restData1.toJSON());
+    expect(result[0].toObject()).toStrictEqual(restData1.toObject());
   });
 
   it("Should throw entity not found error for prisma result being null (Invalid Id)", async () => {
@@ -177,15 +177,29 @@ describe("[UPDATE] PrismaRestaurantRepository", () => {
       name: "NewName",
       phone: restData.phone,
       address: restData.address,
+      email: restData.email,
+      hashPassword: restData.hashPassword,
+      isVerified: restData.isVerified,
     });
 
-    const { restaurantId, name, phone, address } = updatedData;
+    const {
+      restaurantId,
+      name,
+      phone,
+      address,
+      email,
+      hashPassword,
+      isVerified,
+    } = updatedData;
 
     mockCtx.prisma.restaurant.update.mockResolvedValue({
       restaurantId,
       name,
       phone,
       address,
+      email,
+      hashPassword,
+      isVerified,
     });
 
     const result = await sut.update(restaurantId, updatedData);
@@ -247,7 +261,7 @@ describe("[DELETE] PrismaCustomerRepository", () => {
 
   it("Should return true if prisma return deleted data", async () => {
     const existedData = getMockRestaurant();
-    mockCtx.prisma.restaurant.delete.mockResolvedValue(existedData.toJSON());
+    mockCtx.prisma.restaurant.delete.mockResolvedValue(existedData.toObject());
 
     const result = await sut.delete(latestId());
 

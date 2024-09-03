@@ -11,6 +11,15 @@ export class InMemoryCustomerRepository implements ICustomerRepository {
 
   public constructor() {}
 
+  public async findByEmail(email: string): Promise<Customer | null> {
+    const result = this._customers.find((c) => c.email === email) ?? null;
+
+    if (!result)
+      throw new EntityNotFoundError(`Cannot Find Customer (Email: ${email})`);
+
+    return result;
+  }
+
   public async find(id: string): Promise<Customer> {
     const result = this._customers.find((c) => c.customerId === id) ?? null;
 
@@ -41,6 +50,7 @@ export class InMemoryCustomerRepository implements ICustomerRepository {
         lName: data.lName,
         email: data.email,
         phone: data.phone,
+        hashPassword: data.hashPassword,
         reservations: this._customers[idx].reservations,
       });
 

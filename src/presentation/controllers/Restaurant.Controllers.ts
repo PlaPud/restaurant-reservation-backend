@@ -1,4 +1,5 @@
 import { RestaurantUseCases } from "../../application/Restaurant.UseCases";
+import { LoginRestaurantController } from "./authentication/LoginRestaurantController";
 import { CreateRestaurantController } from "./restaurant/CreateRestaurantController";
 import { DeleteAllRestaurantController } from "./restaurant/DeleteAllRestaurantController";
 import { DeleteRestaurantController } from "./restaurant/DeleteRestaurantController";
@@ -14,6 +15,8 @@ export class RestaurantControllers {
   public readonly delete: DeleteRestaurantController;
   public readonly deleteAll: DeleteAllRestaurantController;
 
+  public readonly login: LoginRestaurantController;
+
   constructor(private readonly _useCases: RestaurantUseCases) {
     this.get = new GetRestaurantController(_useCases.get);
     this.getAll = new GetAllRestaurantController(_useCases.getAll);
@@ -21,5 +24,7 @@ export class RestaurantControllers {
     this.update = new UpdateRestaurantController(_useCases.update);
     this.delete = new DeleteRestaurantController(_useCases.delete);
     this.deleteAll = new DeleteAllRestaurantController(_useCases.deleteAll);
+
+    this.login = new LoginRestaurantController(_useCases.login);
   }
 }

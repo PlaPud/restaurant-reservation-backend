@@ -11,9 +11,14 @@ import { BadRequestError } from "../../../src/errors/HttpError";
 import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../../src/shared/IUseCase";
 import { CUSTOMER_T } from "../../../src/shared/inversify/customer.types";
+import { hash } from "bcrypt";
 
 jest.mock("crypto", () => ({
   randomUUID: jest.fn(),
+}));
+
+jest.mock("bcrypt", () => ({
+  hash: jest.fn(),
 }));
 
 const getMockedUUIDString = (n: number) => `${n}-${n}-${n}-${n}-${n}`;
@@ -29,6 +34,7 @@ describe("CreateCustomerUseCase", () => {
     mockedCustomerRepo = {
       find: jest.fn(),
       findAll: jest.fn(),
+      findByEmail: jest.fn(),
       save: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -56,6 +62,12 @@ describe("CreateCustomerUseCase", () => {
       idCount++;
       return mockedUUID;
     });
+
+    (hash as jest.Mock).mockImplementation(
+      async (data: string, saltOrRounds) => {
+        return data;
+      }
+    );
   });
 
   afterEach(() => {
@@ -68,6 +80,7 @@ describe("CreateCustomerUseCase", () => {
       lName: "Doe",
       email: "john.d@mail.com",
       phone: "12345",
+      password: "12345",
     };
 
     mockedCustomerRepo.save.mockResolvedValue(true);
@@ -84,6 +97,7 @@ describe("CreateCustomerUseCase", () => {
       lName: "Doe",
       email: "john.d@mail.com",
       phone: "12345",
+      password: "12345",
     };
 
     mockedCustomerRepo.save.mockResolvedValue(false);

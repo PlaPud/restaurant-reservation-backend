@@ -4,12 +4,14 @@ import {
   GetAllCustomerUseCase,
   IGetAllCustomerResult,
 } from "../../../application/customer/GetAllCustomerUseCase";
-import { CustomerJSON } from "../../../domain/Customer";
+import { CustomerObj, CustomerJSONResponse } from "../../../domain/Customer";
 import { sendErrorResponse } from "../../../shared/sendErrorResponse";
 import { StatusCode } from "../../../shared/enum/StatusCode";
+import { TOKEN_NAME } from "../../../shared/constants";
+import { UnauthorizedActionError } from "../../../errors/UseCaseError";
 
 export class GetAllCustomerDto implements IGetAllCustomerResult {
-  constructor(public readonly data: CustomerJSON[]) {}
+  constructor(public readonly data: CustomerJSONResponse[]) {}
 }
 
 export class GetAllCustomerController {
@@ -17,7 +19,10 @@ export class GetAllCustomerController {
 
   public async handle(req: Request, res: Response) {
     try {
+      if (!req.cookies[TOKEN_NAME]) throw new UnauthorizedActionError();
+
       const result = await this._useCase.execute();
+
       const response: GetAllCustomerDto = new GetAllCustomerDto(result.data);
 
       if (response.data.length <= 0) {
