@@ -7,6 +7,9 @@ import {
 import { IGetCustomerDto } from "../../../application/customer/GetCustomerUseCase";
 import { StatusCode } from "../../../shared/enum/StatusCode";
 import { sendErrorResponse } from "../../../shared/sendErrorResponse";
+import { TOKEN_NAME } from "../../../shared/constants";
+import { UnauthorizedActionError } from "../../../errors/UseCaseError";
+import { BadRequestError } from "../../../errors/HttpError";
 
 export interface GetRestaurantResponseDto extends IGetRestaurantResult {}
 
@@ -15,6 +18,8 @@ export class GetRestaurantController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
+      if (!req.query.restaurantId) throw new BadRequestError();
+
       const { restaurantId } = req.query;
 
       const userInput: IGetRestaurantDto = {

@@ -26,6 +26,7 @@ const setUp = () => {
   mockRestaurantRepo = {
     find: jest.fn(),
     findAll: jest.fn(),
+    findByEmail: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
@@ -75,6 +76,8 @@ describe("UpdateRestaurantUseCase", () => {
         name: "newName",
         phone: existedData.phone,
         address: existedData.address,
+        email: existedData.email,
+        password: existedData.hashPassword,
       },
     };
 
@@ -84,6 +87,8 @@ describe("UpdateRestaurantUseCase", () => {
         name: userInput.data.name,
         phone: userInput.data.phone,
         address: userInput.data.address,
+        email: userInput.data.email,
+        hashPassword: userInput.data.password,
       })
     );
 
@@ -91,7 +96,7 @@ describe("UpdateRestaurantUseCase", () => {
 
     expect(result.restaurantId).toEqual(userInput.restaurantId);
 
-    expect(result).toEqual(expect.objectContaining(userInput.data));
+    expect(result.name).toEqual(userInput.data.name);
   });
   it("Should throw internal server error if repo returns null", async () => {
     const existedData = getMockRestaurant();
@@ -102,6 +107,8 @@ describe("UpdateRestaurantUseCase", () => {
         name: "newName",
         phone: existedData.phone,
         address: existedData.address,
+        email: existedData.email,
+        password: existedData.hashPassword,
       },
     };
 

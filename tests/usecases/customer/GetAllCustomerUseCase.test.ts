@@ -29,6 +29,7 @@ describe("GetAllCustomerUseCase", () => {
     mockedCustomerRepo = {
       find: jest.fn(),
       findAll: jest.fn(),
+      findByEmail: jest.fn(),
       save: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -71,6 +72,6 @@ describe("GetAllCustomerUseCase", () => {
 
     expect(result.data).not.toBeNull();
 
-    expect(result.data[0]).toEqual(createdCustomer.toJSON());
+    expect(result.data[0]).toEqual(createdCustomer.toObject());
   });
 });

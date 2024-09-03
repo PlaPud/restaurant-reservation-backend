@@ -5,11 +5,14 @@ import { InternalServerError } from "../../errors/HttpError";
 import { IRestaurantRepository } from "../../infrastructure/interfaces/IRestaurantRepository";
 import { IUseCase } from "../../shared/IUseCase";
 import { RESTAURANT_T } from "../../shared/inversify/restaurant.types";
+import { hash } from "bcrypt";
 
 export interface ICreateRestaurantDto {
   name: string;
   phone: string;
   address: string;
+  email: string;
+  password: string | Buffer;
 }
 
 export interface ICreateRestaurantResult {
@@ -17,6 +20,7 @@ export interface ICreateRestaurantResult {
   name: string;
   phone: string;
   address: string;
+  email: string;
 }
 
 export interface ICreateRestaurantUseCase
@@ -34,10 +38,16 @@ export class CreateRestaurantUseCase implements ICreateRestaurantUseCase {
   public async execute(
     input: ICreateRestaurantDto
   ): Promise<ICreateRestaurantResult> {
+    const hashPassword = await hash(input.password, 10);
+
+    input.password = "";
+
     const newRestaurant = new Restaurant({
       name: input.name,
       phone: input.phone,
       address: input.address,
+      email: input.email,
+      hashPassword,
     });
 
     const result = await this._repository.save(newRestaurant);
@@ -46,7 +56,7 @@ export class CreateRestaurantUseCase implements ICreateRestaurantUseCase {
       throw new InternalServerError();
     }
 
-    const body = result.toJSON();
+    const body = result.toObject();
 
     return body;
   }

@@ -8,11 +8,21 @@ import { BadRequestError, NotFoundError } from "../../errors/HttpError";
 import { EntityNotFoundError } from "../../errors/DomainError";
 import { inject, injectable } from "inversify";
 import { CUSTOMER_T } from "../../shared/inversify/customer.types";
-
+import bcrypt from "bcrypt";
 export interface IUpdateCustomerDto {
   customerId: string;
 
-  data: ICreateCustomerDto;
+  data: {
+    fName: string;
+
+    lName: string;
+
+    email: string;
+
+    phone: string;
+
+    password: string | Buffer;
+  };
 }
 
 export interface IUpdateCustomerResult {
@@ -39,12 +49,17 @@ export class UpdateCustomerUseCase
   public async execute(
     input: IUpdateCustomerDto
   ): Promise<IUpdateCustomerResult> {
+    const hashPassword = await bcrypt.hash(input.data.password, 10);
+
+    input.data.password = "";
+
     const customer = new Customer({
       customerId: input.customerId,
       fName: input.data.fName,
       lName: input.data.lName,
       email: input.data.email,
       phone: input.data.phone,
+      hashPassword,
     });
 
     const result = await this._customerRepository.update(

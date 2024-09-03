@@ -1,5 +1,9 @@
 import { Reservation } from "../../domain/Reservation";
-import { Restaurant, RestaurantJSON } from "../../domain/Restaurant";
+import {
+  Restaurant,
+  RestaurantJSONResponse,
+  RestaurantObj,
+} from "../../domain/Restaurant";
 import { InternalServerError } from "../../errors/HttpError";
 import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepository";
 import { IUseCase } from "../../shared/IUseCase";
@@ -16,7 +20,7 @@ export interface ICreateReserveResult {
   lastModified: string;
   seats: number;
   reserveDate: string;
-  restaurant: RestaurantJSON;
+  restaurant: RestaurantJSONResponse;
 }
 
 export class CreateReserveUseCase
@@ -44,8 +48,8 @@ export class CreateReserveUseCase
       seats: result.seats,
       reserveDate: result.reserveDate,
       restaurant: result.restaurant
-        ? result.restaurant.toJSON()
-        : ({} as RestaurantJSON),
+        ? result.restaurant.toJSONResponse()
+        : ({} as RestaurantJSONResponse),
     };
 
     return body;

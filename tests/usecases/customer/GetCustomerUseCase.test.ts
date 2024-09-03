@@ -4,8 +4,9 @@ import "reflect-metadata";
 import {
   GetCustomerUseCase,
   IGetCustomerDto,
+  IGetCustomerResult,
 } from "../../../src/application/customer/GetCustomerUseCase";
-import { Customer, CustomerJSON } from "../../../src/domain/Customer";
+import { Customer, CustomerObj } from "../../../src/domain/Customer";
 import { InternalServerError } from "../../../src/errors/HttpError";
 import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
 import { IUseCase } from "../../../src/shared/IUseCase";
@@ -20,7 +21,7 @@ const getMockedUUIDString = (n: number) => `${n}-${n}-${n}-${n}-${n}`;
 
 describe("GetCustomerUseCase", () => {
   let mockedCustomerRepo: jest.Mocked<ICustomerRepository>;
-  let useCase: IUseCase<IGetCustomerDto, CustomerJSON>;
+  let useCase: IUseCase<IGetCustomerDto, CustomerObj>;
   let testContainer: Container;
   let mockedUUID: string;
   let idCount = 0;
@@ -29,6 +30,7 @@ describe("GetCustomerUseCase", () => {
     mockedCustomerRepo = {
       find: jest.fn(),
       findAll: jest.fn(),
+      findByEmail: jest.fn(),
       save: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
@@ -42,12 +44,12 @@ describe("GetCustomerUseCase", () => {
       .toConstantValue(mockedCustomerRepo);
 
     testContainer
-      .bind<IUseCase<IGetCustomerDto, CustomerJSON>>(
+      .bind<IUseCase<IGetCustomerDto, IGetCustomerResult>>(
         CUSTOMER_T.GetCustomerUseCase
       )
       .to(GetCustomerUseCase);
 
-    useCase = testContainer.get<IUseCase<IGetCustomerDto, CustomerJSON>>(
+    useCase = testContainer.get<IUseCase<IGetCustomerDto, CustomerObj>>(
       CUSTOMER_T.GetCustomerUseCase
     );
 
@@ -75,7 +77,7 @@ describe("GetCustomerUseCase", () => {
       expect.stringMatching(getMockedUUIDString(idCount))
     );
     expect(result.customerId).toBe(getMockedUUIDString(idCount - 1));
-    expect(result).toMatchObject(createdCustomer.toJSON());
+    expect(result).toMatchObject(createdCustomer.toObject());
   });
 
   it("Should throw internal server error when result is null", async () => {

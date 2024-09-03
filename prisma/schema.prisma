@@ -19,14 +19,19 @@ model Customer {
   lName String
   email String @unique
   phone String @unique
+  isVerified Boolean @default(false)
+  hashPassword String
   reservations Reservation[]
 }
 
 model Restaurant {
   restaurantId String @id @default(uuid())
   name String
-  phone String
+  phone String @unique
+  email String @unique
   address String
+  isVerified Boolean @default(false)
+  hashPassword String
   currentReserves Reservation[]
 }
 
@@ -42,4 +47,11 @@ model Reservation {
   payImgUrl String?
   isPayed Boolean @default(false)
   isAttended Boolean @default(false)
+}
+
+model Admin {
+  adminId String @id @default(uuid())
+  fName String
+  lName String
+  hashPassword String
 }

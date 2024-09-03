@@ -5,6 +5,8 @@ import {
 } from "../../../application/restaurant/GetAllRestaurantUseCase";
 import { StatusCode } from "../../../shared/enum/StatusCode";
 import { sendErrorResponse } from "../../../shared/sendErrorResponse";
+import { TOKEN_NAME } from "../../../shared/constants";
+import { UnauthorizedActionError } from "../../../errors/UseCaseError";
 
 export interface GetAllRestaurantResponseDto extends IGetAllRestaurantResult {}
 

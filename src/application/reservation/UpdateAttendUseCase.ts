@@ -1,4 +1,4 @@
-import { ReservationJSON } from "../../domain/Reservation";
+import { ReservationObj } from "../../domain/Reservation";
 import { InternalServerError } from "../../errors/HttpError";
 import { BusinessRuleViolationError } from "../../errors/UseCaseError";
 import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepository";
@@ -9,7 +9,7 @@ export interface IUpdateAttendDto {
   isAttended: boolean;
 }
 
-export interface IUpdateAttendResult extends ReservationJSON {}
+export interface IUpdateAttendResult extends ReservationObj {}
 
 export class UpdateAttendUseCase
   implements IUseCase<IUpdateAttendDto, IUpdateAttendResult>
@@ -24,7 +24,7 @@ export class UpdateAttendUseCase
 
     if (!result) throw new InternalServerError();
 
-    const body = result.toJSON();
+    const body = result.toObject();
 
     return body;
   }

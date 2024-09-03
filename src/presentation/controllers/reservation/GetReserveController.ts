@@ -6,6 +6,7 @@ import {
 } from "../../../application/reservation/GetReserveUseCase";
 import { StatusCode } from "../../../shared/enum/StatusCode";
 import { sendErrorResponse } from "../../../shared/sendErrorResponse";
+import { BadRequestError } from "../../../errors/HttpError";
 
 export interface GetReserveResponseDto extends IGetReserveResult {}
 
@@ -14,6 +15,8 @@ export class GetReserveController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
+      if (!req.query.reserveId) throw new BadRequestError();
+
       const userInput: IGetReserveDto = {
         reserveId: req.query.reserveId as string,
       };

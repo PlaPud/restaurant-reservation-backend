@@ -5,6 +5,7 @@ import { InMemoryRestaurantRepository } from "./InMemoryRestaurantRepository";
 import { PrismaRestaurantRepository } from "./PrismaRestaurantRepository";
 import { InMemoryReserveRepository } from "./InMemoryReserveRepository";
 import { PrismaReservationRepository } from "./PrismaReservationRepository";
+import { PrismaAdminRepository } from "./PrismaAdminRepository";
 
 export class Repositories {
   public readonly inMemoryCustomerRepo: InMemoryCustomerRepository;
@@ -14,6 +15,7 @@ export class Repositories {
   public readonly prismaCustomerRepo: PrismaCustomerRepository;
   public readonly prismaRestaurantRepo: PrismaRestaurantRepository;
   public readonly prismaReservationRepo: PrismaReservationRepository;
+  public readonly prismaAdminRepo: PrismaAdminRepository;
 
   public constructor(private readonly _prismaClient: PrismaClient) {
     this.inMemoryCustomerRepo = new InMemoryCustomerRepository();
@@ -27,5 +29,6 @@ export class Repositories {
     this.prismaReservationRepo = new PrismaReservationRepository(
       this._prismaClient
     );
+    this.prismaAdminRepo = new PrismaAdminRepository(this._prismaClient);
   }
 }

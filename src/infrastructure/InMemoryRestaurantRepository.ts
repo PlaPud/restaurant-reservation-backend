@@ -10,11 +10,22 @@ export class InMemoryRestaurantRepository implements IRestaurantRepository {
 
   public async find(id: string): Promise<Restaurant | null> {
     const result = this._restaurants.find((rs) => rs.restaurantId === id);
+
     if (!result)
       throw new EntityNotFoundError(`Cannot Find Restaurant (ID: ${id})`);
 
     return result;
   }
+
+  public async findByEmail(email: string): Promise<Restaurant | null> {
+    const result = this._restaurants.find((rs) => rs.email === email);
+
+    if (!result)
+      throw new EntityNotFoundError(`Cannot Find Restaurant (Email: ${email})`);
+
+    return result;
+  }
+
   public async findAll(): Promise<Restaurant[]> {
     const result = this._restaurants ?? null;
 
@@ -42,7 +53,9 @@ export class InMemoryRestaurantRepository implements IRestaurantRepository {
         name: data.name,
         phone: data.phone,
         address: data.address,
+        email: data.email,
         currentReserves: data.currentReserves,
+        hashPassword: data.hashPassword,
       });
 
       return this._restaurants[idx];

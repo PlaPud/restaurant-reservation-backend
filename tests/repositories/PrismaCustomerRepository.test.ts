@@ -70,7 +70,7 @@ describe("[CREATE] PrimaCustomerRepository", () => {
   it("Should call save and return true as result.", async () => {
     const customerData: Customer = getMockCustomer();
 
-    mockCtx.prisma.customer.create.mockResolvedValue(customerData.toJSON());
+    mockCtx.prisma.customer.create.mockResolvedValue(customerData.toObject());
 
     const result = await sut.save(customerData);
 
@@ -119,7 +119,9 @@ describe("[GET] PrismaCustomerRepository", () => {
   it("Should return correct customer data by customerID ", async () => {
     const customerData: Customer = getMockCustomer();
 
-    mockCtx.prisma.customer.findUnique.mockResolvedValue(customerData.toJSON());
+    mockCtx.prisma.customer.findUnique.mockResolvedValue(
+      customerData.toObject()
+    );
 
     const result = await sut.find(getMockedUUIDString(idCount - 1));
 
@@ -127,7 +129,7 @@ describe("[GET] PrismaCustomerRepository", () => {
       where: { customerId: getMockedUUIDString(idCount - 1) },
       include: { reservations: true },
     });
-    expect(result.toJSON()).toStrictEqual(customerData.toJSON());
+    expect(result.toObject()).toStrictEqual(customerData.toObject());
   });
 
   it("Should return all exists customer array", async () => {
@@ -136,13 +138,13 @@ describe("[GET] PrismaCustomerRepository", () => {
     const customers = [customerData];
 
     mockCtx.prisma.customer.findMany.mockResolvedValue(
-      customers.map((c) => c.toJSON())
+      customers.map((c) => c.toObject())
     );
 
     const result = await sut.findAll();
 
     expect(result.length).toBe(1);
-    expect(result[0].toJSON()).toEqual(customerData.toJSON());
+    expect(result[0].toObject()).toEqual(customerData.toObject());
   });
 
   it("Should throw entity not found error for invalid ID", async () => {
@@ -182,6 +184,7 @@ describe("[UPDATE] PrismaCustomerRepository", () => {
         lName: customerData.lName,
         email: customerData.email,
         phone: customerData.phone,
+        password: customerData.hashPassword,
       } as ICreateCustomerDto,
     } as IUpdateCustomerDto;
 
@@ -191,17 +194,18 @@ describe("[UPDATE] PrismaCustomerRepository", () => {
       lName: updateDto.data.lName,
       email: updateDto.data.email,
       phone: updateDto.data.phone,
+      hashPassword: updateDto.data.password as string,
     });
 
-    mockCtx.prisma.customer.update.mockResolvedValue(updatedData.toJSON());
+    mockCtx.prisma.customer.update.mockResolvedValue(updatedData.toObject());
 
     const result = await sut.update(updatedData.customerId, updatedData);
 
-    const { fName, lName, email, phone } = updatedData.toJSON();
+    const { fName, lName, email, phone, hashPassword } = updatedData.toObject();
 
     expect(mockCtx.prisma.customer.update).toHaveBeenCalledWith({
       where: { customerId: updatedData.customerId },
-      data: { fName, lName, email, phone },
+      data: { fName, lName, email, phone, hashPassword },
       include: { reservations: true },
     });
 

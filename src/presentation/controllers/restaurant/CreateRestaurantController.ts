@@ -8,6 +8,8 @@ import { restaurantSchema } from "../../../domain/validation_schemas/Restaurant.
 import { BadRequestError } from "../../../errors/HttpError";
 import { StatusCode } from "../../../shared/enum/StatusCode";
 import { sendErrorResponse } from "../../../shared/sendErrorResponse";
+import { TOKEN_NAME } from "../../../shared/constants";
+import { UnauthorizedActionError } from "../../../errors/UseCaseError";
 
 export interface CreatedRestaurantResponseDto extends ICreateRestaurantResult {}
 
@@ -16,12 +18,16 @@ export class CreateRestaurantController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
-      const { name, phone, address } = req.body;
+      if (req.cookies[TOKEN_NAME]) throw new UnauthorizedActionError();
+
+      const { name, phone, address, email, password } = req.body;
 
       const userInput: ICreateRestaurantDto = {
         name,
         phone,
         address,
+        email,
+        password,
       };
 
       const { error, value } = restaurantSchema.validate(userInput);
@@ -35,10 +41,12 @@ export class CreateRestaurantController {
         name: result.name,
         phone: result.phone,
         address: result.address,
+        email: result.email,
       };
 
       res.status(StatusCode.CREATED).json(response);
     } catch (err) {
+      console.log(err);
       sendErrorResponse(res, err);
     }
   }

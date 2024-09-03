@@ -12,6 +12,8 @@ export interface IUpdateRestaurantDto {
     name: string;
     phone: string;
     address: string;
+    email: string;
+    password: string;
   };
 }
 
@@ -19,6 +21,7 @@ export interface IUpdateRestaurantResult {
   restaurantId: string;
   name: string;
   phone: string;
+  email: string;
   address: string;
 }
 
@@ -42,6 +45,8 @@ export class UpdateRestaurantUseCase implements IUpdateRestaurantUseCase {
       name: input.data.name,
       phone: input.data.phone,
       address: input.data.address,
+      email: input.data.email,
+      hashPassword: input.data.password,
     });
 
     const result = await this._repository.update(
@@ -56,6 +61,7 @@ export class UpdateRestaurantUseCase implements IUpdateRestaurantUseCase {
       name: result.name,
       phone: result.phone,
       address: result.address,
+      email: result.email,
     };
 
     return body;

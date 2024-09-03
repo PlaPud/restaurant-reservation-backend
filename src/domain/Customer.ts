@@ -1,13 +1,18 @@
 import { randomUUID } from "crypto";
-import { Reservation, ReservationJSON } from "./Reservation";
+import { Reservation, ReservationObj } from "./Reservation";
 
-export interface CustomerJSON {
+export interface CustomerJSONResponse {
   customerId: string;
   fName: string;
   lName: string;
   email: string;
   phone: string;
-  reservations?: ReservationJSON[];
+  isVerified: boolean;
+  reservations?: ReservationObj[];
+}
+
+export interface CustomerObj extends CustomerJSONResponse {
+  hashPassword: string;
 }
 
 export type CustomerConstrParams = {
@@ -16,6 +21,8 @@ export type CustomerConstrParams = {
   lName: string;
   email: string;
   phone: string;
+  hashPassword: string;
+  isVerified?: boolean;
   reservations?: Reservation[];
 };
 
@@ -25,6 +32,8 @@ export class Customer {
   public readonly lName: string;
   public readonly email: string;
   public readonly phone: string;
+  public readonly isVerified: boolean;
+  public readonly hashPassword: string;
   public readonly reservations?: Reservation[];
 
   public constructor(public readonly options: CustomerConstrParams) {
@@ -34,27 +43,39 @@ export class Customer {
     this.lName = this.options.lName ?? "";
     this.email = this.options.email ?? "";
     this.phone = this.options.phone ?? "";
+    this.hashPassword = this.options.hashPassword ?? "";
+    this.isVerified = this.options.isVerified ?? false;
   }
 
-  public static fromJSON(jsonObj: CustomerJSON): Customer {
+  public static fromJSON(jsonObj: CustomerObj): Customer {
     return new Customer({
       customerId: jsonObj.customerId,
       fName: jsonObj.fName,
       lName: jsonObj.lName,
       email: jsonObj.email,
       phone: jsonObj.phone,
+      isVerified: jsonObj.isVerified,
+      hashPassword: jsonObj.hashPassword,
       reservations: jsonObj.reservations?.map((r) => Reservation.fromJSON(r)),
     });
   }
 
-  public toJSON(): CustomerJSON {
+  public toObject(): CustomerObj {
     return {
       customerId: this.customerId,
       fName: this.fName,
       lName: this.lName,
       email: this.email,
       phone: this.phone,
-      reservations: this.reservations?.map((r) => r.toJSON()),
+      isVerified: this.isVerified,
+      hashPassword: this.hashPassword,
+      reservations: this.reservations?.map((r) => r.toObject()),
     };
+  }
+
+  public toJSONResponse(): CustomerJSONResponse {
+    const { hashPassword, ...rest } = this.toObject();
+
+    return rest;
   }
 }

@@ -26,6 +26,7 @@ describe("DeleteAllCustomerUseCase", () => {
     mockedCustomerRepo = {
       find: jest.fn(),
       findAll: jest.fn(),
+      findByEmail: jest.fn(),
       save: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),

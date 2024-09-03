@@ -38,7 +38,7 @@ export class GetRestaurantUseCase implements IGetRestaurantUseCase {
       throw new InternalServerError();
     }
 
-    const body = result.toJSON();
+    const body = result.toObject();
 
     return body;
   }

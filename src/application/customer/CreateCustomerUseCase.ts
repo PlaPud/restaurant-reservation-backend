@@ -1,12 +1,11 @@
-import "reflect-metadata";
-import { randomUUID } from "crypto";
-import { Customer } from "../../domain/Customer";
-import { ICustomerRepository } from "../../infrastructure/interfaces/ICustomerRepository";
-import { IUseCase } from "../../shared/IUseCase";
-import { STATUS_CODES } from "http";
-import { BadRequestError } from "../../errors/HttpError";
+import { hash } from "bcrypt";
 import { inject, injectable } from "inversify";
+import "reflect-metadata";
+import { Customer } from "../../domain/Customer";
+import { BadRequestError } from "../../errors/HttpError";
+import { ICustomerRepository } from "../../infrastructure/interfaces/ICustomerRepository";
 import { CUSTOMER_T } from "../../shared/inversify/customer.types";
+import { IUseCase } from "../../shared/IUseCase";
 
 export interface ICreateCustomerDto {
   fName: string;
@@ -16,6 +15,8 @@ export interface ICreateCustomerDto {
   email: string;
 
   phone: string;
+
+  password: string | Buffer;
 }
 
 export interface ICreateCustomerResult {
@@ -34,11 +35,16 @@ export class CreateCustomerUseCase
   public async execute(
     input: ICreateCustomerDto
   ): Promise<ICreateCustomerResult> {
+    const hashPassword = await hash(input.password, 10);
+
+    input.password = "";
+
     const customer = new Customer({
       fName: input.fName,
       lName: input.lName,
       email: input.email,
       phone: input.phone,
+      hashPassword,
     });
 
     const result = await this._customerRepository.save(customer);

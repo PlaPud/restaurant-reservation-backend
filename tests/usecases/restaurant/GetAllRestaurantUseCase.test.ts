@@ -24,6 +24,7 @@ const setUp = () => {
   mockRestaurantRepo = {
     find: jest.fn(),
     findAll: jest.fn(),
+    findByEmail: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
@@ -72,7 +73,7 @@ describe("GetAllRestaurantUseCase", () => {
     const result: IGetAllRestaurantResult = await sut.execute(null);
 
     expect(result.data[0]).toEqual(
-      expect.objectContaining(existedData[0].toJSON())
+      expect.objectContaining(existedData[0].toObject())
     );
   });
 

@@ -14,6 +14,8 @@ export class InMemoryReserveRepository implements IReserveRepository {
       name: "restaurant1",
       phone: "123",
       address: "Mock Street",
+      email: "rest1@email.com",
+      hashPassword: faker.string.alphanumeric({ length: 32, casing: "mixed" }),
       currentReserves: [
         ...this._reserves.filter((r) => r.restaurantId === "1"),
       ],
@@ -23,6 +25,8 @@ export class InMemoryReserveRepository implements IReserveRepository {
       name: "restaurant2",
       phone: "123",
       address: "Mock Street",
+      email: "rest2@email.com",
+      hashPassword: faker.string.alphanumeric({ length: 32, casing: "mixed" }),
       currentReserves: [
         ...this._reserves.filter((r) => r.restaurantId === "2"),
       ],

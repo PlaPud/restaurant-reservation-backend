@@ -75,7 +75,7 @@ describe("[find()] PrismaReservationRepository", () => {
     newReservation.restaurant = rest;
 
     mockCtx.prisma.reservation.findUnique.mockResolvedValue(
-      newReservation.toJSON()
+      newReservation.toObject()
     );
 
     const result = await sut.find(newReservation.reserveId);
@@ -86,7 +86,7 @@ describe("[find()] PrismaReservationRepository", () => {
       },
       include: { restaurant: true, customer: true },
     });
-    expect(result?.toJSON()).toStrictEqual(newReservation.toJSON());
+    expect(result?.toObject()).toStrictEqual(newReservation.toObject());
   });
 
   it("Should throw entity not found error if prisma return null", async () => {

@@ -20,7 +20,7 @@ export class PrismaReservationRepository implements IReserveRepository {
       where: { reserveId: id },
       include: { restaurant: true, customer: true },
     });
-
+ 
     if (!result)
       throw new EntityNotFoundError(`Cannot find reservation (ID: ${id})`);
 
