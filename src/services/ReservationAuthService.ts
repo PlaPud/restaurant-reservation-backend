@@ -18,6 +18,8 @@ export class ReservationAuthService {
 
     const { customerId, restaurantId } = target;
 
+    console.log(customerId, restaurantId);
+
     switch (payload.role) {
       case TokenRole.CUSTOMER:
         if (customerId && customerId !== payload.sub)
@@ -26,7 +28,7 @@ export class ReservationAuthService {
           );
         break;
       case TokenRole.RESTAURANT:
-        if (restaurantId !== payload.sub)
+        if (restaurantId && restaurantId !== payload.sub)
           throw new UnauthorizedActionError(
             `Cannot edit other restaurant reservation.`
           );
