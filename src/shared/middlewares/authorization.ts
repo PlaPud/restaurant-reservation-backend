@@ -120,7 +120,10 @@ export const authorizeReserveAction = (
     try {
       const payload: JwtPayload = await _getPayloadByValidToken(req);
 
-      if (payload.role === TokenRole.ADMIN) next();
+      if (payload.role === TokenRole.ADMIN) {
+        next();
+        return;
+      }
 
       validateAuthor(req, payload);
 
