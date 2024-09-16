@@ -21,6 +21,7 @@ model Customer {
   phone String @unique
   isVerified Boolean @default(false)
   hashPassword String
+  profileImgPath String @default("")
   reservations Reservation[]
 }
 
@@ -32,6 +33,8 @@ model Restaurant {
   address String
   isVerified Boolean @default(false)
   hashPassword String
+  profileImgPath String @default("")
+  description String @default("")
   currentReserves Reservation[]
 }
 
@@ -43,8 +46,9 @@ model Reservation {
   restaurant Restaurant @relation(fields: [restaurantId], references: [restaurantId], onDelete: Cascade)
   lastModified String?
   seats Int
+  reservePrice Int @default(0)
   reserveDate String
-  payImgUrl String?
+  payImgUrl String @default("")
   isPayed Boolean @default(false)
   isAttended Boolean @default(false)
 }

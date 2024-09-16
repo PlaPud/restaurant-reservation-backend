@@ -35,7 +35,7 @@ export const checkLogout = async (
   }
 };
 
-export const authorizeRolesAction = (rolesContext: TokenRole[]) => {
+export const authorizeReqFromRoles = (rolesContext: TokenRole[]) => {
   const authorizeActionCallback = async (
     req: Request,
     res: Response,
@@ -62,7 +62,7 @@ export const authorizeRolesAction = (rolesContext: TokenRole[]) => {
   return authorizeActionCallback;
 };
 
-export const authorizeOwnerAction = (rolesContext: TokenRole[]) => {
+export const authorizeReqFromOwner = (rolesContext: TokenRole[]) => {
   const roles = {
     customerId: TokenRole.CUSTOMER,
     restaurantId: TokenRole.RESTAURANT,

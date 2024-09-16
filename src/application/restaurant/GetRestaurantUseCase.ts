@@ -14,6 +14,8 @@ export interface IGetRestaurantResult {
   name: string;
   phone: string;
   address: string;
+  profileImgPath: string;
+  description: string;
   currentReserves?: Reservation[];
 }
 

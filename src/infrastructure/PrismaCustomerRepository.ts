@@ -15,6 +15,27 @@ export class PrismaCustomerRepository implements ICustomerRepository {
     private readonly _client: PrismaClient
   ) {}
 
+  public async updateProfileImgPath(
+    id: string,
+    imgPath: string
+  ): Promise<Customer | null> {
+    try {
+      const result = await this._client.customer.update({
+        where: {
+          customerId: id,
+        },
+        data: {
+          profileImgPath: imgPath,
+        },
+      });
+
+      return Customer.fromJSON(result);
+    } catch (err) {
+      console.log(err);
+      throw getExternalError(err, id);
+    }
+  }
+
   public async findByEmail(email: string): Promise<Customer | null> {
     const result = await this._client.customer.findUnique({
       where: { email },
@@ -133,3 +154,14 @@ export class PrismaCustomerRepository implements ICustomerRepository {
 
 const isPrismaErr = (err: unknown) =>
   err instanceof Prisma.PrismaClientKnownRequestError;
+
+function getExternalError(err: unknown, id?: string) {
+  if (!isPrismaErr(err)) {
+    return new InternalServerError();
+  }
+
+  if (id && err.code === "P2025")
+    return new EntityNotFoundError(`Cannot Find Customer (ID: ${id})`);
+
+  return new RepositoryError("Prisma Client Error.");
+}

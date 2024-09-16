@@ -5,5 +5,6 @@ export const restaurantSchema = Joi.object({
   phone: Joi.string().required(),
   address: Joi.string().required(),
   email: Joi.string().email().required(),
+  description: Joi.string().required(),
   password: Joi.string().required(),
 });

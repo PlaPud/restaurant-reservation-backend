@@ -12,8 +12,9 @@ export interface ReservationObj {
   restaurantId: string;
   lastModified: string | null;
   seats: number;
+  reservePrice: number;
   reserveDate: string;
-  payImgUrl: string | null;
+  payImgUrl: string;
   isPayed: boolean;
   isAttended: boolean;
   customer?: CustomerObj | null;
@@ -27,7 +28,7 @@ export interface ReservationJSONResponse {
   lastModified: string | null;
   seats: number;
   reserveDate: string;
-  payImgUrl: string | null;
+  payImgUrl: string;
   isPayed: boolean;
   isAttended: boolean;
   customer?: CustomerJSONResponse | null;
@@ -40,8 +41,9 @@ export type ReserveConstrParams = {
   restaurantId: string;
   lastModified?: string | null;
   seats: number;
+  reservePrice: number;
   reserveDate: string;
-  payImgUrl?: string | null;
+  payImgUrl?: string;
   isPayed?: boolean;
   isAttended?: boolean;
   customer?: Customer | null;
@@ -54,8 +56,9 @@ export class Reservation {
   public restaurantId: string;
   public lastModified: string;
   public seats: number = 2;
+  public reservePrice: number = 0;
   public reserveDate: string = "";
-  public payImgUrl: string | null;
+  public payImgUrl: string = "";
   public isPayed: boolean = false;
   public isAttended: boolean = false;
   public customer?: Customer | null;
@@ -68,8 +71,9 @@ export class Reservation {
     this.lastModified =
       this.options.lastModified ?? new Date(Date.now()).toISOString();
     this.seats = this.options.seats ?? 2;
+    this.reservePrice = this.options.reservePrice ?? 0;
     this.reserveDate = this.options.reserveDate ?? "";
-    this.payImgUrl = this.options.payImgUrl ?? null;
+    this.payImgUrl = this.options.payImgUrl ?? "";
     this.isPayed = this.options.isPayed ?? false;
     this.isAttended = this.options.isAttended ?? false;
     this.customer = this.options.customer;
@@ -83,6 +87,7 @@ export class Reservation {
       restaurantId: jsonObj.restaurantId,
       lastModified: jsonObj.lastModified,
       seats: jsonObj.seats,
+      reservePrice: jsonObj.reservePrice,
       reserveDate: jsonObj.reserveDate,
       payImgUrl: jsonObj.payImgUrl,
       isPayed: jsonObj.isPayed,
@@ -103,6 +108,7 @@ export class Reservation {
       restaurantId: this.restaurantId,
       lastModified: this.lastModified,
       seats: this.seats,
+      reservePrice: this.reservePrice,
       reserveDate: this.reserveDate,
       payImgUrl: this.payImgUrl,
       isPayed: this.isPayed,

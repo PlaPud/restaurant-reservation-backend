@@ -15,6 +15,7 @@ export interface IUpdateReserveDto {
     customerId: string;
     restaurantId: string;
     seats: number;
+    reservePrice: number;
     reserveDate: string;
     payImgUrl: string;
     isPayed: boolean;
@@ -38,6 +39,7 @@ export class UpdateReserveUseCase
       customerId: input.data.customerId,
       seats: input.data.seats,
       reserveDate: input.data.reserveDate,
+      reservePrice: input.data.reservePrice,
       payImgUrl: input.data.payImgUrl,
       isPayed: input.data.isPayed,
       isAttended: input.data.isAttended,

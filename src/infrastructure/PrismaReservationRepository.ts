@@ -20,7 +20,7 @@ export class PrismaReservationRepository implements IReserveRepository {
       where: { reserveId: id },
       include: { restaurant: true, customer: true },
     });
- 
+
     if (!result)
       throw new EntityNotFoundError(`Cannot find reservation (ID: ${id})`);
 
@@ -206,7 +206,8 @@ export class PrismaReservationRepository implements IReserveRepository {
 
   public async updatePaymentUrl(
     id: string,
-    payImgUrl: string
+    payImgUrl: string,
+    payImg?: FormData
   ): Promise<Reservation | null> {
     try {
       const result = await this._client.reservation.update({

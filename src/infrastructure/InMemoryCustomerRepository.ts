@@ -11,6 +11,13 @@ export class InMemoryCustomerRepository implements ICustomerRepository {
 
   public constructor() {}
 
+  public async updateProfileImgPath(
+    id: string,
+    imgPath: string
+  ): Promise<Customer | null> {
+    throw new Error("Method not implemented.");
+  }
+
   public async findByEmail(email: string): Promise<Customer | null> {
     const result = this._customers.find((c) => c.email === email) ?? null;
 

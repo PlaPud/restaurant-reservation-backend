@@ -17,12 +17,13 @@ export class CreateReserveController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
-      const { seats, reserveDate } = req.body;
+      const { seats, reserveDate, reservePrice } = req.body;
 
       const userInput: ICreateReserveDto = {
         restaurantId: req.query.restaurantId as string,
         seats,
         reserveDate,
+        reservePrice,
       };
 
       const { error, value } = newReserveSchema.validate(userInput);

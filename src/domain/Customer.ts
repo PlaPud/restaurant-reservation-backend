@@ -8,6 +8,7 @@ export interface CustomerJSONResponse {
   email: string;
   phone: string;
   isVerified: boolean;
+  profileImgPath: string;
   reservations?: ReservationObj[];
 }
 
@@ -23,6 +24,7 @@ export type CustomerConstrParams = {
   phone: string;
   hashPassword: string;
   isVerified?: boolean;
+  profileImgPath?: string;
   reservations?: Reservation[];
 };
 
@@ -34,6 +36,7 @@ export class Customer {
   public readonly phone: string;
   public readonly isVerified: boolean;
   public readonly hashPassword: string;
+  public readonly profileImgPath: string;
   public readonly reservations?: Reservation[];
 
   public constructor(public readonly options: CustomerConstrParams) {
@@ -44,6 +47,7 @@ export class Customer {
     this.email = this.options.email ?? "";
     this.phone = this.options.phone ?? "";
     this.hashPassword = this.options.hashPassword ?? "";
+    this.profileImgPath = this.options.profileImgPath ?? "";
     this.isVerified = this.options.isVerified ?? false;
   }
 
@@ -56,6 +60,7 @@ export class Customer {
       phone: jsonObj.phone,
       isVerified: jsonObj.isVerified,
       hashPassword: jsonObj.hashPassword,
+      profileImgPath: jsonObj.profileImgPath,
       reservations: jsonObj.reservations?.map((r) => Reservation.fromJSON(r)),
     });
   }
@@ -69,6 +74,7 @@ export class Customer {
       phone: this.phone,
       isVerified: this.isVerified,
       hashPassword: this.hashPassword,
+      profileImgPath: this.profileImgPath,
       reservations: this.reservations?.map((r) => r.toObject()),
     };
   }

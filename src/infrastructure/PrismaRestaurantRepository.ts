@@ -16,6 +16,26 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
     private readonly _client: PrismaClient
   ) {}
 
+  public async updateProfileImgPath(
+    id: string,
+    imgPath: string
+  ): Promise<Restaurant | null> {
+    try {
+      const result = await this._client.restaurant.update({
+        where: {
+          restaurantId: id,
+        },
+        data: {
+          profileImgPath: imgPath,
+        },
+      });
+
+      return Restaurant.fromJSON(result);
+    } catch (err) {
+      throw getExternalError(err, id);
+    }
+  }
+
   public async find(id: string): Promise<Restaurant | null> {
     const result = await this._client.restaurant.findUnique({
       where: { restaurantId: id },
@@ -80,13 +100,16 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
     data: Restaurant
   ): Promise<Restaurant | null> {
     try {
-      const { name, phone, address } = data.toObject();
+      const { name, phone, address, description, hashPassword } =
+        data.toObject();
       const result = await this._client.restaurant.update({
         where: { restaurantId: id },
         data: {
           name,
           phone,
           address,
+          description,
+          hashPassword,
         },
         include: { currentReserves: true },
       });
