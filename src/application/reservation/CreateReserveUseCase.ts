@@ -11,6 +11,7 @@ import { IUseCase } from "../../shared/IUseCase";
 export interface ICreateReserveDto {
   restaurantId: string;
   seats: number;
+  reservePrice: number;
   reserveDate: string;
 }
 
@@ -35,6 +36,7 @@ export class CreateReserveUseCase
       restaurantId: input.restaurantId,
       seats: input.seats,
       reserveDate: input.reserveDate,
+      reservePrice: input.reservePrice,
     });
 
     const result = await this._repository.save(newReserve);

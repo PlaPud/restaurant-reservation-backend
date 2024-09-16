@@ -17,12 +17,11 @@ export class UpdatePayUrlController {
 
   public async handle(req: Request, res: Response) {
     try {
-      if (!req.query.reserveId || isRequestBodyEmpty(req))
-        throw new BadRequestError();
+      if (!req.query.reserveId || !req.file) throw new BadRequestError();
 
       const userInput: IUpdatePayUrlDto = {
         reserveId: req.query.reserveId as string,
-        payImgUrl: req.body.payImgUrl,
+        payImg: req.file.buffer,
       };
 
       const result = await this._useCase.execute(userInput);
@@ -31,6 +30,7 @@ export class UpdatePayUrlController {
 
       res.status(StatusCode.OK).json(response);
     } catch (err) {
+      console.log(err);
       sendErrorResponse(res, err);
     }
   }

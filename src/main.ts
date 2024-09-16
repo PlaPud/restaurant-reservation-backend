@@ -28,13 +28,16 @@ export const main = async (): Promise<void> => {
   );
 
   const customerUseCases = new CustomerUseCases(
-    repositories.prismaCustomerRepo
+    repositories.prismaCustomerRepo,
+    repositories.firebaseImgRepo
   );
   const restaurantUseCases = new RestaurantUseCases(
-    repositories.prismaRestaurantRepo
+    repositories.prismaRestaurantRepo,
+    repositories.firebaseImgRepo
   );
   const reservationUseCases = new ReservationUseCases(
-    repositories.prismaReservationRepo
+    repositories.prismaReservationRepo,
+    repositories.firebaseImgRepo
   );
   const adminUseCases = new AdminUseCases(repositories.prismaAdminRepo);
 

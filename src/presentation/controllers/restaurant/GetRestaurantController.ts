@@ -34,6 +34,8 @@ export class GetRestaurantController {
         phone: result.phone,
         address: result.address,
         currentReserves: result.currentReserves,
+        profileImgPath: result.profileImgPath,
+        description: result.description,
       };
 
       res.status(StatusCode.OK).send(response);

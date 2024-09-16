@@ -3,9 +3,11 @@ import { LoginCustomerController } from "./authentication/LoginCustomerControlle
 import { CreateCustomerController } from "./customer/CreateCustomerController";
 import { DeleteAllCustomerController } from "./customer/DeleteAllCustomerController";
 import { DeleteCustomerController } from "./customer/DeleteCustomerController";
+import { DeleteCustomerProfImgController } from "./customer/DeleteCustomerProfImgController";
 import { GetAllCustomerController } from "./customer/GetAllCustomerController";
 import { GetCustomerController } from "./customer/GetCustomerController";
 import { UpdateCustomerController } from "./customer/UpdateCustomerController";
+import { UpdateCustomerProfImgController } from "./customer/UpdateCustomerProfImgController";
 
 export class CustomerControllers {
   public readonly get: GetCustomerController;
@@ -14,6 +16,8 @@ export class CustomerControllers {
   public readonly update: UpdateCustomerController;
   public readonly delete: DeleteCustomerController;
   public readonly deleteAll: DeleteAllCustomerController;
+  public readonly updateProfImg: UpdateCustomerProfImgController;
+  public readonly deleteProfImg: DeleteCustomerProfImgController;
 
   public readonly login: LoginCustomerController;
 
@@ -25,5 +29,11 @@ export class CustomerControllers {
     this.delete = new DeleteCustomerController(_useCases.delete);
     this.deleteAll = new DeleteAllCustomerController(_useCases.deleteAll);
     this.login = new LoginCustomerController(_useCases.login);
+    this.updateProfImg = new UpdateCustomerProfImgController(
+      _useCases.updateProfImg
+    );
+    this.deleteProfImg = new DeleteCustomerProfImgController(
+      _useCases.deleteProfImg
+    );
   }
 }

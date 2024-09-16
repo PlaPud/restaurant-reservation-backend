@@ -9,6 +9,8 @@ export interface ICustomerRepository {
 
   update(id: string, data: Customer): Promise<Customer | null>;
 
+  updateProfileImgPath(id: string, imgPath: string): Promise<Customer | null>;
+
   save(customer: Customer): Promise<boolean>;
 
   delete(id: string): Promise<boolean>;

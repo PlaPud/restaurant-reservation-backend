@@ -11,6 +11,7 @@ import { sendErrorResponse } from "../shared/sendErrorResponse";
 import { ReservationAuthService } from "../services/ReservationAuthService";
 import { AdminControllers } from "./controllers/Admin.Controllers";
 import { adminRouter } from "./routers/Admin.Routes";
+import multer from "multer";
 
 export class ApiServer {
   public static run = async (options: {
@@ -52,11 +53,7 @@ export class ApiServer {
     });
 
     app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
-      // try {
-      //   // console.log(res);
-      // } catch (err) {
       sendErrorResponse(res, err);
-      // }
     });
 
     app.listen(port, () => {

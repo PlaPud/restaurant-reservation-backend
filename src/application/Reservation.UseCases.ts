@@ -1,6 +1,9 @@
+import { FirebaseImgRepository } from "../infrastructure/firebase/FirebaseImgRepository";
+import { IImageRepository } from "../infrastructure/interfaces/IImageRepository";
 import { IReserveRepository } from "../infrastructure/interfaces/IReserveRepository";
 import { CreateReserveUseCase } from "./reservation/CreateReserveUseCase";
 import { DeleteAllReserveUseCase } from "./reservation/DeleteAllReserveUseCase";
+import { DeletePayUrlUseCase } from "./reservation/DeletePayUrlUseCase";
 import { DeleteReserveUseCase } from "./reservation/DeleteReserveUseCase";
 import { GetAllReserveUseCase } from "./reservation/GetAllReserveUseCase";
 import { GetAttendReserveUseCase } from "./reservation/GetAttendReserveUseCase";
@@ -25,8 +28,12 @@ export class ReservationUseCases {
   public readonly updatePayUrl: UpdatePayUrlUseCase;
   public readonly delete: DeleteReserveUseCase;
   public readonly deleteAll: DeleteAllReserveUseCase;
+  public readonly deletePayUrl: DeletePayUrlUseCase;
 
-  public constructor(private readonly _repository: IReserveRepository) {
+  public constructor(
+    private readonly _repository: IReserveRepository,
+    private readonly _imgRepo: IImageRepository
+  ) {
     this.create = new CreateReserveUseCase(this._repository);
     this.get = new GetReserveUseCase(this._repository);
     this.getAvail = new GetAvailReserveUseCase(this._repository);
@@ -35,9 +42,16 @@ export class ReservationUseCases {
     this.getAll = new GetAllReserveUseCase(this._repository);
     this.update = new UpdateReserveUseCase(this._repository);
     this.updateAttend = new UpdateAttendUseCase(this._repository);
-    this.updatePayUrl = new UpdatePayUrlUseCase(this._repository);
     this.updatePayed = new UpdatePayedUseCase(this._repository);
     this.delete = new DeleteReserveUseCase(this._repository);
     this.deleteAll = new DeleteAllReserveUseCase(this._repository);
+    this.updatePayUrl = new UpdatePayUrlUseCase(
+      this._repository,
+      this._imgRepo
+    );
+    this.deletePayUrl = new DeletePayUrlUseCase(
+      this._repository,
+      this._imgRepo
+    );
   }
 }

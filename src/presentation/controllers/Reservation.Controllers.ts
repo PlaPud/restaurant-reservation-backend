@@ -2,6 +2,7 @@ import { ReservationUseCases } from "../../application/Reservation.UseCases";
 import { CreateReserveUseCase } from "../../application/reservation/CreateReserveUseCase";
 import { CreateReserveController } from "./reservation/CreateReserveController";
 import { DeleteAllReserveController } from "./reservation/DeleteAllReserveController";
+import { DeletePayUrlController } from "./reservation/DeletePayUrlController";
 import { DeleteReserveController } from "./reservation/DeleteReserveController";
 import { GetAllReserveController } from "./reservation/GetAllReserveController";
 import { GetAttendReserveController } from "./reservation/GetAttendReserveController";
@@ -26,6 +27,7 @@ export class ReservationControllers {
   public readonly updateAttend: UpdateAttendController;
   public readonly delete: DeleteReserveController;
   public readonly deleteAll: DeleteAllReserveController;
+  public readonly deletePayUrl: DeletePayUrlController;
 
   public constructor(private readonly _useCases: ReservationUseCases) {
     this.create = new CreateReserveController(this._useCases.create);
@@ -40,5 +42,6 @@ export class ReservationControllers {
     this.updateAttend = new UpdateAttendController(this._useCases.updateAttend);
     this.delete = new DeleteReserveController(this._useCases.delete);
     this.deleteAll = new DeleteAllReserveController(this._useCases.deleteAll);
+    this.deletePayUrl = new DeletePayUrlController(this._useCases.deletePayUrl);
   }
 }

@@ -8,6 +8,13 @@ export class InMemoryRestaurantRepository implements IRestaurantRepository {
 
   public constructor() {}
 
+  public async updateProfileImgPath(
+    id: string,
+    imgPath: string
+  ): Promise<Restaurant | null> {
+    throw new Error("Method not implemented.");
+  }
+
   public async find(id: string): Promise<Restaurant | null> {
     const result = this._restaurants.find((rs) => rs.restaurantId === id);
 

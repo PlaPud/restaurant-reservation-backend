@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { CustomerControllers } from "../controllers/Customer.Controllers";
 import {
-  authorizeOwnerAction,
-  authorizeRolesAction,
+  authorizeReqFromOwner,
+  authorizeReqFromRoles,
   checkLogout,
   checkRequestToken,
 } from "../../shared/middlewares/authorization";
 import { TokenRole } from "../../shared/enum/TokenRole";
+import { uploadFile } from "../../shared/middlewares/multer";
 
 export const customerRouter = (controllers: CustomerControllers): Router => {
   const router = Router();
@@ -30,16 +31,26 @@ export const customerRouter = (controllers: CustomerControllers): Router => {
   router.put(
     "/",
     checkRequestToken,
-    authorizeOwnerAction([TokenRole.CUSTOMER]),
+    authorizeReqFromOwner([TokenRole.CUSTOMER]),
     (req, res) => {
       controllers.update.handle(req, res);
+    }
+  );
+
+  router.patch(
+    "/profile-img",
+    checkRequestToken,
+    authorizeReqFromOwner([TokenRole.CUSTOMER]),
+    uploadFile.single("file"),
+    (req, res) => {
+      controllers.updateProfImg.handle(req, res);
     }
   );
 
   router.delete(
     "/",
     checkRequestToken,
-    authorizeOwnerAction([TokenRole.CUSTOMER]),
+    authorizeReqFromOwner([TokenRole.CUSTOMER]),
     (req, res) => {
       controllers.delete.handle(req, res);
     }
@@ -48,9 +59,18 @@ export const customerRouter = (controllers: CustomerControllers): Router => {
   router.delete(
     "/all",
     checkRequestToken,
-    authorizeRolesAction([TokenRole.ADMIN]),
+    authorizeReqFromRoles([TokenRole.ADMIN]),
     (req, res) => {
       controllers.deleteAll.handle(req, res);
+    }
+  );
+
+  router.delete(
+    "/profile-img",
+    checkRequestToken,
+    authorizeReqFromOwner([TokenRole.CUSTOMER]),
+    (req, res) => {
+      controllers.deleteProfImg.handle(req, res);
     }
   );
 

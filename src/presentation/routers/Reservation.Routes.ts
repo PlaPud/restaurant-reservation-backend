@@ -1,13 +1,14 @@
 import { Router } from "express";
 import { ReservationControllers } from "../controllers/Reservation.Controllers";
 import {
-  authorizeOwnerAction,
+  authorizeReqFromOwner,
   authorizeReserveAction,
-  authorizeRolesAction,
+  authorizeReqFromRoles,
   checkRequestToken,
 } from "../../shared/middlewares/authorization";
 import { TokenRole } from "../../shared/enum/TokenRole";
 import { ReservationAuthService } from "../../services/ReservationAuthService";
+import { uploadFile } from "../../shared/middlewares/multer";
 
 export const reservationRouter = (
   controllers: ReservationControllers,
@@ -18,7 +19,7 @@ export const reservationRouter = (
   router.post(
     "/",
     checkRequestToken,
-    authorizeOwnerAction([TokenRole.RESTAURANT]),
+    authorizeReqFromOwner([TokenRole.RESTAURANT]),
     (req, res) => {
       controllers.create.handle(req, res);
     }
@@ -31,7 +32,7 @@ export const reservationRouter = (
   router.get(
     "/all",
     checkRequestToken,
-    authorizeRolesAction([TokenRole.ADMIN]),
+    authorizeReqFromRoles([TokenRole.ADMIN]),
     (req, res) => {
       controllers.getAll.handle(req, res);
     }
@@ -41,7 +42,7 @@ export const reservationRouter = (
   router.get(
     "/avail",
     checkRequestToken,
-    authorizeRolesAction([TokenRole.CUSTOMER, TokenRole.RESTAURANT]),
+    authorizeReqFromRoles([TokenRole.CUSTOMER, TokenRole.RESTAURANT]),
     (req, res) => {
       controllers.getAvail.handle(req, res);
     }
@@ -51,7 +52,7 @@ export const reservationRouter = (
   router.get(
     "/booked",
     checkRequestToken,
-    authorizeRolesAction([TokenRole.RESTAURANT]),
+    authorizeReqFromRoles([TokenRole.RESTAURANT]),
     (req, res) => {
       controllers.getBooked.handle(req, res);
     }
@@ -61,7 +62,7 @@ export const reservationRouter = (
   router.get(
     "/attend",
     checkRequestToken,
-    authorizeRolesAction([TokenRole.RESTAURANT]),
+    authorizeReqFromRoles([TokenRole.RESTAURANT]),
     (req, res) => {
       controllers.getAttend.handle(req, res);
     }
@@ -85,6 +86,7 @@ export const reservationRouter = (
     "/pay-url",
     checkRequestToken,
     authorizeReserveAction([TokenRole.CUSTOMER], authService),
+    uploadFile.single("file"),
     (req, res) => {
       controllers.updatePayUrl.handle(req, res);
     }
@@ -120,9 +122,23 @@ export const reservationRouter = (
     }
   );
 
-  router.delete("/all", (req, res) => {
-    controllers.deleteAll.handle(req, res);
-  });
+  router.delete(
+    "/pay-url",
+    checkRequestToken,
+    authorizeReserveAction([TokenRole.CUSTOMER], authService),
+    (req, res) => {
+      controllers.deletePayUrl.handle(req, res);
+    }
+  );
+
+  router.delete(
+    "/all",
+    checkRequestToken,
+    authorizeReqFromRoles([TokenRole.ADMIN]),
+    (req, res) => {
+      controllers.deleteAll.handle(req, res);
+    }
+  );
 
   return router;
 };

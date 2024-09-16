@@ -11,6 +11,8 @@ export interface IRestaurantRepository {
 
   update(id: string, data: Restaurant): Promise<Restaurant | null>;
 
+  updateProfileImgPath(id: string, imgPath: string): Promise<Restaurant | null>;
+
   delete(id: string): Promise<boolean>;
 
   deleteAll(): Promise<boolean>;
