@@ -1,4 +1,4 @@
-import { GetAllRestaurantUseCase } from "../../application/restaurant/GetAllRestaurantUseCase";
+import { GetAllRestaurantUseCase } from "../../application/restaurant/GetManyRestaurantUseCase";
 import { UpdateRestaurantUseCase } from "../../application/restaurant/UpdateRestaurantUseCase";
 
 export const RESTAURANT_T = {

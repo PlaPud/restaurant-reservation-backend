@@ -3,14 +3,12 @@ import {
   DeleteCustomerUseCase,
   IDeleteCustomerResult,
 } from "../../../application/customer/DeleteCustomerUseCase";
-import { STATUS_CODES } from "http";
-import { sendErrorResponse } from "../../../shared/sendErrorResponse";
 import { BadRequestError } from "../../../errors/HttpError";
-import { TOKEN_NAME } from "../../../shared/constants";
 import { UnauthorizedActionError } from "../../../errors/UseCaseError";
 import { IVerifyRoleResult, JwtService } from "../../../services/JwtService";
+import { TOKEN_NAME } from "../../../shared/constants";
 import { TokenRole } from "../../../shared/enum/TokenRole";
-import { isRequestFromOwner } from "../../../shared/utilsFunc";
+import { sendErrorResponse } from "../../../shared/sendErrorResponse";
 
 export class DeletedCustomerDto implements IDeleteCustomerResult {
   public constructor(public readonly deletionComplete: boolean) {}

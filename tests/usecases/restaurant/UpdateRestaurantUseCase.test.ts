@@ -13,6 +13,11 @@ import { RESTAURANT_T } from "../../../src/shared/inversify/restaurant.types";
 import { IUseCase } from "../../../src/shared/IUseCase";
 import { getMockRestaurant } from "../../shared/mockInstances";
 import { getMockedUUIDString } from "../../shared/mockUUID";
+import { hash } from "bcrypt";
+
+jest.mock("bcrypt", () => ({
+  hash: jest.fn(),
+}));
 
 let mockRestaurantRepo: jest.Mocked<IRestaurantRepository>;
 let testContainer: Container;
@@ -25,10 +30,11 @@ const latestId = () => getMockedUUIDString(idCount - 1);
 const setUp = () => {
   mockRestaurantRepo = {
     find: jest.fn(),
-    findAll: jest.fn(),
+    findMany: jest.fn(),
     findByEmail: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
+    updateProfileImgPath: jest.fn(),
     delete: jest.fn(),
     deleteAll: jest.fn(),
   } as jest.Mocked<IRestaurantRepository>;
@@ -47,6 +53,8 @@ const setUp = () => {
     .to(UpdateRestaurantUseCase);
 
   (randomUUID as jest.Mock).mockReturnValue(getMockedUUIDString(idCount++));
+
+  (hash as jest.Mock).mockImplementation((s: string) => s);
 
   sut = testContainer.get<
     IUseCase<IUpdateRestaurantDto, IUpdateRestaurantResult>
@@ -78,6 +86,10 @@ describe("UpdateRestaurantUseCase", () => {
         address: existedData.address,
         email: existedData.email,
         password: existedData.hashPassword,
+        subDistrict: "",
+        district: "",
+        province: "",
+        description: "",
       },
     };
 
@@ -89,6 +101,10 @@ describe("UpdateRestaurantUseCase", () => {
         address: userInput.data.address,
         email: userInput.data.email,
         hashPassword: userInput.data.password,
+        subDistrict: "",
+        district: "",
+        province: "",
+        description: "",
       })
     );
 
@@ -109,6 +125,10 @@ describe("UpdateRestaurantUseCase", () => {
         address: existedData.address,
         email: existedData.email,
         password: existedData.hashPassword,
+        subDistrict: "",
+        district: "",
+        province: "",
+        description: "",
       },
     };
 

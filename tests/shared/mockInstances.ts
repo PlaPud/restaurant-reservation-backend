@@ -8,6 +8,9 @@ export const getMockRestaurant = (): Restaurant =>
     name: faker.company.name(),
     phone: faker.phone.number(),
     address: faker.location.street(),
+    subDistrict: faker.location.street(),
+    district: faker.location.city(),
+    province: faker.location.state(),
     email: faker.internet.email(),
     hashPassword: faker.string.alphanumeric({ length: 10, casing: "mixed" }),
   });
@@ -25,5 +28,6 @@ export const getMockReservation = (restaurantId: string) =>
   new Reservation({
     restaurantId,
     seats: faker.number.int(),
+    reservePrice: faker.number.int(),
     reserveDate: faker.date.future().toISOString(),
   });

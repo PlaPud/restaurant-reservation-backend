@@ -7,27 +7,35 @@ import { InternalServerError, NotFoundError } from "../../errors/HttpError";
 import { inject, injectable } from "inversify";
 import { CUSTOMER_T } from "../../shared/inversify/customer.types";
 
-export interface IGetAllCustomerResult {
+export interface IGetManyCustomerResult {
+  page: number;
   data: CustomerJSONResponse[];
 }
 
 @injectable()
-export class GetAllCustomerUseCase
-  implements IUseCase<null, IGetAllCustomerResult>
+export class GetManyCustomerUseCase
+  implements IUseCase<null, IGetManyCustomerResult>
 {
+  private _page = 1;
+
   public constructor(
     @inject(CUSTOMER_T.InMemoryCustomerRepository)
     private readonly _customerRepository: ICustomerRepository
   ) {}
 
-  public async execute(): Promise<IGetAllCustomerResult> {
-    const data = await this._customerRepository.findAll();
+  public setPagination(page: number) {
+    this._page = page ? page : this._page;
+  }
+
+  public async execute(): Promise<IGetManyCustomerResult> {
+    const data = await this._customerRepository.findMany(this._page);
 
     if (!data) throw new InternalServerError();
 
     const results = data.map((c) => c.toJSONResponse());
 
     return {
+      page: this._page,
       data: results,
     };
   }

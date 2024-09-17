@@ -1,29 +1,32 @@
 import { Request, Response } from "express";
 import { STATUS_CODES } from "http";
 import {
-  GetAllCustomerUseCase,
-  IGetAllCustomerResult,
-} from "../../../application/customer/GetAllCustomerUseCase";
+  GetManyCustomerUseCase,
+  IGetManyCustomerResult,
+} from "../../../application/customer/GetManyCustomerUseCase";
 import { CustomerObj, CustomerJSONResponse } from "../../../domain/Customer";
 import { sendErrorResponse } from "../../../shared/sendErrorResponse";
 import { StatusCode } from "../../../shared/enum/StatusCode";
 import { TOKEN_NAME } from "../../../shared/constants";
 import { UnauthorizedActionError } from "../../../errors/UseCaseError";
 
-export class GetAllCustomerDto implements IGetAllCustomerResult {
-  constructor(public readonly data: CustomerJSONResponse[]) {}
-}
+export interface GetManyCustomerResponseDto extends IGetManyCustomerResult {}
 
-export class GetAllCustomerController {
-  public constructor(private readonly _useCase: GetAllCustomerUseCase) {}
+export class GetManyCustomerController {
+  public constructor(private readonly _useCase: GetManyCustomerUseCase) {}
 
   public async handle(req: Request, res: Response) {
     try {
       if (!req.cookies[TOKEN_NAME]) throw new UnauthorizedActionError();
 
+      this._useCase.setPagination(req.body.page);
+
       const result = await this._useCase.execute();
 
-      const response: GetAllCustomerDto = new GetAllCustomerDto(result.data);
+      const response: GetManyCustomerResponseDto = {
+        page: result.page,
+        data: result.data,
+      };
 
       if (response.data.length <= 0) {
         res.sendStatus(StatusCode.NO_CONTENT);

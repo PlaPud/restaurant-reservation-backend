@@ -2,9 +2,9 @@ import { randomUUID } from "crypto";
 import { Container } from "inversify";
 import "reflect-metadata";
 import {
-  GetAllCustomerUseCase,
-  IGetAllCustomerResult,
-} from "../../../src/application/customer/GetAllCustomerUseCase";
+  GetManyCustomerUseCase,
+  IGetManyCustomerResult,
+} from "../../../src/application/customer/GetManyCustomerUseCase";
 import { Customer } from "../../../src/domain/Customer";
 import { NotFoundError } from "../../../src/errors/HttpError";
 import { ICustomerRepository } from "../../../src/infrastructure/interfaces/ICustomerRepository";
@@ -20,7 +20,7 @@ const getMockedUUIDString = (n: number) => `${n}-${n}-${n}-${n}-${n}`;
 
 describe("GetAllCustomerUseCase", () => {
   let mockedCustomerRepo: jest.Mocked<ICustomerRepository>;
-  let useCase: IUseCase<null, IGetAllCustomerResult>;
+  let useCase: IUseCase<null, IGetManyCustomerResult>;
   let testContainer: Container;
   let mockedUUID: string;
   let idCount = 0;
@@ -28,10 +28,11 @@ describe("GetAllCustomerUseCase", () => {
   beforeEach(() => {
     mockedCustomerRepo = {
       find: jest.fn(),
-      findAll: jest.fn(),
+      findMany: jest.fn(),
       findByEmail: jest.fn(),
       save: jest.fn(),
       update: jest.fn(),
+      updateProfileImgPath: jest.fn(),
       delete: jest.fn(),
       deleteAll: jest.fn(),
     } as jest.Mocked<ICustomerRepository>;
@@ -43,12 +44,12 @@ describe("GetAllCustomerUseCase", () => {
       .toConstantValue(mockedCustomerRepo);
 
     testContainer
-      .bind<IUseCase<null, IGetAllCustomerResult>>(
+      .bind<IUseCase<null, IGetManyCustomerResult>>(
         CUSTOMER_T.GetAllCustomerUseCase
       )
-      .to(GetAllCustomerUseCase);
+      .to(GetManyCustomerUseCase);
 
-    useCase = testContainer.get<IUseCase<null, IGetAllCustomerResult>>(
+    useCase = testContainer.get<IUseCase<null, IGetManyCustomerResult>>(
       CUSTOMER_T.GetAllCustomerUseCase
     );
 
@@ -66,7 +67,7 @@ describe("GetAllCustomerUseCase", () => {
   it("Should return JSON result sucessfully", async () => {
     const createdCustomer = getMockCustomer();
 
-    mockedCustomerRepo.findAll.mockResolvedValue([createdCustomer]);
+    mockedCustomerRepo.findMany.mockResolvedValue([createdCustomer]);
 
     const result = await useCase.execute(null);
 

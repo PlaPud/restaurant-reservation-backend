@@ -26,21 +26,6 @@ export class DeleteRestaurantController {
 
       if (!restaurantId) throw new BadRequestError();
 
-      // if (!req.cookies[TOKEN_NAME]) throw new UnauthorizedActionError();
-
-      // const verifyResult: IVerifyRoleResult =
-      //   await this._jwtService.verifyTokenRole({
-      //     token: req.cookies[TOKEN_NAME],
-      //     toHaveRole: [TokenRole.ADMIN, TokenRole.RESTAURANT],
-      //   });
-
-      // if (!verifyResult.isAuthorized)
-      //   throw new UnauthorizedActionError(`Must be requested by admin`);
-
-      // if (restaurantId !== verifyResult.payload.sub) {
-      //   throw new UnauthorizedActionError(`Can delete only your data.`);
-      // }
-
       const userInput: IDeleteRestaurantDto = {
         restaurantId: restaurantId as string,
       };

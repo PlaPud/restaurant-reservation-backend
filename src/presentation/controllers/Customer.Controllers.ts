@@ -4,14 +4,14 @@ import { CreateCustomerController } from "./customer/CreateCustomerController";
 import { DeleteAllCustomerController } from "./customer/DeleteAllCustomerController";
 import { DeleteCustomerController } from "./customer/DeleteCustomerController";
 import { DeleteCustomerProfImgController } from "./customer/DeleteCustomerProfImgController";
-import { GetAllCustomerController } from "./customer/GetAllCustomerController";
+import { GetManyCustomerController } from "./customer/GetManyCustomerController";
 import { GetCustomerController } from "./customer/GetCustomerController";
 import { UpdateCustomerController } from "./customer/UpdateCustomerController";
 import { UpdateCustomerProfImgController } from "./customer/UpdateCustomerProfImgController";
 
 export class CustomerControllers {
   public readonly get: GetCustomerController;
-  public readonly getAll: GetAllCustomerController;
+  public readonly getAll: GetManyCustomerController;
   public readonly create: CreateCustomerController;
   public readonly update: UpdateCustomerController;
   public readonly delete: DeleteCustomerController;
@@ -23,7 +23,7 @@ export class CustomerControllers {
 
   public constructor(private readonly _useCases: CustomerUseCases) {
     this.get = new GetCustomerController(_useCases.get);
-    this.getAll = new GetAllCustomerController(_useCases.getAll);
+    this.getAll = new GetManyCustomerController(_useCases.getAll);
     this.create = new CreateCustomerController(_useCases.create);
     this.update = new UpdateCustomerController(_useCases.update);
     this.delete = new DeleteCustomerController(_useCases.delete);

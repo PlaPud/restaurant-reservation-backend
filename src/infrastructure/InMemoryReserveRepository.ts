@@ -15,6 +15,9 @@ export class InMemoryReserveRepository implements IReserveRepository {
       phone: "123",
       address: "Mock Street",
       email: "rest1@email.com",
+      subDistrict: "",
+      district: "",
+      province: "",
       hashPassword: faker.string.alphanumeric({ length: 32, casing: "mixed" }),
       currentReserves: [
         ...this._reserves.filter((r) => r.restaurantId === "1"),
@@ -25,6 +28,9 @@ export class InMemoryReserveRepository implements IReserveRepository {
       name: "restaurant2",
       phone: "123",
       address: "Mock Street",
+      subDistrict: "",
+      district: "",
+      province: "",
       email: "rest2@email.com",
       hashPassword: faker.string.alphanumeric({ length: 32, casing: "mixed" }),
       currentReserves: [
@@ -98,7 +104,7 @@ export class InMemoryReserveRepository implements IReserveRepository {
     return result;
   }
 
-  public async findAll(): Promise<Reservation[] | null> {
+  public async findMany(): Promise<Reservation[] | null> {
     const result = this._reserves ?? null;
 
     if (!result) throw new DataIntegrityError();

@@ -31,6 +31,9 @@ model Restaurant {
   phone String @unique
   email String @unique
   address String
+  province String
+  district String
+  subDistrict String
   isVerified Boolean @default(false)
   hashPassword String
   profileImgPath String @default("")

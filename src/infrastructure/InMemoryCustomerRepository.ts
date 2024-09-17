@@ -36,7 +36,7 @@ export class InMemoryCustomerRepository implements ICustomerRepository {
     return result;
   }
 
-  public async findAll(): Promise<Customer[]> {
+  public async findMany(): Promise<Customer[]> {
     const result = this._customers ?? null;
 
     if (!result) throw new DataIntegrityError();

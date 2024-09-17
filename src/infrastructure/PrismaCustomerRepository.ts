@@ -64,7 +64,7 @@ export class PrismaCustomerRepository implements ICustomerRepository {
     return Customer.fromJSON(result);
   }
 
-  public async findAll(): Promise<Customer[]> {
+  public async findMany(page: number): Promise<Customer[]> {
     const results = await this._client.customer.findMany({
       include: {
         reservations: true,

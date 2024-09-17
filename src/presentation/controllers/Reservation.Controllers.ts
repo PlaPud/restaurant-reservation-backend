@@ -4,7 +4,7 @@ import { CreateReserveController } from "./reservation/CreateReserveController";
 import { DeleteAllReserveController } from "./reservation/DeleteAllReserveController";
 import { DeletePayUrlController } from "./reservation/DeletePayUrlController";
 import { DeleteReserveController } from "./reservation/DeleteReserveController";
-import { GetAllReserveController } from "./reservation/GetAllReserveController";
+import { GetManyReserveController } from "./reservation/GetManyReserveController";
 import { GetAttendReserveController } from "./reservation/GetAttendReserveController";
 import { GetAvailReserveController } from "./reservation/GetAvailReserveController";
 import { GetBookedReserveController } from "./reservation/GetBookedReserveController";
@@ -20,7 +20,7 @@ export class ReservationControllers {
   public readonly getAvail: GetAvailReserveController;
   public readonly getBooked: GetBookedReserveController;
   public readonly getAttend: GetAttendReserveController;
-  public readonly getAll: GetAllReserveController;
+  public readonly getAll: GetManyReserveController;
   public readonly update: UpdateReserveController;
   public readonly updatePayUrl: UpdatePayUrlController;
   public readonly updatePayed: UpdatePayedController;
@@ -35,7 +35,7 @@ export class ReservationControllers {
     this.getAvail = new GetAvailReserveController(this._useCases.getAvail);
     this.getBooked = new GetBookedReserveController(this._useCases.getBooked);
     this.getAttend = new GetAttendReserveController(this._useCases.getAttend);
-    this.getAll = new GetAllReserveController(this._useCases.getAll);
+    this.getAll = new GetManyReserveController(this._useCases.getAll);
     this.update = new UpdateReserveController(this._useCases.update);
     this.updatePayUrl = new UpdatePayUrlController(this._useCases.updatePayUrl);
     this.updatePayed = new UpdatePayedController(this._useCases.updatePayed);

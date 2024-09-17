@@ -7,6 +7,7 @@ import { InternalServerError } from "../errors/HttpError";
 import { RepositoryError } from "../errors/RepositoryError";
 import { TYPES } from "../shared/inversify/types";
 import { IReserveRepository } from "./interfaces/IReserveRepository";
+import { PAGE_SIZE } from "../shared/constants";
 
 @injectable()
 export class PrismaReservationRepository implements IReserveRepository {
@@ -28,88 +29,66 @@ export class PrismaReservationRepository implements IReserveRepository {
   }
 
   public async findAvailReserves(
-    restaurantId: string
+    restaurantId: string,
+    page: number
   ): Promise<Reservation[] | null> {
-    const result = await this._client.restaurant.findUnique({
-      where: { restaurantId: restaurantId },
+    const result = await this._client.reservation.findMany({
+      skip: PAGE_SIZE * (page - 1),
+      take: PAGE_SIZE,
+      where: { restaurantId: restaurantId, isPayed: false },
       include: {
-        currentReserves: {
-          include: {
-            customer: true,
-            restaurant: true,
-          },
-        },
+        customer: true,
+        restaurant: true,
       },
     });
 
-    if (!result)
-      throw new EntityNotFoundError(
-        `Cannot find restaurant (ID: ${restaurantId})`
-      );
-
-    const availResult = result.currentReserves.filter((r) => !r.isPayed);
-
-    const data = availResult.map((obj) => Reservation.fromJSON(obj));
+    const data = result.map((obj) => Reservation.fromJSON(obj));
 
     return data;
   }
 
   public async findBookedReserves(
-    restaurantId: string
+    restaurantId: string,
+    page: number
   ): Promise<Reservation[] | null> {
-    const result = await this._client.restaurant.findUnique({
-      where: { restaurantId: restaurantId },
+    const result = await this._client.reservation.findMany({
+      skip: PAGE_SIZE * (page - 1),
+      take: PAGE_SIZE,
+      where: { restaurantId: restaurantId, isPayed: true },
       include: {
-        currentReserves: {
-          include: {
-            customer: true,
-            restaurant: true,
-          },
-        },
+        customer: true,
+        restaurant: true,
       },
     });
 
-    if (!result)
-      throw new EntityNotFoundError(
-        `Cannot find restaurant (ID: ${restaurantId})`
-      );
-
-    const bookReserves = result.currentReserves.filter((r) => r.isPayed);
-
-    const data = bookReserves.map((obj) => Reservation.fromJSON(obj));
+    const data = result.map((obj) => Reservation.fromJSON(obj));
 
     return data;
   }
 
   public async findAttendReserves(
-    restaurantId: string
+    restaurantId: string,
+    page: number
   ): Promise<Reservation[] | null> {
-    const result = await this._client.restaurant.findUnique({
-      where: { restaurantId: restaurantId },
+    const result = await this._client.reservation.findMany({
+      skip: PAGE_SIZE * (page - 1),
+      take: PAGE_SIZE,
+      where: { restaurantId: restaurantId, isAttended: true },
       include: {
-        currentReserves: {
-          include: {
-            customer: true,
-            restaurant: true,
-          },
-        },
+        customer: true,
+        restaurant: true,
       },
     });
 
-    if (!result)
-      throw new EntityNotFoundError(
-        `Cannot find restaurant (ID: ${restaurantId})`
-      );
-
-    const bookReserves = result.currentReserves.filter((r) => r.isAttended);
-
-    const data = bookReserves.map((obj) => Reservation.fromJSON(obj));
+    const data = result.map((obj) => Reservation.fromJSON(obj));
 
     return data;
   }
 
-  public async findAll(): Promise<Reservation[] | null> {
+  public async findMany(page: number): Promise<Reservation[] | null> {
     const result = await this._client.reservation.findMany({
+      skip: PAGE_SIZE * (page - 1),
+      take: PAGE_SIZE,
       include: {
         restaurant: true,
         customer: true,

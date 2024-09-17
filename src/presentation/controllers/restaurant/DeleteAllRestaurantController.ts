@@ -22,15 +22,6 @@ export class DeleteAllRestaurantController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
-      // const verifyResult: IVerifyRoleResult =
-      //   await this._jwtService.verifyTokenRole({
-      //     token: req.cookies[TOKEN_NAME],
-      //     toHaveRole: [TokenRole.ADMIN],
-      //   });
-
-      // if (!verifyResult.isAuthorized)
-      //   throw new UnauthorizedActionError(`Must be requested by admin.`);
-
       const result = await this._useCase.execute(null);
 
       const response: DeletedAllRestaurantResponseDto = {
