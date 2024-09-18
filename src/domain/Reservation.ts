@@ -10,10 +10,10 @@ export interface ReservationObj {
   reserveId: string;
   customerId: string | null;
   restaurantId: string;
-  lastModified: string | null;
+  lastModified: number | null;
   seats: number;
   reservePrice: number;
-  reserveDate: string;
+  reserveDate: number;
   payImgUrl: string;
   isPayed: boolean;
   isAttended: boolean;
@@ -25,9 +25,9 @@ export interface ReservationJSONResponse {
   reserveId: string;
   customerId: string | null;
   restaurantId: string;
-  lastModified: string | null;
+  lastModified: number | null;
   seats: number;
-  reserveDate: string;
+  reserveDate: number;
   payImgUrl: string;
   isPayed: boolean;
   isAttended: boolean;
@@ -39,10 +39,10 @@ export type ReserveConstrParams = {
   reserveId?: string;
   customerId?: string | null;
   restaurantId: string;
-  lastModified?: string | null;
+  lastModified?: number | null;
   seats: number;
   reservePrice: number;
-  reserveDate: string;
+  reserveDate: number;
   payImgUrl?: string;
   isPayed?: boolean;
   isAttended?: boolean;
@@ -54,10 +54,10 @@ export class Reservation {
   public readonly reserveId: string = randomUUID();
   public customerId: string | null;
   public restaurantId: string;
-  public lastModified: string;
+  public lastModified: number;
   public seats: number = 2;
   public reservePrice: number = 0;
-  public reserveDate: string = "";
+  public reserveDate: number;
   public payImgUrl: string = "";
   public isPayed: boolean = false;
   public isAttended: boolean = false;
@@ -68,8 +68,7 @@ export class Reservation {
     this.reserveId = this.options.reserveId ?? randomUUID();
     this.customerId = this.options.customerId ?? null;
     this.restaurantId = this.options.restaurantId ?? "";
-    this.lastModified =
-      this.options.lastModified ?? new Date(Date.now()).toISOString();
+    this.lastModified = this.options.lastModified ?? Date.now();
     this.seats = this.options.seats ?? 2;
     this.reservePrice = this.options.reservePrice ?? 0;
     this.reserveDate = this.options.reserveDate ?? "";

@@ -167,7 +167,7 @@ export class InMemoryReserveRepository implements IReserveRepository {
 
   public async changeReserveDate(
     id: string,
-    date: string
+    date: number
   ): Promise<Reservation | null> {
     const reservation: Reservation | undefined = this._findById(id);
 

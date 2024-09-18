@@ -29,5 +29,5 @@ export const getMockReservation = (restaurantId: string) =>
     restaurantId,
     seats: faker.number.int(),
     reservePrice: faker.number.int(),
-    reserveDate: faker.date.future().toISOString(),
+    reserveDate: faker.date.future().getTime(),
   });

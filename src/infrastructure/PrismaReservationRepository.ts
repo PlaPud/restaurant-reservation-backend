@@ -106,7 +106,7 @@ export class PrismaReservationRepository implements IReserveRepository {
         data: {
           restaurantId,
           seats,
-          reserveDate: reserveDate.toString(),
+          reserveDate,
         },
         include: {
           customer: true,
