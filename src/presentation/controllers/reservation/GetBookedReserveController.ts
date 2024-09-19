@@ -21,6 +21,8 @@ export class GetBookedReserveController {
         restaurantId: req.query.restaurantId as string,
       };
 
+      this._useCase.setPagination(req.body.page);
+
       const result = await this._useCase.execute(userInput);
 
       const response: IGetBookedReserveResult = result;

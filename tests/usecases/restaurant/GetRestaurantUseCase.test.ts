@@ -24,10 +24,11 @@ const latestId = () => getMockedUUIDString(idCount - 1);
 const setUp = () => {
   mockRestaurantRepo = {
     find: jest.fn(),
-    findAll: jest.fn(),
+    findMany: jest.fn(),
     findByEmail: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
+    updateProfileImgPath: jest.fn(),
     delete: jest.fn(),
     deleteAll: jest.fn(),
   } as jest.Mocked<IRestaurantRepository>;

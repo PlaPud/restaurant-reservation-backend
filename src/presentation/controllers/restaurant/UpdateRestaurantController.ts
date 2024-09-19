@@ -19,8 +19,17 @@ export class UpdateRestaurantController {
       if (!req.query.restaurantId || !req.body.data)
         throw new BadRequestError();
 
-      const { name, phone, address, email, password, description } =
-        req.body.data;
+      const {
+        name,
+        phone,
+        address,
+        subDistrict,
+        district,
+        province,
+        email,
+        password,
+        description,
+      } = req.body.data;
 
       const userInput: IUpdateRestaurantDto = {
         restaurantId: req.query.restaurantId as string,
@@ -29,6 +38,9 @@ export class UpdateRestaurantController {
           phone,
           address,
           email,
+          subDistrict,
+          district,
+          province,
           password,
           description,
         },
@@ -47,6 +59,9 @@ export class UpdateRestaurantController {
         address: result.address,
         email: result.email,
         description: result.description,
+        subDistrict: result.subDistrict,
+        district: result.district,
+        province: result.province,
       };
 
       res.status(StatusCode.OK).send(response);

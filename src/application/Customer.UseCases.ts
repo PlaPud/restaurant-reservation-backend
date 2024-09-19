@@ -5,14 +5,14 @@ import { CreateCustomerUseCase } from "./customer/CreateCustomerUseCase";
 import { DeleteAllCustomerUseCase } from "./customer/DeleteAllCustomerUseCase";
 import { DeleteCustomerProfImgUseCase } from "./customer/DeleteCustomerProfileImgUseCase";
 import { DeleteCustomerUseCase } from "./customer/DeleteCustomerUseCase";
-import { GetAllCustomerUseCase } from "./customer/GetAllCustomerUseCase";
+import { GetManyCustomerUseCase } from "./customer/GetManyCustomerUseCase";
 import { GetCustomerUseCase } from "./customer/GetCustomerUseCase";
 import { UpdateCustomerProfileImgUseCase } from "./customer/UpdateCustomerProfileImgUseCase";
 import { UpdateCustomerUseCase } from "./customer/UpdateCustomerUseCase";
 
 export class CustomerUseCases {
   public readonly get: GetCustomerUseCase;
-  public readonly getAll: GetAllCustomerUseCase;
+  public readonly getAll: GetManyCustomerUseCase;
   public readonly create: CreateCustomerUseCase;
   public readonly update: UpdateCustomerUseCase;
   public readonly updateProfImg: UpdateCustomerProfileImgUseCase;
@@ -27,7 +27,7 @@ export class CustomerUseCases {
     private readonly _imgRepo: IImageRepository
   ) {
     this.get = new GetCustomerUseCase(_repository);
-    this.getAll = new GetAllCustomerUseCase(_repository);
+    this.getAll = new GetManyCustomerUseCase(_repository);
     this.create = new CreateCustomerUseCase(_repository);
     this.update = new UpdateCustomerUseCase(_repository);
     this.delete = new DeleteCustomerUseCase(_repository);

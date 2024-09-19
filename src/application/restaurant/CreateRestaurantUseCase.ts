@@ -11,6 +11,9 @@ export interface ICreateRestaurantDto {
   name: string;
   phone: string;
   address: string;
+  subDistrict: string;
+  district: string;
+  province: string;
   email: string;
   password: string | Buffer;
 }
@@ -20,6 +23,9 @@ export interface ICreateRestaurantResult {
   name: string;
   phone: string;
   address: string;
+  subDistrict: string;
+  district: string;
+  province: string;
   email: string;
 }
 
@@ -46,6 +52,9 @@ export class CreateRestaurantUseCase implements ICreateRestaurantUseCase {
       name: input.name,
       phone: input.phone,
       address: input.address,
+      subDistrict: input.subDistrict,
+      district: input.district,
+      province: input.province,
       email: input.email,
       hashPassword,
     });

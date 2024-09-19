@@ -14,13 +14,20 @@ export interface IGetBookedReserveResult {
 export class GetBookedReserveUseCase
   implements IUseCase<IGetBookedReserveDto, IGetBookedReserveResult>
 {
+  private _page = 1;
+
   public constructor(private readonly _repository: IReserveRepository) {}
+
+  public setPagination(page: number) {
+    this._page = page ?? this._page;
+  }
 
   public async execute(
     input: IGetBookedReserveDto
   ): Promise<IGetBookedReserveResult> {
     const result = await this._repository.findBookedReserves(
-      input.restaurantId
+      input.restaurantId,
+      this._page
     );
 
     if (!result) throw new InternalServerError();

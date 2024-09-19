@@ -8,6 +8,8 @@ import { RepositoryError } from "../errors/RepositoryError";
 import { inject, injectable } from "inversify";
 import { RESTAURANT_T } from "../shared/inversify/restaurant.types";
 import { TYPES } from "../shared/inversify/types";
+import { IFilterRestaurant } from "../shared/searchFilter";
+import { PAGE_SIZE } from "../shared/constants";
 
 @injectable()
 export class PrismaRestaurantRepository implements IRestaurantRepository {
@@ -64,8 +66,14 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
     return Restaurant.fromJSON(result);
   }
 
-  public async findAll(): Promise<Restaurant[]> {
+  public async findMany(
+    page: number,
+    filterBy: IFilterRestaurant | null
+  ): Promise<Restaurant[]> {
     const results = await this._client.restaurant.findMany({
+      skip: PAGE_SIZE * (page - 1),
+      take: PAGE_SIZE,
+      where: filterBy ? filterBy : {},
       include: {
         currentReserves: true,
       },
@@ -76,13 +84,24 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
 
   public async save(restaurant: Restaurant): Promise<Restaurant | null> {
     try {
-      const { name, phone, address, email, hashPassword } =
-        restaurant.toObject();
+      const {
+        name,
+        phone,
+        address,
+        province,
+        district,
+        subDistrict,
+        email,
+        hashPassword,
+      } = restaurant.toObject();
       const result = await this._client.restaurant.create({
         data: {
           name,
           phone,
           address,
+          province,
+          district,
+          subDistrict,
           email,
           hashPassword,
         },

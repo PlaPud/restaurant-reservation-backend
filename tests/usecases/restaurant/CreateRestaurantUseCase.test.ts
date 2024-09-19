@@ -31,10 +31,11 @@ const latestId = () => getMockedUUIDString(idCount - 1);
 const setUp = () => {
   mockRestaurantRepo = {
     find: jest.fn(),
-    findAll: jest.fn(),
+    findMany: jest.fn(),
     findByEmail: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
+    updateProfileImgPath: jest.fn(),
     delete: jest.fn(),
     deleteAll: jest.fn(),
   } as jest.Mocked<IRestaurantRepository>;
@@ -82,6 +83,9 @@ describe("CreateRestaurantUseCase", () => {
       address: faker.location.streetAddress(),
       email: faker.internet.email(),
       password: faker.string.alphanumeric({ length: 32 }),
+      subDistrict: faker.location.street(),
+      district: faker.location.city(),
+      province: faker.location.state(),
     };
 
     mockRestaurantRepo.save.mockImplementation(async (rs: Restaurant) => {
@@ -89,6 +93,9 @@ describe("CreateRestaurantUseCase", () => {
         name: rs.name,
         phone: rs.phone,
         address: rs.address,
+        subDistrict: rs.subDistrict,
+        district: rs.district,
+        province: rs.province,
         email: rs.email,
         hashPassword: rs.hashPassword,
         isVerified: rs.isVerified,
@@ -109,6 +116,9 @@ describe("CreateRestaurantUseCase", () => {
       address: faker.location.streetAddress(),
       email: faker.internet.email(),
       password: faker.string.alphanumeric({ length: 32 }),
+      subDistrict: faker.location.street(),
+      district: faker.location.city(),
+      province: faker.location.state(),
     };
 
     mockRestaurantRepo.save.mockImplementation(async (rs: Restaurant) => {

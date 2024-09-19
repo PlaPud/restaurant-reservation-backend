@@ -4,14 +4,14 @@ import { CreateRestaurantController } from "./restaurant/CreateRestaurantControl
 import { DeleteAllRestaurantController } from "./restaurant/DeleteAllRestaurantController";
 import { DeleteRestaurantController } from "./restaurant/DeleteRestaurantController";
 import { DeleteRestaurantProfileImgController } from "./restaurant/DeleteRestaurantProfileImgController";
-import { GetAllRestaurantController } from "./restaurant/GetAllRestaurantController";
+import { GetManyRestaurantController } from "./restaurant/GetManyRestaurantController";
 import { GetRestaurantController } from "./restaurant/GetRestaurantController";
 import { UpdateRestaurantController } from "./restaurant/UpdateRestaurantController";
 import { UpdateRestaurantProfileImgController } from "./restaurant/UpdateRestaurantProfileImgController";
 
 export class RestaurantControllers {
   public readonly get: GetRestaurantController;
-  public readonly getAll: GetAllRestaurantController;
+  public readonly getAll: GetManyRestaurantController;
   public readonly create: CreateRestaurantController;
   public readonly update: UpdateRestaurantController;
   public readonly updateProfImg: UpdateRestaurantProfileImgController;
@@ -23,7 +23,7 @@ export class RestaurantControllers {
 
   constructor(private readonly _useCases: RestaurantUseCases) {
     this.get = new GetRestaurantController(_useCases.get);
-    this.getAll = new GetAllRestaurantController(_useCases.getAll);
+    this.getAll = new GetManyRestaurantController(_useCases.getAll);
     this.create = new CreateRestaurantController(_useCases.create);
     this.update = new UpdateRestaurantController(_useCases.update);
     this.delete = new DeleteRestaurantController(_useCases.delete);

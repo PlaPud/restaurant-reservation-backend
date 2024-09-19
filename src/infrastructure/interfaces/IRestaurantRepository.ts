@@ -1,11 +1,15 @@
 import { Restaurant } from "../../domain/Restaurant";
+import { IFilterRestaurant } from "../../shared/searchFilter";
 
 export interface IRestaurantRepository {
   find(id: string): Promise<Restaurant | null>;
 
   findByEmail(email: string): Promise<Restaurant | null>;
 
-  findAll(): Promise<Restaurant[] | null>;
+  findMany(
+    page: number,
+    filterBy: IFilterRestaurant | null
+  ): Promise<Restaurant[] | null>;
 
   save(restaurant: Restaurant): Promise<Restaurant | null>;
 

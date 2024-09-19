@@ -33,10 +33,11 @@ describe("CreateCustomerUseCase", () => {
   beforeEach(() => {
     mockedCustomerRepo = {
       find: jest.fn(),
-      findAll: jest.fn(),
+      findMany: jest.fn(),
       findByEmail: jest.fn(),
       save: jest.fn(),
       update: jest.fn(),
+      updateProfileImgPath: jest.fn(),
       delete: jest.fn(),
       deleteAll: jest.fn(),
     } as jest.Mocked<ICustomerRepository>;

@@ -5,7 +5,7 @@ import { CreateReserveUseCase } from "./reservation/CreateReserveUseCase";
 import { DeleteAllReserveUseCase } from "./reservation/DeleteAllReserveUseCase";
 import { DeletePayUrlUseCase } from "./reservation/DeletePayUrlUseCase";
 import { DeleteReserveUseCase } from "./reservation/DeleteReserveUseCase";
-import { GetAllReserveUseCase } from "./reservation/GetAllReserveUseCase";
+import { GetManyReserveUseCase } from "./reservation/GetManyReserveUseCase";
 import { GetAttendReserveUseCase } from "./reservation/GetAttendReserveUseCase";
 import { GetAvailReserveUseCase } from "./reservation/GetAvailReserveUseCase";
 import { GetBookedReserveUseCase } from "./reservation/GetBookedReserveUseCase";
@@ -21,7 +21,7 @@ export class ReservationUseCases {
   public readonly getAvail: GetAvailReserveUseCase;
   public readonly getBooked: GetBookedReserveUseCase;
   public readonly getAttend: GetAttendReserveUseCase;
-  public readonly getAll: GetAllReserveUseCase;
+  public readonly getAll: GetManyReserveUseCase;
   public readonly update: UpdateReserveUseCase;
   public readonly updateAttend: UpdateAttendUseCase;
   public readonly updatePayed: UpdatePayedUseCase;
@@ -39,7 +39,7 @@ export class ReservationUseCases {
     this.getAvail = new GetAvailReserveUseCase(this._repository);
     this.getBooked = new GetBookedReserveUseCase(this._repository);
     this.getAttend = new GetAttendReserveUseCase(this._repository);
-    this.getAll = new GetAllReserveUseCase(this._repository);
+    this.getAll = new GetManyReserveUseCase(this._repository);
     this.update = new UpdateReserveUseCase(this._repository);
     this.updateAttend = new UpdateAttendUseCase(this._repository);
     this.updatePayed = new UpdatePayedUseCase(this._repository);

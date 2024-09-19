@@ -3,30 +3,31 @@ import { Container } from "inversify";
 import "reflect-metadata";
 import {
   GetAllRestaurantUseCase,
-  IGetAllRestaurantResult,
-} from "../../../src/application/restaurant/GetAllRestaurantUseCase";
+  IGetManyRestaurantResult,
+} from "../../../src/application/restaurant/GetManyRestaurantUseCase";
 import { IRestaurantRepository } from "../../../src/infrastructure/interfaces/IRestaurantRepository";
 import { RESTAURANT_T } from "../../../src/shared/inversify/restaurant.types";
 import { IUseCase } from "../../../src/shared/IUseCase";
 import { getMockRestaurant } from "../../shared/mockInstances";
 import { getMockedUUIDString } from "../../shared/mockUUID";
-import { IGetAllCustomerResult } from "../../../src/application/customer/GetAllCustomerUseCase";
+import { IGetManyCustomerResult } from "../../../src/application/customer/GetManyCustomerUseCase";
 import { InternalServerError } from "../../../src/errors/HttpError";
 let mockRestaurantRepo: jest.Mocked<IRestaurantRepository>;
 let testContainer: Container;
 let idCount: number;
 
-let sut: IUseCase<null, IGetAllRestaurantResult>;
+let sut: IUseCase<null, IGetManyRestaurantResult>;
 
 const latestId = () => getMockedUUIDString(idCount - 1);
 
 const setUp = () => {
   mockRestaurantRepo = {
     find: jest.fn(),
-    findAll: jest.fn(),
+    findMany: jest.fn(),
     findByEmail: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
+    updateProfileImgPath: jest.fn(),
     delete: jest.fn(),
     deleteAll: jest.fn(),
   } as jest.Mocked<IRestaurantRepository>;
@@ -39,14 +40,14 @@ const setUp = () => {
     .toConstantValue(mockRestaurantRepo);
 
   testContainer
-    .bind<IUseCase<null, IGetAllRestaurantResult>>(
+    .bind<IUseCase<null, IGetManyRestaurantResult>>(
       RESTAURANT_T.GetAllRestaurantUseCase
     )
     .to(GetAllRestaurantUseCase);
 
   (randomUUID as jest.Mock).mockReturnValue(getMockedUUIDString(idCount++));
 
-  sut = testContainer.get<IUseCase<null, IGetAllRestaurantResult>>(
+  sut = testContainer.get<IUseCase<null, IGetManyRestaurantResult>>(
     RESTAURANT_T.GetAllRestaurantUseCase
   );
 };
@@ -68,9 +69,9 @@ describe("GetAllRestaurantUseCase", () => {
   it("Should return all restaurants as JSON.", async () => {
     const existedData = [getMockRestaurant()];
 
-    mockRestaurantRepo.findAll.mockResolvedValue(existedData);
+    mockRestaurantRepo.findMany.mockResolvedValue(existedData);
 
-    const result: IGetAllRestaurantResult = await sut.execute(null);
+    const result: IGetManyRestaurantResult = await sut.execute(null);
 
     expect(result.data[0]).toEqual(
       expect.objectContaining(existedData[0].toObject())
@@ -78,9 +79,9 @@ describe("GetAllRestaurantUseCase", () => {
   });
 
   it("Should throw error if result from repo is null", async () => {
-    mockRestaurantRepo.findAll.mockResolvedValue(null);
+    mockRestaurantRepo.findMany.mockResolvedValue(null);
 
-    const result: Promise<IGetAllRestaurantResult> = sut.execute(null);
+    const result: Promise<IGetManyRestaurantResult> = sut.execute(null);
 
     await expect(result).rejects.toBeInstanceOf(InternalServerError);
   });

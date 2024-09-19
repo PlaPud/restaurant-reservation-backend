@@ -3,7 +3,7 @@ import { Customer } from "../../domain/Customer";
 export interface ICustomerRepository {
   find(id: string): Promise<Customer | null>;
 
-  findAll(): Promise<Customer[] | null>;
+  findMany(page: number): Promise<Customer[] | null>;
 
   findByEmail(email: string): Promise<Customer | null>;
 

@@ -20,7 +20,16 @@ export class CreateRestaurantController {
     try {
       if (req.cookies[TOKEN_NAME]) throw new UnauthorizedActionError();
 
-      const { name, phone, address, email, password } = req.body;
+      const {
+        name,
+        phone,
+        address,
+        subDistrict,
+        district,
+        province,
+        email,
+        password,
+      } = req.body;
 
       const userInput: ICreateRestaurantDto = {
         name,
@@ -28,6 +37,9 @@ export class CreateRestaurantController {
         address,
         email,
         password,
+        subDistrict,
+        district,
+        province,
       };
 
       const { error, value } = restaurantSchema.validate(userInput);
@@ -41,6 +53,9 @@ export class CreateRestaurantController {
         name: result.name,
         phone: result.phone,
         address: result.address,
+        subDistrict: result.subDistrict,
+        district: result.district,
+        province: result.province,
         email: result.email,
       };
 

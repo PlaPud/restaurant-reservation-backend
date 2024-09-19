@@ -141,7 +141,7 @@ describe("[GET] PrismaCustomerRepository", () => {
       customers.map((c) => c.toObject())
     );
 
-    const result = await sut.findAll();
+    const result = await sut.findMany(1);
 
     expect(result.length).toBe(1);
     expect(result[0].toObject()).toEqual(customerData.toObject());
@@ -159,7 +159,7 @@ describe("[GET] PrismaCustomerRepository", () => {
 
   it("Should also return empty array if prisma return empty array", async () => {
     mockCtx.prisma.customer.findMany.mockResolvedValue([]);
-    const result = await sut.findAll();
+    const result = await sut.findMany(1);
     expect(result.length).toBe(0);
   });
 });

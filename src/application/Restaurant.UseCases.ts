@@ -5,7 +5,7 @@ import { CreateRestaurantUseCase } from "./restaurant/CreateRestaurantUseCase";
 import { DeleteAllRestaurantUseCase } from "./restaurant/DeleteAllRestaurantUseCase";
 import { DeleteRestaurantProfileImgUseCase } from "./restaurant/DeleteRestaurantProfileImgUseCase";
 import { DeleteRestaurantUseCase } from "./restaurant/DeleteRestaurantUseCase";
-import { GetAllRestaurantUseCase } from "./restaurant/GetAllRestaurantUseCase";
+import { GetAllRestaurantUseCase } from "./restaurant/GetManyRestaurantUseCase";
 import { GetRestaurantUseCase } from "./restaurant/GetRestaurantUseCase";
 import { UpdateRestaurantProfileImgUseCase } from "./restaurant/UpdateRestaurantProfileImgUseCase";
 import { UpdateRestaurantUseCase } from "./restaurant/UpdateRestaurantUseCase";

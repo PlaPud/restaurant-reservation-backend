@@ -13,6 +13,9 @@ export interface IUpdateRestaurantDto {
     name: string;
     phone: string;
     address: string;
+    subDistrict: string;
+    district: string;
+    province: string;
     email: string;
     description: string;
     password: string;
@@ -25,6 +28,9 @@ export interface IUpdateRestaurantResult {
   phone: string;
   email: string;
   address: string;
+  subDistrict: string;
+  district: string;
+  province: string;
   description: string;
 }
 
@@ -52,6 +58,9 @@ export class UpdateRestaurantUseCase implements IUpdateRestaurantUseCase {
       name: input.data.name,
       phone: input.data.phone,
       address: input.data.address,
+      subDistrict: input.data.subDistrict,
+      district: input.data.district,
+      province: input.data.province,
       email: input.data.email,
       hashPassword,
     });
@@ -68,6 +77,9 @@ export class UpdateRestaurantUseCase implements IUpdateRestaurantUseCase {
       name: result.name,
       phone: result.phone,
       address: result.address,
+      subDistrict: result.subDistrict,
+      district: result.district,
+      province: result.province,
       description: result.description,
       email: result.email,
     };

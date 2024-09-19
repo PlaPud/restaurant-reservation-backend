@@ -33,7 +33,7 @@ export class InMemoryRestaurantRepository implements IRestaurantRepository {
     return result;
   }
 
-  public async findAll(): Promise<Restaurant[]> {
+  public async findMany(): Promise<Restaurant[]> {
     const result = this._restaurants ?? null;
 
     if (!result) throw new DataIntegrityError();
@@ -60,6 +60,9 @@ export class InMemoryRestaurantRepository implements IRestaurantRepository {
         name: data.name,
         phone: data.phone,
         address: data.address,
+        subDistrict: data.subDistrict,
+        district: data.district,
+        province: data.province,
         email: data.email,
         currentReserves: data.currentReserves,
         hashPassword: data.hashPassword,
