@@ -19,9 +19,7 @@ export class InMemoryReserveRepository implements IReserveRepository {
       district: "",
       province: "",
       hashPassword: faker.string.alphanumeric({ length: 32, casing: "mixed" }),
-      currentReserves: [
-        ...this._reserves.filter((r) => r.restaurantId === "1"),
-      ],
+      reservation: [...this._reserves.filter((r) => r.restaurantId === "1")],
     }),
     new Restaurant({
       restaurantId: "2",
@@ -33,9 +31,7 @@ export class InMemoryReserveRepository implements IReserveRepository {
       province: "",
       email: "rest2@email.com",
       hashPassword: faker.string.alphanumeric({ length: 32, casing: "mixed" }),
-      currentReserves: [
-        ...this._reserves.filter((r) => r.restaurantId === "2"),
-      ],
+      reservation: [...this._reserves.filter((r) => r.restaurantId === "2")],
     }),
   ];
 
@@ -59,7 +55,7 @@ export class InMemoryReserveRepository implements IReserveRepository {
 
     if (!restaurant) throw new EntityNotFoundError();
 
-    const result: Reservation[] = restaurant.currentReserves!.filter(
+    const result: Reservation[] = restaurant.reservation!.filter(
       (r) => !r.isPayed
     );
 
@@ -77,7 +73,7 @@ export class InMemoryReserveRepository implements IReserveRepository {
 
     if (!restaurant) throw new EntityNotFoundError();
 
-    const result: Reservation[] = restaurant.currentReserves!.filter(
+    const result: Reservation[] = restaurant.reservation!.filter(
       (r) => r.isPayed
     );
 
@@ -95,7 +91,7 @@ export class InMemoryReserveRepository implements IReserveRepository {
 
     if (!restaurant) throw new EntityNotFoundError();
 
-    const result: Reservation[] = restaurant.currentReserves!.filter(
+    const result: Reservation[] = restaurant.reservation!.filter(
       (r) => r.isAttended
     );
 

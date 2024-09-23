@@ -7,6 +7,7 @@ import { InMemoryReserveRepository } from "./InMemoryReserveRepository";
 import { PrismaReservationRepository } from "./PrismaReservationRepository";
 import { PrismaAdminRepository } from "./PrismaAdminRepository";
 import { FirebaseImgRepository } from "./firebase/FirebaseImgRepository";
+import { PrismaThaiAddrRepository } from "./PrismaThaiAddrRepository";
 
 export class Repositories {
   public readonly inMemoryCustomerRepo: InMemoryCustomerRepository;
@@ -16,6 +17,7 @@ export class Repositories {
   public readonly prismaCustomerRepo: PrismaCustomerRepository;
   public readonly prismaRestaurantRepo: PrismaRestaurantRepository;
   public readonly prismaReservationRepo: PrismaReservationRepository;
+  public readonly prismaThaiAddressRepo: PrismaThaiAddrRepository;
   public readonly prismaAdminRepo: PrismaAdminRepository;
 
   public readonly firebaseImgRepo: FirebaseImgRepository;
@@ -30,6 +32,9 @@ export class Repositories {
       this._prismaClient
     );
     this.prismaReservationRepo = new PrismaReservationRepository(
+      this._prismaClient
+    );
+    this.prismaThaiAddressRepo = new PrismaThaiAddrRepository(
       this._prismaClient
     );
     this.prismaAdminRepo = new PrismaAdminRepository(this._prismaClient);

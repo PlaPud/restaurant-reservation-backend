@@ -12,15 +12,15 @@ export interface ICreateReserveDto {
   restaurantId: string;
   seats: number;
   reservePrice: number;
-  reserveDate: string;
+  reserveDate: number;
 }
 
 export interface ICreateReserveResult {
   reserveId: string;
   restaurantId: string;
-  lastModified: string;
+  lastModified: number;
   seats: number;
-  reserveDate: string;
+  reserveDate: number;
   restaurant: RestaurantJSONResponse;
 }
 

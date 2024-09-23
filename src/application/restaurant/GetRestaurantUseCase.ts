@@ -1,10 +1,10 @@
-import { Reservation } from "@prisma/client";
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { InternalServerError } from "../../errors/HttpError";
 import { IRestaurantRepository } from "../../infrastructure/interfaces/IRestaurantRepository";
 import { RESTAURANT_T } from "../../shared/inversify/restaurant.types";
 import { IUseCase } from "../../shared/IUseCase";
+import { ReservationJSONResponse } from "../../domain/Reservation";
 export interface IGetRestaurantDto {
   restaurantId: string;
 }
@@ -16,7 +16,7 @@ export interface IGetRestaurantResult {
   address: string;
   profileImgPath: string;
   description: string;
-  currentReserves?: Reservation[];
+  currentReserves?: ReservationJSONResponse[];
 }
 
 export interface IGetRestaurantUseCase

@@ -1,11 +1,9 @@
-import { Restaurant } from "@prisma/client";
-import { IUseCase } from "../../shared/IUseCase";
-import { IRestaurantRepository } from "../../infrastructure/interfaces/IRestaurantRepository";
-import { RestaurantObj } from "../../domain/Restaurant";
-import { InternalServerError, NotFoundError } from "../../errors/HttpError";
 import { inject, injectable } from "inversify";
-import { InMemoryRestaurantRepository } from "../../infrastructure/InMemoryRestaurantRepository";
+import { RestaurantObj } from "../../domain/Restaurant";
+import { InternalServerError } from "../../errors/HttpError";
+import { IRestaurantRepository } from "../../infrastructure/interfaces/IRestaurantRepository";
 import { RESTAURANT_T } from "../../shared/inversify/restaurant.types";
+import { IUseCase } from "../../shared/IUseCase";
 import { IFilterRestaurant } from "../../shared/searchFilter";
 
 export interface IGetManyRestaurantResult {

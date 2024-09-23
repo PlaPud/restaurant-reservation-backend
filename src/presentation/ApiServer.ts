@@ -12,6 +12,8 @@ import { ReservationAuthService } from "../services/ReservationAuthService";
 import { AdminControllers } from "./controllers/Admin.Controllers";
 import { adminRouter } from "./routers/Admin.Routes";
 import multer from "multer";
+import { ThaiAddressControllers } from "./controllers/ThaiAddress.Controllers";
+import { thaiAddressRouter } from "./routers/ThaiAddress.Routes";
 
 export class ApiServer {
   public static run = async (options: {
@@ -19,6 +21,7 @@ export class ApiServer {
     customerControllers: CustomerControllers;
     restaurantControllers: RestaurantControllers;
     reservationControllers: ReservationControllers;
+    thaiAddressControllers: ThaiAddressControllers;
     adminControllers: AdminControllers;
     logoutController: LogoutController;
     reserveAuthService: ReservationAuthService;
@@ -28,6 +31,7 @@ export class ApiServer {
       customerControllers,
       restaurantControllers,
       reservationControllers,
+      thaiAddressControllers,
       adminControllers,
       logoutController,
       reserveAuthService,
@@ -46,6 +50,8 @@ export class ApiServer {
       "/reservations",
       reservationRouter(reservationControllers, reserveAuthService)
     );
+    app.use("/address", thaiAddressRouter(thaiAddressControllers));
+
     app.use("/admin", adminRouter(adminControllers));
 
     app.post("/logout", (req, res) => {

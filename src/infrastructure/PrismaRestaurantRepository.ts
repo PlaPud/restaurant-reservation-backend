@@ -42,7 +42,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
     const result = await this._client.restaurant.findUnique({
       where: { restaurantId: id },
       include: {
-        currentReserves: true,
+        reservation: true,
       },
     });
 
@@ -56,7 +56,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
     const result = await this._client.restaurant.findUnique({
       where: { email },
       include: {
-        currentReserves: true,
+        reservation: true,
       },
     });
 
@@ -75,7 +75,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
       take: PAGE_SIZE,
       where: filterBy ? filterBy : {},
       include: {
-        currentReserves: true,
+        reservation: true,
       },
     });
 
@@ -85,6 +85,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
   public async save(restaurant: Restaurant): Promise<Restaurant | null> {
     try {
       const {
+        restaurantId,
         name,
         phone,
         address,
@@ -96,6 +97,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
       } = restaurant.toObject();
       const result = await this._client.restaurant.create({
         data: {
+          restaurantId,
           name,
           phone,
           address,
@@ -106,7 +108,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
           hashPassword,
         },
         include: {
-          currentReserves: true,
+          reservation: true,
         },
       });
       return Restaurant.fromJSON(result);
@@ -130,7 +132,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
           description,
           hashPassword,
         },
-        include: { currentReserves: true },
+        include: { reservation: true },
       });
 
       return Restaurant.fromJSON(result);

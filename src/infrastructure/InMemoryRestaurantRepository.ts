@@ -64,7 +64,7 @@ export class InMemoryRestaurantRepository implements IRestaurantRepository {
         district: data.district,
         province: data.province,
         email: data.email,
-        currentReserves: data.currentReserves,
+        reservation: data.reservation,
         hashPassword: data.hashPassword,
       });
 

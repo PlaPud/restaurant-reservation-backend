@@ -13,7 +13,7 @@ export interface RestaurantJSONResponse {
   isVerified: boolean;
   profileImgPath: string;
   description: string;
-  currentReserves?: ReservationObj[];
+  reservation?: ReservationObj[];
 }
 
 export interface RestaurantObj extends RestaurantJSONResponse {
@@ -33,7 +33,7 @@ export type RestaurantConstrParams = {
   hashPassword: string;
   profileImgPath?: string;
   description?: string;
-  currentReserves?: Reservation[];
+  reservation?: Reservation[];
 };
 
 export class Restaurant {
@@ -49,7 +49,7 @@ export class Restaurant {
   public readonly hashPassword: string;
   public readonly profileImgPath: string;
   public readonly description: string;
-  public readonly currentReserves?: Reservation[];
+  public readonly reservation?: Reservation[];
 
   public constructor(public readonly options: RestaurantConstrParams) {
     this.restaurantId = this.options.restaurantId ?? randomUUID();
@@ -64,7 +64,7 @@ export class Restaurant {
     this.hashPassword = this.options.hashPassword ?? "";
     this.description = this.options.description ?? "";
     this.profileImgPath = this.options.profileImgPath ?? "";
-    this.currentReserves = this.options.currentReserves;
+    this.reservation = this.options.reservation;
   }
 
   public static fromJSON(jsonObj: RestaurantObj): Restaurant {
@@ -81,7 +81,7 @@ export class Restaurant {
       isVerified: jsonObj.isVerified,
       profileImgPath: jsonObj.profileImgPath,
       description: jsonObj.description,
-      currentReserves: jsonObj.currentReserves?.map((rsObj) =>
+      reservation: jsonObj.reservation?.map((rsObj) =>
         Reservation.fromJSON(rsObj)
       ),
     });
@@ -101,7 +101,7 @@ export class Restaurant {
       hashPassword: this.hashPassword,
       profileImgPath: this.profileImgPath,
       description: this.description,
-      currentReserves: this.currentReserves?.map((rs) => rs.toObject()),
+      reservation: this.reservation?.map((rs) => rs.toObject()),
     };
   }
 

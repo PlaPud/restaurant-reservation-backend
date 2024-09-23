@@ -100,10 +100,11 @@ export class PrismaReservationRepository implements IReserveRepository {
 
   public async save(reservation: Reservation): Promise<Reservation | null> {
     try {
-      const { restaurantId, seats, reserveDate } = reservation;
+      const { reserveId, restaurantId, seats, reserveDate } = reservation;
 
       const result = await this._client.reservation.create({
         data: {
+          reserveId,
           restaurantId,
           seats,
           reserveDate,

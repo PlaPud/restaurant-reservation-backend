@@ -127,7 +127,7 @@ describe("[GET] PrismaCustomerRepository", () => {
 
     expect(mockCtx.prisma.customer.findUnique).toHaveBeenCalledWith({
       where: { customerId: getMockedUUIDString(idCount - 1) },
-      include: { reservations: true },
+      include: { reservation: true },
     });
     expect(result.toObject()).toStrictEqual(customerData.toObject());
   });
@@ -206,7 +206,7 @@ describe("[UPDATE] PrismaCustomerRepository", () => {
     expect(mockCtx.prisma.customer.update).toHaveBeenCalledWith({
       where: { customerId: updatedData.customerId },
       data: { fName, lName, email, phone, hashPassword },
-      include: { reservations: true },
+      include: { reservation: true },
     });
 
     expect(result.fName).toEqual(updateDto.data.fName);

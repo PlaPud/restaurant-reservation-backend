@@ -58,7 +58,7 @@ export class InMemoryCustomerRepository implements ICustomerRepository {
         email: data.email,
         phone: data.phone,
         hashPassword: data.hashPassword,
-        reservations: this._customers[idx].reservations,
+        reservation: this._customers[idx].reservation,
       });
 
       return this._customers[idx];

@@ -15,6 +15,8 @@ import { LogoutController } from "./presentation/controllers/authentication/Logo
 import { ReservationAuthService } from "./services/ReservationAuthService";
 import { AdminUseCases } from "./application/Admin.UseCases";
 import { AdminControllers } from "./presentation/controllers/Admin.Controllers";
+import { ThaiAddressUseCases } from "./application/ThaiAddress.UseCases";
+import { ThaiAddressControllers } from "./presentation/controllers/ThaiAddress.Controllers";
 
 dotenv.config();
 
@@ -39,12 +41,20 @@ export const main = async (): Promise<void> => {
     repositories.prismaReservationRepo,
     repositories.firebaseImgRepo
   );
+
+  const thaiAddressUseCases = new ThaiAddressUseCases(
+    repositories.prismaThaiAddressRepo
+  );
   const adminUseCases = new AdminUseCases(repositories.prismaAdminRepo);
 
   const customerControllers = new CustomerControllers(customerUseCases);
   const restaurantControllers = new RestaurantControllers(restaurantUseCases);
   const reservationControllers = new ReservationControllers(
     reservationUseCases
+  );
+
+  const thaiAddressControllers = new ThaiAddressControllers(
+    thaiAddressUseCases
   );
   const adminControllers = new AdminControllers(adminUseCases);
 
@@ -55,6 +65,7 @@ export const main = async (): Promise<void> => {
     customerControllers,
     restaurantControllers,
     reservationControllers,
+    thaiAddressControllers,
     adminControllers,
     logoutController,
     reserveAuthService,
