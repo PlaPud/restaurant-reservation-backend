@@ -31,12 +31,19 @@ export class GetRestaurantController {
       const response: GetRestaurantResponseDto = {
         restaurantId: result.restaurantId,
         name: result.name,
+        email: result.email,
         phone: result.phone,
         address: result.address,
-        currentReserves: result.currentReserves,
+        subDistrict: result.subDistrict,
+        district: result.district,
+        province: result.province,
         profileImgPath: result.profileImgPath,
         description: result.description,
+        reservation: result.reservation,
       };
+
+      console.log("result: ", result);
+      console.log("response: ", response);
 
       res.status(StatusCode.OK).send(response);
     } catch (err) {

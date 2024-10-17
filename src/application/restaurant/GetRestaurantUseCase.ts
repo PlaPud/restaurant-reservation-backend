@@ -12,11 +12,15 @@ export interface IGetRestaurantDto {
 export interface IGetRestaurantResult {
   restaurantId: string;
   name: string;
+  email: string;
   phone: string;
   address: string;
+  subDistrict: string;
+  district: string;
+  province: string;
   profileImgPath: string;
   description: string;
-  currentReserves?: ReservationJSONResponse[];
+  reservation?: ReservationJSONResponse[];
 }
 
 export interface IGetRestaurantUseCase
@@ -41,6 +45,8 @@ export class GetRestaurantUseCase implements IGetRestaurantUseCase {
     }
 
     const body = result.toObject();
+
+    console.log(body);
 
     return body;
   }

@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import { Container } from "inversify";
 import "reflect-metadata";
 import {
-  GetAllRestaurantUseCase,
+  GetManyRestaurantUseCase,
   IGetManyRestaurantResult,
 } from "../../../src/application/restaurant/GetManyRestaurantUseCase";
 import { IRestaurantRepository } from "../../../src/infrastructure/interfaces/IRestaurantRepository";
@@ -43,7 +43,7 @@ const setUp = () => {
     .bind<IUseCase<null, IGetManyRestaurantResult>>(
       RESTAURANT_T.GetAllRestaurantUseCase
     )
-    .to(GetAllRestaurantUseCase);
+    .to(GetManyRestaurantUseCase);
 
   (randomUUID as jest.Mock).mockReturnValue(getMockedUUIDString(idCount++));
 

@@ -5,6 +5,7 @@ import {
   authorizeReserveAction,
   authorizeReqFromRoles,
   checkRequestToken,
+  useSelfData,
 } from "../../shared/middlewares/authorization";
 import { TokenRole } from "../../shared/enum/TokenRole";
 import { ReservationAuthService } from "../../services/ReservationAuthService";
@@ -19,6 +20,7 @@ export const reservationRouter = (
   router.post(
     "/",
     checkRequestToken,
+    useSelfData([TokenRole.RESTAURANT]),
     authorizeReqFromOwner([TokenRole.RESTAURANT]),
     (req, res) => {
       controllers.create.handle(req, res);
@@ -32,43 +34,55 @@ export const reservationRouter = (
   router.get(
     "/all",
     checkRequestToken,
-    authorizeReqFromRoles([TokenRole.ADMIN]),
+    useSelfData([TokenRole.RESTAURANT]),
+    authorizeReqFromRoles([TokenRole.RESTAURANT]),
     (req, res) => {
       controllers.getAll.handle(req, res);
     }
   );
 
-  // C, R
   router.get(
     "/avail",
     checkRequestToken,
-    authorizeReqFromRoles([TokenRole.CUSTOMER, TokenRole.RESTAURANT]),
+    useSelfData([TokenRole.RESTAURANT]),
+
+    useSelfData([TokenRole.RESTAURANT, TokenRole.CUSTOMER]),
     (req, res) => {
       controllers.getAvail.handle(req, res);
     }
   );
 
-  // R
+  // TODO: CREATE NEW API FOR GET PENDING
+  router.get(
+    "/pending",
+    checkRequestToken,
+    useSelfData([TokenRole.RESTAURANT]),
+    authorizeReqFromRoles([TokenRole.RESTAURANT]),
+    (req, res) => {
+      controllers.getPending.handle(req, res);
+    }
+  );
+
   router.get(
     "/booked",
     checkRequestToken,
+    useSelfData([TokenRole.RESTAURANT]),
     authorizeReqFromRoles([TokenRole.RESTAURANT]),
     (req, res) => {
       controllers.getBooked.handle(req, res);
     }
   );
 
-  // R
   router.get(
-    "/attend",
+    "/done",
     checkRequestToken,
+    useSelfData([TokenRole.RESTAURANT]),
     authorizeReqFromRoles([TokenRole.RESTAURANT]),
     (req, res) => {
       controllers.getAttend.handle(req, res);
     }
   );
 
-  // C R (Query : ReserveId)
   router.put(
     "/",
     checkRequestToken,
@@ -81,7 +95,6 @@ export const reservationRouter = (
     }
   );
 
-  // C (Query : ReserveId)
   router.patch(
     "/pay-url",
     checkRequestToken,
@@ -92,7 +105,6 @@ export const reservationRouter = (
     }
   );
 
-  // R (Query : ReserveId)
   router.patch(
     "/payed",
     checkRequestToken,
@@ -102,7 +114,6 @@ export const reservationRouter = (
     }
   );
 
-  // R (Query : ReserveId)
   router.patch(
     "/attend",
     checkRequestToken,
@@ -112,7 +123,16 @@ export const reservationRouter = (
     }
   );
 
-  // R (Query : ReserveId)
+  // TODO: Implement Cancel Reservation API
+  router.patch(
+    "/cancel",
+    checkRequestToken,
+    authorizeReserveAction([TokenRole.RESTAURANT], authService),
+    (req, res) => {
+      controllers.cancel.handle(req, res);
+    }
+  );
+
   router.delete(
     "/",
     checkRequestToken,

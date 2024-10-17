@@ -5,6 +5,7 @@ import {
   authorizeReqFromRoles,
   checkLogout,
   checkRequestToken,
+  useSelfData,
 } from "../../shared/middlewares/authorization";
 import { TokenRole } from "../../shared/enum/TokenRole";
 import { uploadFile } from "../../shared/middlewares/multer";
@@ -15,6 +16,16 @@ export const customerRouter = (controllers: CustomerControllers): Router => {
   router.get("/", checkRequestToken, (req, res) => {
     controllers.get.handle(req, res);
   });
+
+  router.get(
+    "/me",
+    checkRequestToken,
+    useSelfData([TokenRole.CUSTOMER]),
+    authorizeReqFromOwner([TokenRole.CUSTOMER]),
+    (req, res) => {
+      controllers.get.handle(req, res);
+    }
+  );
 
   router.get("/all", checkRequestToken, (req, res) => {
     controllers.getAll.handle(req, res);
@@ -29,8 +40,9 @@ export const customerRouter = (controllers: CustomerControllers): Router => {
   });
 
   router.put(
-    "/",
+    "/me",
     checkRequestToken,
+    useSelfData([TokenRole.CUSTOMER]),
     authorizeReqFromOwner([TokenRole.CUSTOMER]),
     (req, res) => {
       controllers.update.handle(req, res);
@@ -40,6 +52,7 @@ export const customerRouter = (controllers: CustomerControllers): Router => {
   router.patch(
     "/profile-img",
     checkRequestToken,
+    useSelfData([TokenRole.CUSTOMER]),
     authorizeReqFromOwner([TokenRole.CUSTOMER]),
     uploadFile.single("file"),
     (req, res) => {
@@ -48,8 +61,9 @@ export const customerRouter = (controllers: CustomerControllers): Router => {
   );
 
   router.delete(
-    "/",
+    "/me",
     checkRequestToken,
+    useSelfData([TokenRole.CUSTOMER]),
     authorizeReqFromOwner([TokenRole.CUSTOMER]),
     (req, res) => {
       controllers.delete.handle(req, res);

@@ -13,11 +13,14 @@ import { UpdateAttendController } from "./reservation/UpdateAttendController";
 import { UpdatePayedController } from "./reservation/UpdatePayedController";
 import { UpdatePayUrlController } from "./reservation/UpdatePayUrlController";
 import { UpdateReserveController } from "./reservation/UpdateReserveController";
+import { CancelReserveController } from "./reservation/CancelReserveController";
+import { GetPendingReserveController } from "./reservation/GetPendingReserveController";
 
 export class ReservationControllers {
   public readonly create: CreateReserveController;
   public readonly get: GetReserveController;
   public readonly getAvail: GetAvailReserveController;
+  public readonly getPending: GetPendingReserveController;
   public readonly getBooked: GetBookedReserveController;
   public readonly getAttend: GetAttendReserveController;
   public readonly getAll: GetManyReserveController;
@@ -25,6 +28,7 @@ export class ReservationControllers {
   public readonly updatePayUrl: UpdatePayUrlController;
   public readonly updatePayed: UpdatePayedController;
   public readonly updateAttend: UpdateAttendController;
+  public readonly cancel: CancelReserveController;
   public readonly delete: DeleteReserveController;
   public readonly deleteAll: DeleteAllReserveController;
   public readonly deletePayUrl: DeletePayUrlController;
@@ -33,6 +37,9 @@ export class ReservationControllers {
     this.create = new CreateReserveController(this._useCases.create);
     this.get = new GetReserveController(this._useCases.get);
     this.getAvail = new GetAvailReserveController(this._useCases.getAvail);
+    this.getPending = new GetPendingReserveController(
+      this._useCases.getPending
+    );
     this.getBooked = new GetBookedReserveController(this._useCases.getBooked);
     this.getAttend = new GetAttendReserveController(this._useCases.getAttend);
     this.getAll = new GetManyReserveController(this._useCases.getAll);
@@ -40,6 +47,7 @@ export class ReservationControllers {
     this.updatePayUrl = new UpdatePayUrlController(this._useCases.updatePayUrl);
     this.updatePayed = new UpdatePayedController(this._useCases.updatePayed);
     this.updateAttend = new UpdateAttendController(this._useCases.updateAttend);
+    this.cancel = new CancelReserveController(this._useCases.cancel);
     this.delete = new DeleteReserveController(this._useCases.delete);
     this.deleteAll = new DeleteAllReserveController(this._useCases.deleteAll);
     this.deletePayUrl = new DeletePayUrlController(this._useCases.deletePayUrl);

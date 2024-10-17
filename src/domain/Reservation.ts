@@ -68,7 +68,8 @@ export class Reservation {
     this.reserveId = this.options.reserveId ?? randomUUID();
     this.customerId = this.options.customerId ?? null;
     this.restaurantId = this.options.restaurantId ?? "";
-    this.lastModified = this.options.lastModified ?? Date.now();
+    this.lastModified =
+      this.options.lastModified ?? Math.floor(Date.now() / 1000);
     this.seats = this.options.seats ?? 2;
     this.reservePrice = this.options.reservePrice ?? 0;
     this.reserveDate = this.options.reserveDate ?? "";

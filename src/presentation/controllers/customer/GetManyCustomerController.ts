@@ -19,7 +19,7 @@ export class GetManyCustomerController {
     try {
       if (!req.cookies[TOKEN_NAME]) throw new UnauthorizedActionError();
 
-      this._useCase.setPagination(req.body.page);
+      this._useCase.setPagination(req.body.page ? Number(req.body.page) : 1);
 
       const result = await this._useCase.execute();
 

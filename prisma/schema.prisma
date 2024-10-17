@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
 }
 
 datasource db {
@@ -9,9 +10,9 @@ datasource db {
 
 model admin {
   adminId      String @id
+  fName        String
   lName        String
   hashPassword String
-  fName        String
 }
 
 model customer {
@@ -53,18 +54,21 @@ model restaurant {
   hashPassword   String
   isVerified     Boolean       @default(false)
   description    String        @default("")
+  paymentInfo    String        @default("")
   profileImgPath String        @default("")
   district       String
   province       String
   subDistrict    String
   reservation    reservation[]
+
+  @@fulltext([name])
 }
 
 model thai_amphures {
   id          Int       @id
   name_th     String    @db.VarChar(150)
   name_en     String    @db.VarChar(150)
-  province_id Int       
+  province_id Int
   created_at  DateTime? @db.DateTime(0)
   updated_at  DateTime? @db.DateTime(0)
   deleted_at  DateTime? @db.DateTime(0)

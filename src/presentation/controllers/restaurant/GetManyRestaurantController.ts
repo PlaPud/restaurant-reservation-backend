@@ -10,7 +10,8 @@ import { UnauthorizedActionError } from "../../../errors/UseCaseError";
 import { IFilterRestaurant } from "../../../shared/searchFilter";
 
 interface GetManyRestaurantReqBody {
-  page: number;
+  page?: number;
+  searchQuery?: string;
   filterBy?: IFilterRestaurant;
 }
 
@@ -23,11 +24,20 @@ export class GetManyRestaurantController {
   public async handle(req: Request, res: Response): Promise<void> {
     try {
       const options: GetManyRestaurantReqBody = {
-        page: req.body.page,
-        filterBy: req.body.filterBy,
+        page: Number(req.query.page) || undefined,
+        searchQuery: req.query.searchQuery
+          ? String(req.query.searchQuery)
+          : undefined,
+        filterBy: req.query.filterBy
+          ? JSON.parse(String(req.query.filterBy))
+          : undefined,
       };
 
-      this._useCase.setPagination(options.page, options.filterBy);
+      this._useCase.setSearching(
+        options.page ?? 1,
+        options.searchQuery,
+        options.filterBy
+      );
 
       const results = await this._useCase.execute(null);
 

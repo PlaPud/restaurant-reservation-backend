@@ -2,11 +2,19 @@ import { IRestaurantRepository } from "./interfaces/IRestaurantRepository";
 import { Restaurant } from "../domain/Restaurant";
 import { DataIntegrityError, RepositoryError } from "../errors/RepositoryError";
 import { EntityNotFoundError } from "../errors/DomainError";
+import { IFilterRestaurant } from "../shared/searchFilter";
 
 export class InMemoryRestaurantRepository implements IRestaurantRepository {
   private readonly _restaurants: Restaurant[] = [];
 
   public constructor() {}
+  getRecordsCount(
+    page: number,
+    searchQuery: string,
+    filterBy: IFilterRestaurant | null
+  ): Promise<number> {
+    throw new Error("Method not implemented.");
+  }
 
   public async updateProfileImgPath(
     id: string,

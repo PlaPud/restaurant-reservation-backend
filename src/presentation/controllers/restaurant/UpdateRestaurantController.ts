@@ -4,7 +4,10 @@ import {
   IUpdateRestaurantResult,
   IUpdateRestaurantUseCase,
 } from "../../../application/restaurant/UpdateRestaurantUseCase";
-import { restaurantSchema } from "../../../domain/validation_schemas/Restaurant.Schema";
+import {
+  createRestaurantSchema,
+  updateRestaurantSchema,
+} from "../../../domain/validation_schemas/Restaurant.Schema";
 import { BadRequestError } from "../../../errors/HttpError";
 import { sendErrorResponse } from "../../../shared/sendErrorResponse";
 import { StatusCode } from "../../../shared/enum/StatusCode";
@@ -16,8 +19,9 @@ export class UpdateRestaurantController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
-      if (!req.query.restaurantId || !req.body.data)
-        throw new BadRequestError();
+      console.log(req);
+
+      if (!req.query.restaurantId || !req.body) throw new BadRequestError();
 
       const {
         name,
@@ -27,9 +31,9 @@ export class UpdateRestaurantController {
         district,
         province,
         email,
-        password,
         description,
-      } = req.body.data;
+        paymentInfo,
+      } = req.body;
 
       const userInput: IUpdateRestaurantDto = {
         restaurantId: req.query.restaurantId as string,
@@ -41,12 +45,12 @@ export class UpdateRestaurantController {
           subDistrict,
           district,
           province,
-          password,
           description,
+          paymentInfo,
         },
       };
 
-      const { error, value } = restaurantSchema.validate(userInput.data);
+      const { error, value } = updateRestaurantSchema.validate(userInput.data);
 
       if (error) throw new BadRequestError(error.message);
 
@@ -62,6 +66,7 @@ export class UpdateRestaurantController {
         subDistrict: result.subDistrict,
         district: result.district,
         province: result.province,
+        paymentInfo: result.paymentInfo,
       };
 
       res.status(StatusCode.OK).send(response);

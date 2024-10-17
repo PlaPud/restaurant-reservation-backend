@@ -6,8 +6,13 @@ import { EntityNotFoundError } from "../errors/DomainError";
 import { InternalServerError } from "../errors/HttpError";
 import { RepositoryError } from "../errors/RepositoryError";
 import { TYPES } from "../shared/inversify/types";
-import { IReserveRepository } from "./interfaces/IReserveRepository";
+import {
+  IReserveRepository,
+  ReservationWithCount,
+} from "./interfaces/IReserveRepository";
 import { PAGE_SIZE } from "../shared/constants";
+import { startOfDay } from "date-fns";
+import { getReservationCutOffTime } from "../shared/utilsFunc";
 
 @injectable()
 export class PrismaReservationRepository implements IReserveRepository {
@@ -31,76 +36,191 @@ export class PrismaReservationRepository implements IReserveRepository {
   public async findAvailReserves(
     restaurantId: string,
     page: number
-  ): Promise<Reservation[] | null> {
-    const result = await this._client.reservation.findMany({
-      skip: PAGE_SIZE * (page - 1),
-      take: PAGE_SIZE,
-      where: { restaurantId: restaurantId, isPayed: false },
-      include: {
-        customer: true,
-        restaurant: true,
+  ): Promise<ReservationWithCount | null> {
+    const queryCondition = {
+      AND: {
+        restaurantId: restaurantId,
+        payImgUrl: "",
+        reserveDate: {
+          gte: getReservationCutOffTime(),
+        },
       },
-    });
+    };
+
+    const [count, result] = await Promise.all([
+      this._client.reservation.count({ where: queryCondition }),
+      this._client.reservation.findMany({
+        skip: PAGE_SIZE * (page - 1),
+        take: PAGE_SIZE,
+        where: queryCondition,
+        include: {
+          customer: true,
+          restaurant: true,
+        },
+      }),
+    ]);
+
+    console.log(
+      await this._client.reservation.count({
+        where: {
+          restaurantId: restaurantId,
+          payImgUrl: "",
+          reserveDate: {
+            gte: getReservationCutOffTime(),
+          },
+        },
+      })
+    );
 
     const data = result.map((obj) => Reservation.fromJSON(obj));
 
-    return data;
+    return { count, data };
+  }
+
+  public async findPendingReserves(
+    restaurantId: string,
+    page: number,
+    searchQuery: string
+  ): Promise<ReservationWithCount | null> {
+    const queryCondition = {
+      AND: {
+        restaurantId: restaurantId,
+        payImgUrl: {
+          not: "",
+        },
+        reserveDate: {
+          gte: getReservationCutOffTime(),
+        },
+      },
+      ...this.buildSearchQuery(searchQuery),
+    };
+
+    const [count, result] = await Promise.all([
+      this._client.reservation.count({
+        where: queryCondition,
+      }),
+      this._client.reservation.findMany({
+        skip: PAGE_SIZE * (page - 1),
+        take: PAGE_SIZE,
+        where: queryCondition,
+      }),
+    ]);
+
+    const data = result.map((obj) => Reservation.fromJSON(obj));
+
+    return { count, data };
   }
 
   public async findBookedReserves(
     restaurantId: string,
-    page: number
-  ): Promise<Reservation[] | null> {
-    const result = await this._client.reservation.findMany({
-      skip: PAGE_SIZE * (page - 1),
-      take: PAGE_SIZE,
-      where: { restaurantId: restaurantId, isPayed: true },
-      include: {
-        customer: true,
-        restaurant: true,
+    page: number,
+    searchQuery: string
+  ): Promise<ReservationWithCount | null> {
+    const queryCondition = {
+      AND: {
+        restaurantId: restaurantId,
+        isPayed: true,
+        reserveDate: {
+          gte: getReservationCutOffTime(),
+        },
       },
-    });
+      ...this.buildSearchQuery(searchQuery),
+    };
+
+    const [count, result] = await Promise.all([
+      this._client.reservation.count({
+        where: queryCondition,
+      }),
+      this._client.reservation.findMany({
+        skip: PAGE_SIZE * (page - 1),
+        take: PAGE_SIZE,
+        where: queryCondition,
+        include: {
+          customer: true,
+          restaurant: true,
+        },
+      }),
+    ]);
 
     const data = result.map((obj) => Reservation.fromJSON(obj));
 
-    return data;
+    return { count, data };
   }
 
-  public async findAttendReserves(
+  public async findAttendAndLateReserves(
     restaurantId: string,
-    page: number
-  ): Promise<Reservation[] | null> {
-    const result = await this._client.reservation.findMany({
-      skip: PAGE_SIZE * (page - 1),
-      take: PAGE_SIZE,
-      where: { restaurantId: restaurantId, isAttended: true },
-      include: {
-        customer: true,
-        restaurant: true,
+    page: number,
+    searchQuery: string
+  ): Promise<ReservationWithCount | null> {
+    const queryCondition = {
+      AND: {
+        OR: [
+          {
+            restaurantId: restaurantId,
+            isAttended: true,
+          },
+          {
+            restaurantId: restaurantId,
+            reserveDate: {
+              lt: getReservationCutOffTime(),
+            },
+          },
+        ],
       },
-    });
+      ...this.buildSearchQuery(searchQuery),
+    };
+
+    const [count, result] = await Promise.all([
+      this._client.reservation.count({
+        where: queryCondition,
+      }),
+      this._client.reservation.findMany({
+        skip: PAGE_SIZE * (page - 1),
+        take: PAGE_SIZE,
+        where: queryCondition,
+        include: {
+          customer: true,
+          restaurant: true,
+        },
+      }),
+    ]);
 
     const data = result.map((obj) => Reservation.fromJSON(obj));
 
-    return data;
+    return { count, data };
   }
 
-  public async findMany(page: number): Promise<Reservation[] | null> {
-    const result = await this._client.reservation.findMany({
-      skip: PAGE_SIZE * (page - 1),
-      take: PAGE_SIZE,
-      include: {
-        restaurant: true,
-        customer: true,
-      },
-    });
+  public async findMany(
+    restaurantId: string,
+    page: number,
+    searchQuery: string
+  ): Promise<ReservationWithCount | null> {
+    const [count, result] = await Promise.all([
+      this._client.reservation.count({
+        where: { restaurantId, ...this.buildSearchQuery(searchQuery) },
+      }),
+      this._client.reservation.findMany({
+        skip: PAGE_SIZE * (page - 1),
+        take: PAGE_SIZE,
+        where: { restaurantId, ...this.buildSearchQuery(searchQuery) },
+        include: {
+          restaurant: true,
+          customer: true,
+        },
+      }),
+    ]);
 
-    return result.map((r) => Reservation.fromJSON(r));
+    console.log({ searchQuery, page });
+
+    const data = result.map((r) => Reservation.fromJSON(r));
+
+    return { count, data };
   }
 
   public async save(reservation: Reservation): Promise<Reservation | null> {
     try {
-      const { reserveId, restaurantId, seats, reserveDate } = reservation;
+      const { reserveId, restaurantId, seats, reserveDate, reservePrice } =
+        reservation;
 
       const result = await this._client.reservation.create({
         data: {
@@ -108,6 +228,7 @@ export class PrismaReservationRepository implements IReserveRepository {
           restaurantId,
           seats,
           reserveDate,
+          reservePrice,
         },
         include: {
           customer: true,
@@ -168,6 +289,33 @@ export class PrismaReservationRepository implements IReserveRepository {
         },
         data: {
           isAttended,
+        },
+        include: {
+          customer: true,
+          restaurant: true,
+        },
+      });
+
+      if (!result)
+        throw new EntityNotFoundError(`Cannot find reservation (ID: ${id})`);
+
+      return Reservation.fromJSON(result);
+    } catch (err) {
+      throw getExternalError(err, id);
+    }
+  }
+
+  public async cancelReservation(id: string): Promise<Reservation | null> {
+    try {
+      const result = await this._client.reservation.update({
+        where: {
+          reserveId: id,
+        },
+        data: {
+          customerId: null,
+          isAttended: false,
+          isPayed: false,
+          payImgUrl: "",
         },
         include: {
           customer: true,
@@ -260,6 +408,29 @@ export class PrismaReservationRepository implements IReserveRepository {
     } catch (err) {
       throw getExternalError(err);
     }
+  }
+
+  private buildSearchQuery(searchQuery: string): Prisma.reservationWhereInput {
+    if (searchQuery === "") return {};
+
+    return {
+      OR: [
+        {
+          customer: {
+            fName: {
+              contains: searchQuery,
+            },
+          },
+        },
+        {
+          customer: {
+            lName: {
+              contains: searchQuery,
+            },
+          },
+        },
+      ],
+    };
   }
 }
 

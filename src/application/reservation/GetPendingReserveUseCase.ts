@@ -3,27 +3,27 @@ import { InternalServerError } from "../../errors/HttpError";
 import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepository";
 import { IUseCase } from "../../shared/IUseCase";
 
-export interface IGetBookedReserveDto {
+export interface IGetPendingReserveDto {
   restaurantId: string;
   page: number;
   searchQuery: string;
 }
 
-export interface IGetBookedReserveResult {
+export interface IGetPendingReserveResult {
   page: number;
   totalPages: number;
   data: ReservationObj[];
 }
 
-export class GetBookedReserveUseCase
-  implements IUseCase<IGetBookedReserveDto, IGetBookedReserveResult>
+export class GetPendingReserveUseCase
+  implements IUseCase<IGetPendingReserveDto, IGetPendingReserveResult>
 {
   public constructor(private readonly _repository: IReserveRepository) {}
 
   public async execute(
-    input: IGetBookedReserveDto
-  ): Promise<IGetBookedReserveResult> {
-    const result = await this._repository.findBookedReserves(
+    input: IGetPendingReserveDto
+  ): Promise<IGetPendingReserveResult> {
+    const result = await this._repository.findPendingReserves(
       input.restaurantId,
       input.page,
       input.searchQuery
@@ -31,12 +31,11 @@ export class GetBookedReserveUseCase
 
     if (!result) throw new InternalServerError();
 
-    const body: IGetBookedReserveResult = {
+    const body: IGetPendingReserveResult = {
       page: input.page,
       totalPages: result.count,
       data: result.data.map((r) => r.toObject()),
     };
-
     return body;
   }
 }

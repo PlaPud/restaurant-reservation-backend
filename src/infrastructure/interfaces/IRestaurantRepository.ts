@@ -8,8 +8,15 @@ export interface IRestaurantRepository {
 
   findMany(
     page: number,
-    filterBy: IFilterRestaurant | null
+    searchQuery?: string,
+    filterBy?: IFilterRestaurant | null
   ): Promise<Restaurant[] | null>;
+
+  getRecordsCount(
+    page: number,
+    searchQuery?: string,
+    filterBy?: IFilterRestaurant | null
+  ): Promise<number>;
 
   save(restaurant: Restaurant): Promise<Restaurant | null>;
 

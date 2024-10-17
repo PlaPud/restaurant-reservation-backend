@@ -13,6 +13,7 @@ export interface RestaurantJSONResponse {
   isVerified: boolean;
   profileImgPath: string;
   description: string;
+  paymentInfo: string;
   reservation?: ReservationObj[];
 }
 
@@ -33,6 +34,7 @@ export type RestaurantConstrParams = {
   hashPassword: string;
   profileImgPath?: string;
   description?: string;
+  paymentInfo?: string;
   reservation?: Reservation[];
 };
 
@@ -49,6 +51,7 @@ export class Restaurant {
   public readonly hashPassword: string;
   public readonly profileImgPath: string;
   public readonly description: string;
+  public readonly paymentInfo: string;
   public readonly reservation?: Reservation[];
 
   public constructor(public readonly options: RestaurantConstrParams) {
@@ -63,6 +66,7 @@ export class Restaurant {
     this.email = this.options.email ?? "";
     this.hashPassword = this.options.hashPassword ?? "";
     this.description = this.options.description ?? "";
+    this.paymentInfo = this.options.paymentInfo ?? "";
     this.profileImgPath = this.options.profileImgPath ?? "";
     this.reservation = this.options.reservation;
   }
@@ -81,6 +85,7 @@ export class Restaurant {
       isVerified: jsonObj.isVerified,
       profileImgPath: jsonObj.profileImgPath,
       description: jsonObj.description,
+      paymentInfo: jsonObj.paymentInfo,
       reservation: jsonObj.reservation?.map((rsObj) =>
         Reservation.fromJSON(rsObj)
       ),
@@ -101,6 +106,7 @@ export class Restaurant {
       hashPassword: this.hashPassword,
       profileImgPath: this.profileImgPath,
       description: this.description,
+      paymentInfo: this.paymentInfo,
       reservation: this.reservation?.map((rs) => rs.toObject()),
     };
   }

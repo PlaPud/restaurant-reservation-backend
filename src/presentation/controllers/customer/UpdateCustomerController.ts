@@ -5,7 +5,7 @@ import {
   UpdateCustomerUseCase,
 } from "../../../application/customer/UpdateCustomerUseCase";
 import { sendErrorResponse } from "../../../shared/sendErrorResponse";
-import { customerSchema } from "../../../domain/validation_schemas/Customer.Schema";
+import { createCustomerSchema as updateCustomerSchema } from "../../../domain/validation_schemas/Customer.Schema";
 import { BadRequestError } from "../../../errors/HttpError";
 import { StatusCode } from "../../../shared/enum/StatusCode";
 import { TOKEN_NAME } from "../../../shared/constants";
@@ -67,7 +67,7 @@ export class UpdateCustomerController {
         },
       };
 
-      const { error, value } = customerSchema.validate(userInput.data);
+      const { error, value } = updateCustomerSchema.validate(userInput.data);
 
       if (error) throw new BadRequestError(error.message);
 

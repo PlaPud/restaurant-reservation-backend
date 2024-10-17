@@ -19,9 +19,10 @@ export class GetAvailReserveController {
 
       const userInput: IGetAvailReserveDto = {
         restaurantId: req.query.restaurantId as string,
+        page: Number(req.query.page) || 1,
       };
 
-      this._useCase.setPagination(req.body.page);
+      // this._useCase.setPagination(req.query.page ? Number(req.query.page) : 1);
 
       const result = await this._useCase.execute(userInput);
 

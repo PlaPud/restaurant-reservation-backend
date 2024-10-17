@@ -2,6 +2,14 @@ import { Request } from "express";
 import { IVerifyRoleResult } from "../services/JwtService";
 import { UnauthorizedActionError } from "../errors/UseCaseError";
 import { TokenRole } from "./enum/TokenRole";
+import { startOfDay } from "date-fns";
+import { PAGE_SIZE } from "./constants";
+
+export const getTotalPages = (count: number) => Math.ceil(count / PAGE_SIZE);
+
+export const getReservationCutOffTime = () => {
+  return Math.floor(startOfDay(new Date()).getTime() / 1000);
+};
 
 export const isRequestBodyEmpty = (req: Request) =>
   Object.keys(req.body).length === 0;

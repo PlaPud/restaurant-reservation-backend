@@ -42,7 +42,11 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
     const result = await this._client.restaurant.findUnique({
       where: { restaurantId: id },
       include: {
-        reservation: true,
+        reservation: {
+          where: {
+            customerId: null,
+          },
+        },
       },
     });
 
@@ -56,7 +60,11 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
     const result = await this._client.restaurant.findUnique({
       where: { email },
       include: {
-        reservation: true,
+        reservation: {
+          where: {
+            customerId: null,
+          },
+        },
       },
     });
 
@@ -68,18 +76,81 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
 
   public async findMany(
     page: number,
-    filterBy: IFilterRestaurant | null
+    searchQuery?: string,
+    filterBy?: IFilterRestaurant | null
   ): Promise<Restaurant[]> {
+    const where: Prisma.restaurantWhereInput = {
+      ...(searchQuery
+        ? {
+            name: {
+              contains: searchQuery,
+            },
+          }
+        : {}),
+      ...(filterBy
+        ? {
+            province: {
+              contains: filterBy.province,
+            },
+            district: {
+              contains: filterBy.district,
+            },
+            subDistrict: { contains: filterBy.subDistrict },
+          }
+        : {}),
+    };
+
+    console.log(where);
+
     const results = await this._client.restaurant.findMany({
       skip: PAGE_SIZE * (page - 1),
       take: PAGE_SIZE,
-      where: filterBy ? filterBy : {},
+      where,
       include: {
-        reservation: true,
+        reservation: {
+          where: {
+            customerId: null,
+          },
+        },
       },
     });
 
+    // console.log(results);
+
     return results.map((rs) => Restaurant.fromJSON(rs));
+  }
+
+  public async getRecordsCount(
+    page: number,
+    searchQuery?: string,
+    filterBy?: IFilterRestaurant | null
+  ): Promise<number> {
+    const where: Prisma.restaurantWhereInput = {
+      ...(searchQuery
+        ? {
+            name: {
+              contains: searchQuery,
+            },
+          }
+        : {}),
+      ...(filterBy
+        ? {
+            province: {
+              contains: filterBy.province,
+            },
+            district: {
+              contains: filterBy.district,
+            },
+            subDistrict: { contains: filterBy.subDistrict },
+          }
+        : {}),
+    };
+
+    const result = await this._client.restaurant.count({
+      where,
+    });
+
+    return result;
   }
 
   public async save(restaurant: Restaurant): Promise<Restaurant | null> {
@@ -121,16 +192,25 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
     data: Restaurant
   ): Promise<Restaurant | null> {
     try {
-      const { name, phone, address, description, hashPassword } =
-        data.toObject();
+      const {
+        name,
+        phone,
+        address,
+        subDistrict,
+        district,
+        province,
+        description,
+      } = data.toObject();
       const result = await this._client.restaurant.update({
         where: { restaurantId: id },
         data: {
           name,
           phone,
           address,
+          subDistrict,
+          district,
+          province,
           description,
-          hashPassword,
         },
         include: { reservation: true },
       });
@@ -172,5 +252,6 @@ function getExternalError(err: unknown, id?: string) {
   if (id && err.code === "P2025")
     return new EntityNotFoundError(`Cannot Find Restaurant (ID: ${id})`);
 
+  console.log(err);
   return new RepositoryError("Prisma Client Error.");
 }

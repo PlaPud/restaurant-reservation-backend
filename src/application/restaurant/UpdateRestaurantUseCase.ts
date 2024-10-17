@@ -18,7 +18,7 @@ export interface IUpdateRestaurantDto {
     province: string;
     email: string;
     description: string;
-    password: string;
+    paymentInfo: string;
   };
 }
 
@@ -32,6 +32,7 @@ export interface IUpdateRestaurantResult {
   district: string;
   province: string;
   description: string;
+  paymentInfo: string;
 }
 
 export interface IUpdateRestaurantUseCase
@@ -49,9 +50,9 @@ export class UpdateRestaurantUseCase implements IUpdateRestaurantUseCase {
   public async execute(
     input: IUpdateRestaurantDto
   ): Promise<IUpdateRestaurantResult> {
-    const hashPassword = await hash(input.data.password, 10);
+    // const hashPassword = await hash(input.data.password, 10);
 
-    input.data.password = "";
+    // input.data.password = "";
 
     const restaurant = new Restaurant({
       restaurantId: input.restaurantId,
@@ -62,7 +63,9 @@ export class UpdateRestaurantUseCase implements IUpdateRestaurantUseCase {
       district: input.data.district,
       province: input.data.province,
       email: input.data.email,
-      hashPassword,
+      description: input.data.description,
+      paymentInfo: input.data.paymentInfo,
+      hashPassword: "",
     });
 
     const result = await this._repository.update(
@@ -81,6 +84,7 @@ export class UpdateRestaurantUseCase implements IUpdateRestaurantUseCase {
       district: result.district,
       province: result.province,
       description: result.description,
+      paymentInfo: result.paymentInfo,
       email: result.email,
     };
 
