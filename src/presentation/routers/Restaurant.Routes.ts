@@ -5,6 +5,7 @@ import {
   authorizeReqFromRoles,
   checkLogout,
   checkRequestToken,
+  useSelfData,
 } from "../../shared/middlewares/authorization";
 import { TokenRole } from "../../shared/enum/TokenRole";
 import { sendErrorResponse } from "../../shared/sendErrorResponse";
@@ -19,6 +20,16 @@ export const restaurantRouter = (
     controllers.get.handle(req, res);
   });
 
+  router.get(
+    "/me",
+    checkRequestToken,
+    useSelfData([TokenRole.RESTAURANT]),
+    authorizeReqFromOwner([TokenRole.RESTAURANT]),
+    (req, res) => {
+      controllers.get.handle(req, res);
+    }
+  );
+
   router.get("/all", checkRequestToken, (req, res) => {
     controllers.getAll.handle(req, res);
   });
@@ -32,10 +43,12 @@ export const restaurantRouter = (
   });
 
   router.put(
-    "/",
+    "/me",
     checkRequestToken,
+    useSelfData([TokenRole.RESTAURANT]),
     authorizeReqFromOwner([TokenRole.RESTAURANT]),
     (req, res) => {
+      console.log(req.query);
       controllers.update.handle(req, res);
     }
   );
@@ -43,7 +56,8 @@ export const restaurantRouter = (
   router.patch(
     "/profile-img",
     checkRequestToken,
-    authorizeReqFromOwner([TokenRole.ADMIN]),
+    useSelfData([TokenRole.RESTAURANT]),
+    authorizeReqFromOwner([TokenRole.RESTAURANT]),
     uploadFile.single("file"),
     (req, res) => {
       controllers.updateProfImg.handle(req, res);
@@ -51,8 +65,9 @@ export const restaurantRouter = (
   );
 
   router.delete(
-    "/",
+    "/me",
     checkRequestToken,
+    useSelfData([TokenRole.RESTAURANT]),
     authorizeReqFromOwner([TokenRole.RESTAURANT]),
     (req, res) => {
       controllers.delete.handle(req, res);
@@ -71,6 +86,7 @@ export const restaurantRouter = (
   router.delete(
     "/profile-img",
     checkRequestToken,
+    useSelfData([TokenRole.RESTAURANT]),
     authorizeReqFromOwner([TokenRole.RESTAURANT]),
     (req, res) => {
       controllers.deleteProfImg.handle(req, res);

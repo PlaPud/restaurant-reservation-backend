@@ -9,7 +9,7 @@ export interface CustomerJSONResponse {
   phone: string;
   isVerified: boolean;
   profileImgPath: string;
-  reservations?: ReservationObj[];
+  reservation?: ReservationObj[];
 }
 
 export interface CustomerObj extends CustomerJSONResponse {
@@ -25,7 +25,7 @@ export type CustomerConstrParams = {
   hashPassword: string;
   isVerified?: boolean;
   profileImgPath?: string;
-  reservations?: Reservation[];
+  reservation?: Reservation[];
 };
 
 export class Customer {
@@ -37,11 +37,11 @@ export class Customer {
   public readonly isVerified: boolean;
   public readonly hashPassword: string;
   public readonly profileImgPath: string;
-  public readonly reservations?: Reservation[];
+  public readonly reservation?: Reservation[];
 
   public constructor(public readonly options: CustomerConstrParams) {
     this.customerId = this.options.customerId ?? randomUUID();
-    this.reservations = this.options.reservations;
+    this.reservation = this.options.reservation;
     this.fName = this.options.fName ?? "";
     this.lName = this.options.lName ?? "";
     this.email = this.options.email ?? "";
@@ -61,7 +61,7 @@ export class Customer {
       isVerified: jsonObj.isVerified,
       hashPassword: jsonObj.hashPassword,
       profileImgPath: jsonObj.profileImgPath,
-      reservations: jsonObj.reservations?.map((r) => Reservation.fromJSON(r)),
+      reservation: jsonObj.reservation?.map((r) => Reservation.fromJSON(r)),
     });
   }
 
@@ -75,7 +75,7 @@ export class Customer {
       isVerified: this.isVerified,
       hashPassword: this.hashPassword,
       profileImgPath: this.profileImgPath,
-      reservations: this.reservations?.map((r) => r.toObject()),
+      reservation: this.reservation?.map((r) => r.toObject()),
     };
   }
 

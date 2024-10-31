@@ -100,7 +100,7 @@ describe("UpdateCustomerUseCase", () => {
           lName: data.lName,
           email: data.email,
           phone: data.phone,
-          reservations: data.reservations,
+          reservation: data.reservation,
           hashPassword: data.hashPassword,
         });
       }

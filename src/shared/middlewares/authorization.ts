@@ -7,12 +7,51 @@ import { JwtPayload } from "jsonwebtoken";
 import { BadRequestError } from "../../errors/HttpError";
 import { ReservationAuthService } from "../../services/ReservationAuthService";
 
+export const useSelfData = (roles: TokenRole[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const jwtService = new JwtService();
+
+      const payload: JwtPayload = await jwtService.verifyToken(
+        req.cookies[TOKEN_NAME]
+      );
+
+      if (payload.role === TokenRole.ADMIN) {
+        next();
+        return;
+      }
+
+      let roleId = "";
+
+      const roleMap: Record<TokenRole, string> = {
+        [TokenRole.RESTAURANT]: "restaurantId",
+        [TokenRole.CUSTOMER]: "customerId",
+        [TokenRole.ADMIN]: "adminId",
+      };
+
+      const matchedRole = roles.find((role) => payload.role === role);
+
+      if (!matchedRole) {
+        throw new UnauthorizedActionError(`Role Not Authorized`);
+      }
+
+      roleId = roleMap[matchedRole];
+
+      req.query[roleId] = payload.sub as string;
+      next();
+    } catch (err) {
+      next(err);
+    }
+  };
+};
+
 export const checkRequestToken = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    console.log(req.cookies[TOKEN_NAME]);
     if (!req.cookies[TOKEN_NAME])
       throw new UnauthorizedActionError(`missing token.`);
     next();
@@ -71,6 +110,8 @@ export const authorizeReqFromOwner = (rolesContext: TokenRole[]) => {
 
   const validateOwnership = (req: Request, payload: JwtPayload) => {
     let targetIdKey = "";
+
+    console.log(req.query);
 
     for (const [roleId, tokenRole] of Object.entries(roles)) {
       // if (!req.query[roleId])

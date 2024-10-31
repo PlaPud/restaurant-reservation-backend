@@ -4,7 +4,7 @@ import {
   ICreateRestaurantResult,
   ICreateRestaurantUseCase,
 } from "../../../application/restaurant/CreateRestaurantUseCase";
-import { restaurantSchema } from "../../../domain/validation_schemas/Restaurant.Schema";
+import { createRestaurantSchema } from "../../../domain/validation_schemas/Restaurant.Schema";
 import { BadRequestError } from "../../../errors/HttpError";
 import { StatusCode } from "../../../shared/enum/StatusCode";
 import { sendErrorResponse } from "../../../shared/sendErrorResponse";
@@ -42,7 +42,7 @@ export class CreateRestaurantController {
         province,
       };
 
-      const { error, value } = restaurantSchema.validate(userInput);
+      const { error, value } = createRestaurantSchema.validate(userInput);
 
       if (error) throw new BadRequestError(error.message);
 

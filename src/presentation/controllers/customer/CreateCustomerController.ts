@@ -5,7 +5,7 @@ import {
   ICreateCustomerResult,
 } from "../../../application/customer/CreateCustomerUseCase";
 import { StatusCode } from "../../../shared/enum/StatusCode";
-import { customerSchema } from "../../../domain/validation_schemas/Customer.Schema";
+import { createCustomerSchema } from "../../../domain/validation_schemas/Customer.Schema";
 import { sendErrorResponse } from "../../../shared/sendErrorResponse";
 import { BadRequestError } from "../../../errors/HttpError";
 import { TOKEN_NAME } from "../../../shared/constants";
@@ -35,7 +35,7 @@ export class CreateCustomerController {
         password: req.body.password,
       };
 
-      const { error, value } = customerSchema.validate(userInput);
+      const { error, value } = createCustomerSchema.validate(userInput);
 
       if (error) throw new BadRequestError(error.message);
 

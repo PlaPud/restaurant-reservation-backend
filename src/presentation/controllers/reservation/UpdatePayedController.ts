@@ -4,10 +4,9 @@ import {
   IUpdatePayedResult,
   UpdatePayedUseCase,
 } from "../../../application/reservation/UpdatePayedUseCase";
-import { IUpdateCustomerDto } from "../../../application/customer/UpdateCustomerUseCase";
 import { BadRequestError } from "../../../errors/HttpError";
-import { sendErrorResponse } from "../../../shared/sendErrorResponse";
 import { StatusCode } from "../../../shared/enum/StatusCode";
+import { sendErrorResponse } from "../../../shared/sendErrorResponse";
 import { isRequestBodyEmpty } from "../../../shared/utilsFunc";
 
 export interface UpdatedPayedResponseDto extends IUpdatePayedResult {}

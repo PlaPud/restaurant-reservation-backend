@@ -19,9 +19,11 @@ export class GetBookedReserveController {
 
       const userInput: IGetBookedReserveDto = {
         restaurantId: req.query.restaurantId as string,
+        page: Number(req.query.page) || 1,
+        searchQuery: req.query.searchQuery ? String(req.query.searchQuery) : "",
       };
 
-      this._useCase.setPagination(req.body.page);
+      // this._useCase.setSearching(req.body.page);
 
       const result = await this._useCase.execute(userInput);
 

@@ -40,7 +40,7 @@ export class PrismaCustomerRepository implements ICustomerRepository {
     const result = await this._client.customer.findUnique({
       where: { email },
       include: {
-        reservations: true,
+        reservation: true,
       },
     });
 
@@ -54,7 +54,7 @@ export class PrismaCustomerRepository implements ICustomerRepository {
     const result = await this._client.customer.findUnique({
       where: { customerId: id },
       include: {
-        reservations: true,
+        reservation: true,
       },
     });
 
@@ -67,7 +67,7 @@ export class PrismaCustomerRepository implements ICustomerRepository {
   public async findMany(page: number): Promise<Customer[]> {
     const results = await this._client.customer.findMany({
       include: {
-        reservations: true,
+        reservation: true,
       },
     });
 
@@ -76,10 +76,11 @@ export class PrismaCustomerRepository implements ICustomerRepository {
 
   public async save(customer: Customer): Promise<boolean> {
     try {
-      const { fName, lName, email, phone, hashPassword } =
+      const { customerId, fName, lName, email, phone, hashPassword } =
         customer.toObject() as CustomerObj;
       const result = await this._client.customer.create({
         data: {
+          customerId: customerId,
           fName: fName,
           lName: lName,
           email: email,
@@ -107,7 +108,7 @@ export class PrismaCustomerRepository implements ICustomerRepository {
           phone,
           hashPassword,
         },
-        include: { reservations: true },
+        include: { reservation: true },
       });
 
       return data;

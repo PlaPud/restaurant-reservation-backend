@@ -1,4 +1,4 @@
-import { PrismaClient, Restaurant } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { Container } from "inversify";
 import "reflect-metadata";
@@ -15,6 +15,7 @@ import { getMockReservation, getMockRestaurant } from "../shared/mockInstances";
 import { getMockedUUIDString } from "../shared/mockUUID";
 import { Reservation } from "../../src/domain/Reservation";
 import { EntityNotFoundError } from "../../src/errors/DomainError";
+import { Restaurant } from "../../src/domain/Restaurant";
 
 let mockCtx: MockContext;
 let ctx: Context;

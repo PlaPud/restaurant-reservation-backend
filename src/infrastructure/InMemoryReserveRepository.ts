@@ -4,7 +4,10 @@ import { Restaurant } from "../domain/Restaurant";
 import { EntityNotFoundError } from "../errors/DomainError";
 import { BadRequestError, NotFoundError } from "../errors/HttpError";
 import { DataIntegrityError, RepositoryError } from "../errors/RepositoryError";
-import { IReserveRepository } from "./interfaces/IReserveRepository";
+import {
+  IReserveRepository,
+  ReservationWithCount,
+} from "./interfaces/IReserveRepository";
 
 export class InMemoryReserveRepository implements IReserveRepository {
   private readonly _reserves: Reservation[] = [];
@@ -19,9 +22,7 @@ export class InMemoryReserveRepository implements IReserveRepository {
       district: "",
       province: "",
       hashPassword: faker.string.alphanumeric({ length: 32, casing: "mixed" }),
-      currentReserves: [
-        ...this._reserves.filter((r) => r.restaurantId === "1"),
-      ],
+      reservation: [...this._reserves.filter((r) => r.restaurantId === "1")],
     }),
     new Restaurant({
       restaurantId: "2",
@@ -33,13 +34,27 @@ export class InMemoryReserveRepository implements IReserveRepository {
       province: "",
       email: "rest2@email.com",
       hashPassword: faker.string.alphanumeric({ length: 32, casing: "mixed" }),
-      currentReserves: [
-        ...this._reserves.filter((r) => r.restaurantId === "2"),
-      ],
+      reservation: [...this._reserves.filter((r) => r.restaurantId === "2")],
     }),
   ];
 
   public constructor() {}
+  public async makeReservation(
+    id: string,
+    customerId: string
+  ): Promise<Reservation | null> {
+    throw new Error("Method not implemented.");
+  }
+  public async cancelReservation(id: string): Promise<Reservation | null> {
+    throw new Error("Method not implemented.");
+  }
+  public async findPendingReserves(
+    restaurantId: string,
+    page: number,
+    searchQuery: string
+  ): Promise<ReservationWithCount | null> {
+    throw new Error("Method not implemented.");
+  }
 
   public async find(id: string): Promise<Reservation | null> {
     const result: Reservation | undefined = this._findById(id);
@@ -51,65 +66,87 @@ export class InMemoryReserveRepository implements IReserveRepository {
   }
 
   public async findAvailReserves(
-    restaurantId: string
-  ): Promise<Reservation[] | null> {
+    restaurantId: string,
+    page: number
+  ): Promise<ReservationWithCount | null> {
     const restaurant = this._restaurants.find(
       (rs) => rs.restaurantId === restaurantId
     );
 
     if (!restaurant) throw new EntityNotFoundError();
 
-    const result: Reservation[] = restaurant.currentReserves!.filter(
+    const result: Reservation[] = restaurant.reservation!.filter(
       (r) => !r.isPayed
     );
 
     if (!result) throw new DataIntegrityError();
 
-    return result;
+    return {
+      count: 3,
+      data: result,
+    };
   }
 
   public async findBookedReserves(
-    restaurantId: string
-  ): Promise<Reservation[] | null> {
+    restaurantId: string,
+    page: number,
+    searchQuery: string
+  ): Promise<ReservationWithCount | null> {
     const restaurant = this._restaurants.find(
       (rs) => rs.restaurantId === restaurantId
     );
 
     if (!restaurant) throw new EntityNotFoundError();
 
-    const result: Reservation[] = restaurant.currentReserves!.filter(
+    const result: Reservation[] = restaurant.reservation!.filter(
       (r) => r.isPayed
     );
 
     if (!result) throw new DataIntegrityError();
 
-    return result;
+    return {
+      count: 3,
+      data: result,
+    };
   }
 
-  public async findAttendReserves(
-    restaurantId: string
-  ): Promise<Reservation[] | null> {
+  public async findAttendAndLateReserves(
+    restaurantId: string,
+    page: number,
+    searchQuery: string
+  ): Promise<ReservationWithCount | null> {
     const restaurant = this._restaurants.find(
       (rs) => rs.restaurantId === restaurantId
     );
 
     if (!restaurant) throw new EntityNotFoundError();
 
-    const result: Reservation[] = restaurant.currentReserves!.filter(
+    const result: Reservation[] = restaurant.reservation!.filter(
       (r) => r.isAttended
     );
 
     if (!result) throw new DataIntegrityError();
 
-    return result;
+    return {
+      count: 3,
+      data: result,
+    };
   }
 
-  public async findMany(): Promise<Reservation[] | null> {
-    const result = this._reserves ?? null;
+  public async findMany(
+    restaurantId: string,
+    page: number,
+    searchQuery: string
+  ): Promise<ReservationWithCount | null> {
+    const result =
+      this._reserves.filter((rs) => rs.restaurantId === restaurantId) ?? null;
 
     if (!result) throw new DataIntegrityError();
 
-    return result;
+    return {
+      count: 3,
+      data: result,
+    };
   }
 
   public async save(reservation: Reservation): Promise<Reservation | null> {
@@ -165,17 +202,17 @@ export class InMemoryReserveRepository implements IReserveRepository {
     return reservation;
   }
 
-  public async changeReserveDate(
-    id: string,
-    date: number
-  ): Promise<Reservation | null> {
-    const reservation: Reservation | undefined = this._findById(id);
+  // public async changeReserveDate(
+  //   id: string,
+  //   date: number
+  // ): Promise<Reservation | null> {
+  //   const reservation: Reservation | undefined = this._findById(id);
 
-    if (!reservation) throw new NotFoundError();
+  //   if (!reservation) throw new NotFoundError();
 
-    reservation.reserveDate = date;
-    return reservation;
-  }
+  //   reservation.reserveDate = date;
+  //   return reservation;
+  // }
 
   public async update(
     id: string,

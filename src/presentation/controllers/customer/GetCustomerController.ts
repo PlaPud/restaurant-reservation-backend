@@ -18,8 +18,6 @@ export class GetCustomerController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
-      // if (!req.cookies[TOKEN_NAME]) throw new UnauthorizedActionError();
-
       if (!req.query.customerId) throw new BadRequestError();
 
       const userInput = {

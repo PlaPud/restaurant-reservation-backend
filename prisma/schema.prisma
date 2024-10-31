@@ -1,11 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextIndex", "fullTextSearch"]
 }
 
 datasource db {
@@ -13,52 +8,89 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Customer {
-  customerId String @id @default(uuid())
-  fName String 
-  lName String
-  email String @unique
-  phone String @unique
-  isVerified Boolean @default(false)
+model admin {
+  adminId      String @id
+  fName        String
+  lName        String
   hashPassword String
-  profileImgPath String @default("")
-  reservations Reservation[]
 }
 
-model Restaurant {
-  restaurantId String @id @default(uuid())
-  name String
-  phone String @unique
-  email String @unique
-  address String
-  province String
-  district String
-  subDistrict String
-  isVerified Boolean @default(false)
-  hashPassword String
-  profileImgPath String @default("")
-  description String @default("")
-  currentReserves Reservation[]
+model customer {
+  customerId     String        @id
+  fName          String
+  lName          String
+  email          String        @unique(map: "Customer_email_key")
+  phone          String        @unique(map: "Customer_phone_key")
+  hashPassword   String
+  isVerified     Boolean       @default(false)
+  profileImgPath String        @default("")
+  reservation    reservation[]
 }
 
-model Reservation {
-  reserveId String @id @default(uuid())
-  customerId String? 
-  customer Customer? @relation(fields: [customerId], references: [customerId], onDelete: Cascade)
+model reservation {
+  customerId   String?
   restaurantId String
-  restaurant Restaurant @relation(fields: [restaurantId], references: [restaurantId], onDelete: Cascade)
+  isAttended   Boolean    @default(false)
+  isPayed      Boolean    @default(false)
+  payImgUrl    String     @default("")
+  reserveDate  Int
+  reserveId    String     @id
+  seats        Int
   lastModified Int?
-  seats Int
-  reservePrice Int @default(0)
-  reserveDate Int
-  payImgUrl String @default("")
-  isPayed Boolean @default(false)
-  isAttended Boolean @default(false)
+  reservePrice Int        @default(0)
+  customer     customer?  @relation(fields: [customerId], references: [customerId], onDelete: Cascade, map: "Reservation_customerId_fkey")
+  restaurant   restaurant @relation(fields: [restaurantId], references: [restaurantId], onDelete: Cascade, map: "Reservation_restaurantId_fkey")
+
+  @@index([customerId], map: "Reservation_customerId_fkey")
+  @@index([restaurantId], map: "Reservation_restaurantId_fkey")
 }
 
-model Admin {
-  adminId String @id @default(uuid())
-  fName String
-  lName String
-  hashPassword String
+model restaurant {
+  restaurantId   String        @id
+  name           String
+  phone          String        @unique(map: "Restaurant_phone_key")
+  address        String
+  email          String        @unique(map: "Restaurant_email_key")
+  hashPassword   String
+  isVerified     Boolean       @default(false)
+  description    String        @default("")
+  paymentInfo    String        @default("")
+  profileImgPath String        @default("")
+  district       String
+  province       String
+  subDistrict    String
+  reservation    reservation[]
+
+  @@fulltext([name])
+}
+
+model thai_amphures {
+  id          Int       @id
+  name_th     String    @db.VarChar(150)
+  name_en     String    @db.VarChar(150)
+  province_id Int
+  created_at  DateTime? @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  deleted_at  DateTime? @db.DateTime(0)
+}
+
+model thai_provinces {
+  id           Int       @id
+  name_th      String    @db.VarChar(150)
+  name_en      String    @db.VarChar(150)
+  geography_id Int
+  created_at   DateTime? @db.DateTime(0)
+  updated_at   DateTime? @db.DateTime(0)
+  deleted_at   DateTime? @db.DateTime(0)
+}
+
+model thai_tambons {
+  id         Int       @id
+  zip_code   Int
+  name_th    String    @db.VarChar(150)
+  name_en    String    @db.VarChar(150)
+  amphure_id Int
+  created_at DateTime? @db.DateTime(0)
+  updated_at DateTime? @db.DateTime(0)
+  deleted_at DateTime? @db.DateTime(0)
 }

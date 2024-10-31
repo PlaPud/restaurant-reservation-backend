@@ -12,13 +12,16 @@ import { ReservationAuthService } from "../services/ReservationAuthService";
 import { AdminControllers } from "./controllers/Admin.Controllers";
 import { adminRouter } from "./routers/Admin.Routes";
 import multer from "multer";
-
+import { ThaiAddressControllers } from "./controllers/ThaiAddress.Controllers";
+import { thaiAddressRouter } from "./routers/ThaiAddress.Routes";
+import cors from "cors";
 export class ApiServer {
   public static run = async (options: {
     port: number;
     customerControllers: CustomerControllers;
     restaurantControllers: RestaurantControllers;
     reservationControllers: ReservationControllers;
+    thaiAddressControllers: ThaiAddressControllers;
     adminControllers: AdminControllers;
     logoutController: LogoutController;
     reserveAuthService: ReservationAuthService;
@@ -28,12 +31,20 @@ export class ApiServer {
       customerControllers,
       restaurantControllers,
       reservationControllers,
+      thaiAddressControllers,
       adminControllers,
       logoutController,
       reserveAuthService,
     } = options;
 
     const app = express();
+
+    app.use(
+      cors<Request>({
+        origin: process.env.ORIGIN_URL,
+        credentials: true,
+      })
+    );
 
     app.use(express.json());
     app.use(cookieParser());
@@ -46,6 +57,8 @@ export class ApiServer {
       "/reservations",
       reservationRouter(reservationControllers, reserveAuthService)
     );
+    app.use("/address", thaiAddressRouter(thaiAddressControllers));
+
     app.use("/admin", adminRouter(adminControllers));
 
     app.post("/logout", (req, res) => {
@@ -53,6 +66,7 @@ export class ApiServer {
     });
 
     app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+      console.log(err);
       sendErrorResponse(res, err);
     });
 

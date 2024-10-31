@@ -16,7 +16,7 @@ export interface IUpdateReserveDto {
     restaurantId: string;
     seats: number;
     reservePrice: number;
-    reserveDate: string;
+    reserveDate: number;
     payImgUrl: string;
     isPayed: boolean;
     isAttended: boolean;

@@ -38,6 +38,13 @@ export class UpdateRestaurantProfileImgUseCase
     );
 
     if (!imgPath) throw new InternalServerError();
+    const restaurant = await this._repository.find(input.restaurantId);
+
+    if (!restaurant) throw new InternalServerError();
+
+    if (restaurant.profileImgPath !== "") {
+      await this._imageRepo.deletePaymentImage(restaurant.profileImgPath);
+    }
 
     const result = await this._repository.updateProfileImgPath(
       input.restaurantId,

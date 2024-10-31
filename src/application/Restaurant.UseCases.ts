@@ -5,14 +5,14 @@ import { CreateRestaurantUseCase } from "./restaurant/CreateRestaurantUseCase";
 import { DeleteAllRestaurantUseCase } from "./restaurant/DeleteAllRestaurantUseCase";
 import { DeleteRestaurantProfileImgUseCase } from "./restaurant/DeleteRestaurantProfileImgUseCase";
 import { DeleteRestaurantUseCase } from "./restaurant/DeleteRestaurantUseCase";
-import { GetAllRestaurantUseCase } from "./restaurant/GetManyRestaurantUseCase";
+import { GetManyRestaurantUseCase } from "./restaurant/GetManyRestaurantUseCase";
 import { GetRestaurantUseCase } from "./restaurant/GetRestaurantUseCase";
 import { UpdateRestaurantProfileImgUseCase } from "./restaurant/UpdateRestaurantProfileImgUseCase";
 import { UpdateRestaurantUseCase } from "./restaurant/UpdateRestaurantUseCase";
 
 export class RestaurantUseCases {
   public readonly get: GetRestaurantUseCase;
-  public readonly getAll: GetAllRestaurantUseCase;
+  public readonly getAll: GetManyRestaurantUseCase;
   public readonly create: CreateRestaurantUseCase;
   public readonly update: UpdateRestaurantUseCase;
   public readonly updateProfImg: UpdateRestaurantProfileImgUseCase;
@@ -27,7 +27,7 @@ export class RestaurantUseCases {
     private readonly _imgRepo: IImageRepository
   ) {
     this.get = new GetRestaurantUseCase(_repository);
-    this.getAll = new GetAllRestaurantUseCase(_repository);
+    this.getAll = new GetManyRestaurantUseCase(_repository);
     this.create = new CreateRestaurantUseCase(_repository);
     this.update = new UpdateRestaurantUseCase(_repository);
     this.delete = new DeleteRestaurantUseCase(_repository);

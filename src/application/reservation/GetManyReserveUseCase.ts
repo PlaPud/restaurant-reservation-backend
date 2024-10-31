@@ -3,30 +3,43 @@ import { InternalServerError } from "../../errors/HttpError";
 import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepository";
 import { IUseCase } from "../../shared/IUseCase";
 
+export interface IGetManyReserveDto {
+  restaurantId: string;
+}
+
 export interface IGetManyReserveResult {
   page: number;
+  totalPages: number;
   data: ReservationObj[];
 }
 
 export class GetManyReserveUseCase
-  implements IUseCase<null, IGetManyReserveResult>
+  implements IUseCase<IGetManyReserveDto, IGetManyReserveResult>
 {
   private _page = 1;
-
+  private _searchQuery?: string;
   public constructor(private readonly _repository: IReserveRepository) {}
 
-  public setPagination(page: number) {
-    this._page = page ? page : this._page;
+  public setSearching(page: number, searchQuery: string) {
+    this._page = page ?? 1;
+    this._searchQuery = searchQuery;
   }
 
-  public async execute(input: null): Promise<IGetManyReserveResult> {
-    const result = await this._repository.findMany(this._page);
+  public async execute(
+    input: IGetManyReserveDto
+  ): Promise<IGetManyReserveResult> {
+    const result = await this._repository.findMany(
+      input.restaurantId,
+      this._page,
+      this._searchQuery ?? ""
+    );
 
     if (!result) throw new InternalServerError();
 
     const body: IGetManyReserveResult = {
       page: this._page,
-      data: result.map((r) => r.toObject()),
+      totalPages: result.count,
+      data: result.data.map((r) => r.toObject()),
     };
 
     return body;
