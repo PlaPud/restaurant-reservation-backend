@@ -14,27 +14,32 @@ export interface IReserveRepository {
   ): Promise<ReservationWithCount | null>;
 
   findPendingReserves(
-    restaurantId: string,
     page: number,
-    searchQuery: string
+    searchQuery: string,
+    restaurantId?: string,
+    customerId?: string
   ): Promise<ReservationWithCount | null>;
 
   findBookedReserves(
-    restaurantId: string,
     page: number,
-    searchQuery: string
+    searchQuery: string,
+    restaurantId?: string,
+    customerId?: string
   ): Promise<ReservationWithCount | null>;
 
   findAttendAndLateReserves(
-    restaurantId: string,
     page: number,
-    searchQuery: string
+    searchQuery: string,
+    restaurantId?: string,
+    customerId?: string
   ): Promise<ReservationWithCount | null>;
 
   findMany(
-    restaurantId: string,
+    // restaurantId: string,
     page: number,
-    searchQuery: string
+    searchQuery: string,
+    restaurantId?: string,
+    customerId?: string
   ): Promise<ReservationWithCount | null>;
 
   save(reservation: Reservation): Promise<Reservation | null>;

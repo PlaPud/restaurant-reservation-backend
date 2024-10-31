@@ -20,7 +20,8 @@ export class GetManyReserveController {
 
   public async handle(req: Request, res: Response) {
     try {
-      if (!req.query.restaurantId) throw new BadRequestError();
+      if (!req.query.restaurantId && !req.query.customerId)
+        throw new BadRequestError();
 
       this._useCase.setSearching(
         req.query.page ? Number(req.query.page) : 1,
@@ -28,7 +29,12 @@ export class GetManyReserveController {
       );
 
       const userInput: IGetManyReserveDto = {
-        restaurantId: req.query.restaurantId as string,
+        restaurantId: req.query.restaurantId
+          ? String(req.query.restaurantId)
+          : undefined,
+        customerId: req.query.customerId
+          ? String(req.query.customerId)
+          : undefined,
       };
 
       const result = await this._useCase.execute(userInput);

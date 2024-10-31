@@ -4,9 +4,10 @@ import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepo
 import { IUseCase } from "../../shared/IUseCase";
 
 export interface IGetBookedReserveDto {
-  restaurantId: string;
   page: number;
   searchQuery: string;
+  restaurantId?: string;
+  customerId?: string;
 }
 
 export interface IGetBookedReserveResult {
@@ -24,9 +25,10 @@ export class GetBookedReserveUseCase
     input: IGetBookedReserveDto
   ): Promise<IGetBookedReserveResult> {
     const result = await this._repository.findBookedReserves(
-      input.restaurantId,
       input.page,
-      input.searchQuery
+      input.searchQuery,
+      input.restaurantId,
+      input.customerId
     );
 
     if (!result) throw new InternalServerError();

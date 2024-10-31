@@ -4,7 +4,8 @@ import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepo
 import { IUseCase } from "../../shared/IUseCase";
 
 export interface IGetManyReserveDto {
-  restaurantId: string;
+  restaurantId?: string;
+  customerId?: string;
 }
 
 export interface IGetManyReserveResult {
@@ -29,9 +30,10 @@ export class GetManyReserveUseCase
     input: IGetManyReserveDto
   ): Promise<IGetManyReserveResult> {
     const result = await this._repository.findMany(
-      input.restaurantId,
       this._page,
-      this._searchQuery ?? ""
+      this._searchQuery ?? "",
+      input.restaurantId,
+      input.customerId
     );
 
     if (!result) throw new InternalServerError();

@@ -18,9 +18,14 @@ export class GetBookedReserveController {
       if (!req.query.restaurantId) throw new BadRequestError();
 
       const userInput: IGetBookedReserveDto = {
-        restaurantId: req.query.restaurantId as string,
         page: Number(req.query.page) || 1,
         searchQuery: req.query.searchQuery ? String(req.query.searchQuery) : "",
+        restaurantId: req.query.restaurantId
+          ? String(req.query.restaurantId)
+          : undefined,
+        customerId: req.query.customerId
+          ? String(req.query.customerId)
+          : undefined,
       };
 
       // this._useCase.setSearching(req.body.page);

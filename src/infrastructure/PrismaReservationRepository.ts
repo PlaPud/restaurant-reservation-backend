@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { inject, injectable } from "inversify";
+import { id, inject, injectable } from "inversify";
 import "reflect-metadata";
 import { Reservation } from "../domain/Reservation";
 import { EntityNotFoundError } from "../errors/DomainError";
@@ -78,13 +78,14 @@ export class PrismaReservationRepository implements IReserveRepository {
   }
 
   public async findPendingReserves(
-    restaurantId: string,
     page: number,
-    searchQuery: string
+    searchQuery: string,
+    restaurantId?: string,
+    customerId?: string
   ): Promise<ReservationWithCount | null> {
     const queryCondition = {
       AND: {
-        restaurantId: restaurantId,
+        ...this.buildIdCondition(customerId, restaurantId),
         payImgUrl: {
           not: "",
         },
@@ -112,13 +113,14 @@ export class PrismaReservationRepository implements IReserveRepository {
   }
 
   public async findBookedReserves(
-    restaurantId: string,
     page: number,
-    searchQuery: string
+    searchQuery: string,
+    restaurantId?: string,
+    customerId?: string
   ): Promise<ReservationWithCount | null> {
     const queryCondition = {
       AND: {
-        restaurantId: restaurantId,
+        ...this.buildIdCondition(customerId, restaurantId),
         isPayed: true,
         reserveDate: {
           gte: getReservationCutOffTime(),
@@ -148,19 +150,22 @@ export class PrismaReservationRepository implements IReserveRepository {
   }
 
   public async findAttendAndLateReserves(
-    restaurantId: string,
     page: number,
-    searchQuery: string
+    searchQuery: string,
+    customerId?: string,
+    restaurantId?: string
   ): Promise<ReservationWithCount | null> {
+    const idCondition = this.buildIdCondition(customerId, restaurantId);
+
     const queryCondition = {
       AND: {
         OR: [
           {
-            restaurantId: restaurantId,
+            ...idCondition,
             isAttended: true,
           },
           {
-            restaurantId: restaurantId,
+            ...idCondition,
             reserveDate: {
               lt: getReservationCutOffTime(),
             },
@@ -191,18 +196,22 @@ export class PrismaReservationRepository implements IReserveRepository {
   }
 
   public async findMany(
-    restaurantId: string,
     page: number,
-    searchQuery: string
+    searchQuery: string,
+    restaurantId?: string,
+    customerId?: string
   ): Promise<ReservationWithCount | null> {
+    const idCondition = this.buildIdCondition(restaurantId, customerId);
+    const searchCondition = this.buildSearchQuery(searchQuery);
+
     const [count, result] = await Promise.all([
       this._client.reservation.count({
-        where: { restaurantId, ...this.buildSearchQuery(searchQuery) },
+        where: { ...idCondition, ...searchCondition },
       }),
       this._client.reservation.findMany({
         skip: PAGE_SIZE * (page - 1),
         take: PAGE_SIZE,
-        where: { restaurantId, ...this.buildSearchQuery(searchQuery) },
+        where: { ...idCondition, ...searchCondition },
         include: {
           restaurant: true,
           customer: true,
@@ -435,6 +444,13 @@ export class PrismaReservationRepository implements IReserveRepository {
     } catch (err) {
       throw getExternalError(err);
     }
+  }
+
+  private buildIdCondition(customerId?: string, restaurantId?: string) {
+    return {
+      ...(restaurantId ? { restaurantId } : {}),
+      ...(customerId ? { customerId } : {}),
+    };
   }
 
   private buildSearchQuery(searchQuery: string): Prisma.reservationWhereInput {

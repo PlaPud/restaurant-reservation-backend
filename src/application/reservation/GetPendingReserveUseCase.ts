@@ -4,7 +4,8 @@ import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepo
 import { IUseCase } from "../../shared/IUseCase";
 
 export interface IGetPendingReserveDto {
-  restaurantId: string;
+  restaurantId?: string;
+  customerId?: string;
   page: number;
   searchQuery: string;
 }
@@ -24,9 +25,10 @@ export class GetPendingReserveUseCase
     input: IGetPendingReserveDto
   ): Promise<IGetPendingReserveResult> {
     const result = await this._repository.findPendingReserves(
-      input.restaurantId,
       input.page,
-      input.searchQuery
+      input.searchQuery,
+      input.restaurantId,
+      input.customerId
     );
 
     if (!result) throw new InternalServerError();
