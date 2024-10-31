@@ -16,6 +16,7 @@ import { UpdatePayUrlUseCase } from "./reservation/UpdatePayUrlUseCase";
 import { UpdateReserveUseCase } from "./reservation/UpdateReserveUseCase";
 import { GetPendingReserveUseCase } from "./reservation/GetPendingReserveUseCase";
 import { CancelReserveUseCase } from "./reservation/CancelReserveUseCase";
+import { MakeReserveUseCase } from "./reservation/MakeReserveUseCase";
 
 export class ReservationUseCases {
   public readonly create: CreateReserveUseCase;
@@ -30,6 +31,7 @@ export class ReservationUseCases {
   public readonly updatePayed: UpdatePayedUseCase;
   public readonly updatePayUrl: UpdatePayUrlUseCase;
   public readonly cancel: CancelReserveUseCase;
+  public readonly makeReservation: MakeReserveUseCase;
   public readonly delete: DeleteReserveUseCase;
   public readonly deleteAll: DeleteAllReserveUseCase;
   public readonly deletePayUrl: DeletePayUrlUseCase;
@@ -49,6 +51,7 @@ export class ReservationUseCases {
     this.updateAttend = new UpdateAttendUseCase(this._repository);
     this.updatePayed = new UpdatePayedUseCase(this._repository);
     this.cancel = new CancelReserveUseCase(this._repository);
+    this.makeReservation = new MakeReserveUseCase(this._repository);
     this.delete = new DeleteReserveUseCase(this._repository);
     this.deleteAll = new DeleteAllReserveUseCase(this._repository);
     this.updatePayUrl = new UpdatePayUrlUseCase(

@@ -39,7 +39,13 @@ export class InMemoryReserveRepository implements IReserveRepository {
   ];
 
   public constructor() {}
-  cancelReservation(id: string): Promise<Reservation | null> {
+  public async makeReservation(
+    id: string,
+    customerId: string
+  ): Promise<Reservation | null> {
+    throw new Error("Method not implemented.");
+  }
+  public async cancelReservation(id: string): Promise<Reservation | null> {
     throw new Error("Method not implemented.");
   }
   public async findPendingReserves(

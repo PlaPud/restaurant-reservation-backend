@@ -305,6 +305,33 @@ export class PrismaReservationRepository implements IReserveRepository {
     }
   }
 
+  public async makeReservation(
+    id: string,
+    customerId: string
+  ): Promise<Reservation | null> {
+    try {
+      const result = await this._client.reservation.update({
+        where: {
+          reserveId: id,
+        },
+        data: {
+          customerId,
+        },
+        include: {
+          customer: true,
+          restaurant: true,
+        },
+      });
+
+      if (!result)
+        throw new EntityNotFoundError(`Cannot find reservation (ID: ${id})`);
+
+      return Reservation.fromJSON(result);
+    } catch (err) {
+      throw getExternalError(err, id);
+    }
+  }
+
   public async cancelReservation(id: string): Promise<Reservation | null> {
     try {
       const result = await this._client.reservation.update({

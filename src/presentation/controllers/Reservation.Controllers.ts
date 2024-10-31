@@ -15,6 +15,7 @@ import { UpdatePayUrlController } from "./reservation/UpdatePayUrlController";
 import { UpdateReserveController } from "./reservation/UpdateReserveController";
 import { CancelReserveController } from "./reservation/CancelReserveController";
 import { GetPendingReserveController } from "./reservation/GetPendingReserveController";
+import { MakeReserveController } from "./reservation/MakeReserveController";
 
 export class ReservationControllers {
   public readonly create: CreateReserveController;
@@ -28,6 +29,7 @@ export class ReservationControllers {
   public readonly updatePayUrl: UpdatePayUrlController;
   public readonly updatePayed: UpdatePayedController;
   public readonly updateAttend: UpdateAttendController;
+  public readonly makeReservation: MakeReserveController;
   public readonly cancel: CancelReserveController;
   public readonly delete: DeleteReserveController;
   public readonly deleteAll: DeleteAllReserveController;
@@ -48,6 +50,9 @@ export class ReservationControllers {
     this.updatePayed = new UpdatePayedController(this._useCases.updatePayed);
     this.updateAttend = new UpdateAttendController(this._useCases.updateAttend);
     this.cancel = new CancelReserveController(this._useCases.cancel);
+    this.makeReservation = new MakeReserveController(
+      this._useCases.makeReservation
+    );
     this.delete = new DeleteReserveController(this._useCases.delete);
     this.deleteAll = new DeleteAllReserveController(this._useCases.deleteAll);
     this.deletePayUrl = new DeletePayUrlController(this._useCases.deletePayUrl);

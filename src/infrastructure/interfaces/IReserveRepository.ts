@@ -50,6 +50,8 @@ export interface IReserveRepository {
 
   updatePay(id: string, isPayed: boolean): Promise<Reservation | null>;
 
+  makeReservation(id: string, customerId: string): Promise<Reservation | null>;
+
   cancelReservation(id: string): Promise<Reservation | null>;
 
   delete(id: string): Promise<boolean>;

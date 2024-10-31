@@ -52,7 +52,6 @@ export const reservationRouter = (
     }
   );
 
-  // TODO: CREATE NEW API FOR GET PENDING
   router.get(
     "/pending",
     checkRequestToken,
@@ -123,7 +122,16 @@ export const reservationRouter = (
     }
   );
 
-  // TODO: Implement Cancel Reservation API
+  router.patch(
+    "/make-reservation",
+    checkRequestToken,
+    useSelfData([TokenRole.CUSTOMER]),
+    authorizeReqFromRoles([TokenRole.CUSTOMER]),
+    (req, res) => {
+      controllers.makeReservation.handle(req, res);
+    }
+  );
+
   router.patch(
     "/cancel",
     checkRequestToken,

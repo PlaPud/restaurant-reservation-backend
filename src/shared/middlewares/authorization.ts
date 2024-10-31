@@ -51,6 +51,7 @@ export const checkRequestToken = (
   next: NextFunction
 ) => {
   try {
+    console.log(req.cookies[TOKEN_NAME]);
     if (!req.cookies[TOKEN_NAME])
       throw new UnauthorizedActionError(`missing token.`);
     next();
