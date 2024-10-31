@@ -6,7 +6,7 @@ import { restaurantRouter } from "./routers/Restaurant.Routes";
 import { reservationRouter } from "./routers/Reservation.Routes";
 import { ReservationControllers } from "./controllers/Reservation.Controllers";
 import cookieParser from "cookie-parser";
-import { LogoutController } from "./controllers/authentication/LogoutController";
+import { LogoutController } from "./controllers/auth/LogoutController";
 import { sendErrorResponse } from "../shared/sendErrorResponse";
 import { ReservationAuthService } from "../services/ReservationAuthService";
 import { AdminControllers } from "./controllers/Admin.Controllers";
@@ -15,9 +15,12 @@ import multer from "multer";
 import { ThaiAddressControllers } from "./controllers/ThaiAddress.Controllers";
 import { thaiAddressRouter } from "./routers/ThaiAddress.Routes";
 import cors from "cors";
+import { UserControllers } from "./controllers/User.Controllers";
+import { userRouter } from "./routers/User.Routes";
 export class ApiServer {
   public static run = async (options: {
     port: number;
+    userControllers: UserControllers;
     customerControllers: CustomerControllers;
     restaurantControllers: RestaurantControllers;
     reservationControllers: ReservationControllers;
@@ -28,6 +31,7 @@ export class ApiServer {
   }): Promise<void> => {
     const {
       port,
+      userControllers,
       customerControllers,
       restaurantControllers,
       reservationControllers,
@@ -59,6 +63,7 @@ export class ApiServer {
     );
     app.use("/address", thaiAddressRouter(thaiAddressControllers));
 
+    app.use("/user", userRouter(userControllers));
     app.use("/admin", adminRouter(adminControllers));
 
     app.post("/logout", (req, res) => {

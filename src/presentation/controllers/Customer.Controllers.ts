@@ -1,5 +1,5 @@
 import { CustomerUseCases } from "../../application/Customer.UseCases";
-import { LoginCustomerController } from "./authentication/LoginCustomerController";
+import { LoginCustomerController } from "./auth/LoginCustomerController";
 import { CreateCustomerController } from "./customer/CreateCustomerController";
 import { DeleteAllCustomerController } from "./customer/DeleteAllCustomerController";
 import { DeleteCustomerController } from "./customer/DeleteCustomerController";

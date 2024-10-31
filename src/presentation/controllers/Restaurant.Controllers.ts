@@ -1,5 +1,5 @@
 import { RestaurantUseCases } from "../../application/Restaurant.UseCases";
-import { LoginRestaurantController } from "./authentication/LoginRestaurantController";
+import { LoginRestaurantController } from "./auth/LoginRestaurantController";
 import { CreateRestaurantController } from "./restaurant/CreateRestaurantController";
 import { DeleteAllRestaurantController } from "./restaurant/DeleteAllRestaurantController";
 import { DeleteRestaurantController } from "./restaurant/DeleteRestaurantController";

@@ -11,13 +11,15 @@ import { RestaurantUseCases } from "./application/Restaurant.UseCases";
 import { RestaurantControllers } from "./presentation/controllers/Restaurant.Controllers";
 import { ReservationUseCases } from "./application/Reservation.UseCases";
 import { ReservationControllers } from "./presentation/controllers/Reservation.Controllers";
-import { LogoutController } from "./presentation/controllers/authentication/LogoutController";
+import { LogoutController } from "./presentation/controllers/auth/LogoutController";
 import { ReservationAuthService } from "./services/ReservationAuthService";
 import { AdminUseCases } from "./application/Admin.UseCases";
 import { AdminControllers } from "./presentation/controllers/Admin.Controllers";
 import { ThaiAddressUseCases } from "./application/ThaiAddress.UseCases";
 import { ThaiAddressControllers } from "./presentation/controllers/ThaiAddress.Controllers";
 import "date-fns";
+import { UserUseCases } from "./application/User.UseCases";
+import { UserControllers } from "./presentation/controllers/User.Controllers";
 dotenv.config();
 
 const port = Number(process.env.PORT) || 3000;
@@ -46,6 +48,7 @@ export const main = async (): Promise<void> => {
     repositories.prismaThaiAddressRepo
   );
   const adminUseCases = new AdminUseCases(repositories.prismaAdminRepo);
+  const userUseCases = new UserUseCases();
 
   const customerControllers = new CustomerControllers(customerUseCases);
   const restaurantControllers = new RestaurantControllers(restaurantUseCases);
@@ -57,11 +60,12 @@ export const main = async (): Promise<void> => {
     thaiAddressUseCases
   );
   const adminControllers = new AdminControllers(adminUseCases);
-
+  const userControllers = new UserControllers(userUseCases);
   const logoutController = new LogoutController();
 
   await ApiServer.run({
     port,
+    userControllers,
     customerControllers,
     restaurantControllers,
     reservationControllers,
