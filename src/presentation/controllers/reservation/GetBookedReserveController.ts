@@ -15,7 +15,8 @@ export class GetBookedReserveController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
-      if (!req.query.restaurantId) throw new BadRequestError();
+      if (!req.query.restaurantId && !req.query.customerId)
+        throw new BadRequestError();
 
       const userInput: IGetBookedReserveDto = {
         page: Number(req.query.page) || 1,

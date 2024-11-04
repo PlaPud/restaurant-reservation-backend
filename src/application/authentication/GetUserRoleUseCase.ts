@@ -10,6 +10,7 @@ export interface IGetUserRoleDto {
 
 export interface IGetUserRoleResult {
   role: TokenRole | null;
+  id: string | null;
 }
 
 export class GetUserRoleUseCase
@@ -21,16 +22,24 @@ export class GetUserRoleUseCase
 
   public async execute(input: IGetUserRoleDto): Promise<IGetUserRoleResult> {
     let role: TokenRole | null = null;
+    let id: string | null = null;
 
     if (input.token) {
       const payload = await this._jwtService.verifyToken(input.token);
+
+      console.log(payload);
+
       role = payload.role;
+      id = payload.sub ?? null;
+
+      console.log(id);
     }
 
-    const result = new User({ role });
+    const result = new User({ role, id });
 
     const body: IGetUserRoleResult = {
       role: result.toJSONResponse().role,
+      id: result.toJSONResponse().id,
     };
 
     return body;

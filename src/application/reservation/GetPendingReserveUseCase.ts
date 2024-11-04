@@ -2,6 +2,7 @@ import { ReservationObj } from "../../domain/Reservation";
 import { InternalServerError } from "../../errors/HttpError";
 import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepository";
 import { IUseCase } from "../../shared/IUseCase";
+import { getTotalPages } from "../../shared/utilsFunc";
 
 export interface IGetPendingReserveDto {
   restaurantId?: string;
@@ -35,7 +36,7 @@ export class GetPendingReserveUseCase
 
     const body: IGetPendingReserveResult = {
       page: input.page,
-      totalPages: result.count,
+      totalPages: getTotalPages(result.count),
       data: result.data.map((r) => r.toObject()),
     };
     return body;

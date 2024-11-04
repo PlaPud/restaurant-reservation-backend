@@ -34,8 +34,9 @@ export const reservationRouter = (
   router.get(
     "/all",
     checkRequestToken,
-    useSelfData([TokenRole.RESTAURANT]),
-    authorizeReqFromRoles([TokenRole.RESTAURANT]),
+    useSelfData([TokenRole.CUSTOMER, TokenRole.RESTAURANT]),
+    authorizeReqFromRoles([TokenRole.RESTAURANT, TokenRole.CUSTOMER]),
+
     (req, res) => {
       controllers.getAll.handle(req, res);
     }
@@ -44,9 +45,9 @@ export const reservationRouter = (
   router.get(
     "/avail",
     checkRequestToken,
-    useSelfData([TokenRole.RESTAURANT]),
-
     useSelfData([TokenRole.RESTAURANT, TokenRole.CUSTOMER]),
+    authorizeReqFromRoles([TokenRole.RESTAURANT, TokenRole.CUSTOMER]),
+
     (req, res) => {
       controllers.getAvail.handle(req, res);
     }
@@ -55,8 +56,8 @@ export const reservationRouter = (
   router.get(
     "/pending",
     checkRequestToken,
-    useSelfData([TokenRole.RESTAURANT]),
-    authorizeReqFromRoles([TokenRole.RESTAURANT]),
+    useSelfData([TokenRole.RESTAURANT, TokenRole.CUSTOMER]),
+    authorizeReqFromRoles([TokenRole.RESTAURANT, TokenRole.CUSTOMER]),
     (req, res) => {
       controllers.getPending.handle(req, res);
     }
@@ -65,8 +66,8 @@ export const reservationRouter = (
   router.get(
     "/booked",
     checkRequestToken,
-    useSelfData([TokenRole.RESTAURANT]),
-    authorizeReqFromRoles([TokenRole.RESTAURANT]),
+    useSelfData([TokenRole.RESTAURANT, TokenRole.CUSTOMER]),
+    authorizeReqFromRoles([TokenRole.RESTAURANT, TokenRole.CUSTOMER]),
     (req, res) => {
       controllers.getBooked.handle(req, res);
     }
@@ -75,8 +76,8 @@ export const reservationRouter = (
   router.get(
     "/done",
     checkRequestToken,
-    useSelfData([TokenRole.RESTAURANT]),
-    authorizeReqFromRoles([TokenRole.RESTAURANT]),
+    useSelfData([TokenRole.RESTAURANT, TokenRole.CUSTOMER]),
+    authorizeReqFromRoles([TokenRole.RESTAURANT, TokenRole.CUSTOMER]),
     (req, res) => {
       controllers.getAttend.handle(req, res);
     }

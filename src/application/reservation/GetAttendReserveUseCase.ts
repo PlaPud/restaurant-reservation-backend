@@ -36,7 +36,7 @@ export class GetAttendReserveUseCase
 
     const body: IGetAttendReserveResult = {
       page: input.page,
-      totalPages: result.count,
+      totalPages: getTotalPages(result.count),
       data: result.data.map((r) => r.toObject()),
     };
 

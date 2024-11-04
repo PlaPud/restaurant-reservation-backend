@@ -60,17 +60,17 @@ export class PrismaReservationRepository implements IReserveRepository {
       }),
     ]);
 
-    console.log(
-      await this._client.reservation.count({
-        where: {
-          restaurantId: restaurantId,
-          payImgUrl: "",
-          reserveDate: {
-            gte: getReservationCutOffTime(),
-          },
-        },
-      })
-    );
+    // console.log(
+    //   await this._client.reservation.count({
+    //     where: {
+    //       restaurantId: restaurantId,
+    //       payImgUrl: "",
+    //       reserveDate: {
+    //         gte: getReservationCutOffTime(),
+    //       },
+    //     },
+    //   })
+    // );
 
     const data = result.map((obj) => Reservation.fromJSON(obj));
 
@@ -86,8 +86,9 @@ export class PrismaReservationRepository implements IReserveRepository {
     const queryCondition = {
       AND: {
         ...this.buildIdCondition(customerId, restaurantId),
-        payImgUrl: {
-          not: "",
+        isPayed: false,
+        customerId: {
+          not: null,
         },
         reserveDate: {
           gte: getReservationCutOffTime(),
@@ -104,6 +105,10 @@ export class PrismaReservationRepository implements IReserveRepository {
         skip: PAGE_SIZE * (page - 1),
         take: PAGE_SIZE,
         where: queryCondition,
+        include: {
+          customer: true,
+          restaurant: true,
+        },
       }),
     ]);
 
@@ -122,6 +127,7 @@ export class PrismaReservationRepository implements IReserveRepository {
       AND: {
         ...this.buildIdCondition(customerId, restaurantId),
         isPayed: true,
+        isAttended: false,
         reserveDate: {
           gte: getReservationCutOffTime(),
         },
@@ -152,9 +158,11 @@ export class PrismaReservationRepository implements IReserveRepository {
   public async findAttendAndLateReserves(
     page: number,
     searchQuery: string,
-    customerId?: string,
-    restaurantId?: string
+    restaurantId?: string,
+    customerId?: string
   ): Promise<ReservationWithCount | null> {
+    console.log(restaurantId);
+
     const idCondition = this.buildIdCondition(customerId, restaurantId);
 
     const queryCondition = {
@@ -174,6 +182,8 @@ export class PrismaReservationRepository implements IReserveRepository {
       },
       ...this.buildSearchQuery(searchQuery),
     };
+
+    console.log(queryCondition.AND);
 
     const [count, result] = await Promise.all([
       this._client.reservation.count({
@@ -201,8 +211,10 @@ export class PrismaReservationRepository implements IReserveRepository {
     restaurantId?: string,
     customerId?: string
   ): Promise<ReservationWithCount | null> {
-    const idCondition = this.buildIdCondition(restaurantId, customerId);
+    const idCondition = this.buildIdCondition(customerId, restaurantId);
     const searchCondition = this.buildSearchQuery(searchQuery);
+
+    console.log(idCondition);
 
     const [count, result] = await Promise.all([
       this._client.reservation.count({

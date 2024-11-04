@@ -4,8 +4,8 @@ import { UserControllers } from "../controllers/User.Controllers";
 export const userRouter = (controllers: UserControllers): Router => {
   const router = Router();
 
-  router.get("/role", (req, res) => {
-    controllers.getRole.handle(req, res);
+  router.get("/data", (req, res) => {
+    controllers.getData.handle(req, res);
   });
 
   return router;

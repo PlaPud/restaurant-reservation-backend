@@ -1,10 +1,10 @@
 import { UserUseCases } from "../../application/User.UseCases";
-import { GetUserRoleController } from "./auth/GetUserRoleController";
+import { GetUserDataController } from "./auth/GetUserRoleController";
 
 export class UserControllers {
-  public readonly getRole: GetUserRoleController;
+  public readonly getData: GetUserDataController;
 
   public constructor(private readonly _useCases: UserUseCases) {
-    this.getRole = new GetUserRoleController(this._useCases.getRole);
+    this.getData = new GetUserDataController(this._useCases.getRole);
   }
 }

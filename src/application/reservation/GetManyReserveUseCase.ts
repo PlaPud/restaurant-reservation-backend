@@ -2,6 +2,7 @@ import { Reservation, ReservationObj } from "../../domain/Reservation";
 import { InternalServerError } from "../../errors/HttpError";
 import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepository";
 import { IUseCase } from "../../shared/IUseCase";
+import { getTotalPages } from "../../shared/utilsFunc";
 
 export interface IGetManyReserveDto {
   restaurantId?: string;
@@ -40,7 +41,7 @@ export class GetManyReserveUseCase
 
     const body: IGetManyReserveResult = {
       page: this._page,
-      totalPages: result.count,
+      totalPages: getTotalPages(result.count),
       data: result.data.map((r) => r.toObject()),
     };
 
