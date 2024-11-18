@@ -15,12 +15,18 @@ export class GetAttendReserveController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
-      if (!req.query.restaurantId) throw new BadRequestError();
+      if (!req.query.restaurantId && !req.query.customerId)
+        throw new BadRequestError();
 
       const userInput: IGetAttendReserveDto = {
-        restaurantId: req.query.restaurantId as string,
         page: Number(req.query.page) || 1,
         searchQuery: req.query.searchQuery ? String(req.query.searchQuery) : "",
+        restaurantId: req.query.restaurantId
+          ? String(req.query.restaurantId)
+          : undefined,
+        customerId: req.query.customerId
+          ? String(req.query.customerId)
+          : undefined,
       };
 
       const result = await this._useCase.execute(userInput);

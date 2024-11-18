@@ -41,5 +41,5 @@ export const isRequestFromOwner = (options: {
   const idFromToken = verifyResult.payload.sub;
   const idFromRequest = req.query[roleIdField] as string;
 
-  return idFromRequest !== idFromToken;
+  return idFromRequest === idFromToken;
 };

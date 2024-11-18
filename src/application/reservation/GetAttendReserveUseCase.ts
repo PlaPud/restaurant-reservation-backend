@@ -5,9 +5,10 @@ import { IUseCase } from "../../shared/IUseCase";
 import { getTotalPages } from "../../shared/utilsFunc";
 
 export interface IGetAttendReserveDto {
-  restaurantId: string;
   page: number;
   searchQuery: string;
+  restaurantId?: string;
+  customerId?: string;
 }
 
 export interface IGetAttendReserveResult {
@@ -25,16 +26,17 @@ export class GetAttendReserveUseCase
     input: IGetAttendReserveDto
   ): Promise<IGetAttendReserveResult> {
     const result = await this._repository.findAttendAndLateReserves(
-      input.restaurantId,
       input.page,
-      input.searchQuery
+      input.searchQuery,
+      input.restaurantId,
+      input.customerId
     );
 
     if (!result) throw new InternalServerError();
 
     const body: IGetAttendReserveResult = {
       page: input.page,
-      totalPages: result.count,
+      totalPages: getTotalPages(result.count),
       data: result.data.map((r) => r.toObject()),
     };
 

@@ -2,9 +2,11 @@ import { Reservation, ReservationObj } from "../../domain/Reservation";
 import { InternalServerError } from "../../errors/HttpError";
 import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepository";
 import { IUseCase } from "../../shared/IUseCase";
+import { getTotalPages } from "../../shared/utilsFunc";
 
 export interface IGetManyReserveDto {
-  restaurantId: string;
+  restaurantId?: string;
+  customerId?: string;
 }
 
 export interface IGetManyReserveResult {
@@ -29,16 +31,17 @@ export class GetManyReserveUseCase
     input: IGetManyReserveDto
   ): Promise<IGetManyReserveResult> {
     const result = await this._repository.findMany(
-      input.restaurantId,
       this._page,
-      this._searchQuery ?? ""
+      this._searchQuery ?? "",
+      input.restaurantId,
+      input.customerId
     );
 
     if (!result) throw new InternalServerError();
 
     const body: IGetManyReserveResult = {
       page: this._page,
-      totalPages: result.count,
+      totalPages: getTotalPages(result.count),
       data: result.data.map((r) => r.toObject()),
     };
 

@@ -2,6 +2,7 @@ import { ReservationObj } from "../../domain/Reservation";
 import { InternalServerError } from "../../errors/HttpError";
 import { IReserveRepository } from "../../infrastructure/interfaces/IReserveRepository";
 import { IUseCase } from "../../shared/IUseCase";
+import { getTotalPages } from "../../shared/utilsFunc";
 
 export interface IGetAvailReserveDto {
   restaurantId: string;
@@ -31,7 +32,7 @@ export class GetAvailReserveUseCase
 
     const body: IGetAvailReserveResult = {
       page: input.page,
-      totalPages: result.count,
+      totalPages: getTotalPages(result.count),
       data: result.data.map((r) => r.toObject()),
     };
     return body;

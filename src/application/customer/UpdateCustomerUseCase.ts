@@ -20,8 +20,6 @@ export interface IUpdateCustomerDto {
     email: string;
 
     phone: string;
-
-    password: string | Buffer;
   };
 }
 
@@ -49,17 +47,13 @@ export class UpdateCustomerUseCase
   public async execute(
     input: IUpdateCustomerDto
   ): Promise<IUpdateCustomerResult> {
-    const hashPassword = await bcrypt.hash(input.data.password, 10);
-
-    input.data.password = "";
-
     const customer = new Customer({
       customerId: input.customerId,
       fName: input.data.fName,
       lName: input.data.lName,
       email: input.data.email,
       phone: input.data.phone,
-      hashPassword,
+      hashPassword: "",
     });
 
     const result = await this._customerRepository.update(

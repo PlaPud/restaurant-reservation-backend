@@ -1,5 +1,5 @@
 import { AdminUseCases } from "../../application/Admin.UseCases";
-import { LoginAdminController } from "./authentication/LoginAdminController";
+import { LoginAdminController } from "./auth/LoginAdminController";
 
 export class AdminControllers {
   public readonly login: LoginAdminController;

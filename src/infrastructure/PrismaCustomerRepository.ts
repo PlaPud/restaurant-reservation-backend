@@ -31,7 +31,6 @@ export class PrismaCustomerRepository implements ICustomerRepository {
 
       return Customer.fromJSON(result);
     } catch (err) {
-      console.log(err);
       throw getExternalError(err, id);
     }
   }
@@ -106,7 +105,6 @@ export class PrismaCustomerRepository implements ICustomerRepository {
           lName,
           email,
           phone,
-          hashPassword,
         },
         include: { reservation: true },
       });

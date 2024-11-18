@@ -49,9 +49,10 @@ export class InMemoryReserveRepository implements IReserveRepository {
     throw new Error("Method not implemented.");
   }
   public async findPendingReserves(
-    restaurantId: string,
     page: number,
-    searchQuery: string
+    searchQuery: string,
+    restaurantId?: string,
+    customerId?: string
   ): Promise<ReservationWithCount | null> {
     throw new Error("Method not implemented.");
   }
@@ -88,9 +89,10 @@ export class InMemoryReserveRepository implements IReserveRepository {
   }
 
   public async findBookedReserves(
-    restaurantId: string,
     page: number,
-    searchQuery: string
+    searchQuery: string,
+    restaurantId?: string,
+    customerId?: string
   ): Promise<ReservationWithCount | null> {
     const restaurant = this._restaurants.find(
       (rs) => rs.restaurantId === restaurantId
@@ -111,9 +113,10 @@ export class InMemoryReserveRepository implements IReserveRepository {
   }
 
   public async findAttendAndLateReserves(
-    restaurantId: string,
     page: number,
-    searchQuery: string
+    searchQuery: string,
+    restaurantId?: string,
+    customerId?: string
   ): Promise<ReservationWithCount | null> {
     const restaurant = this._restaurants.find(
       (rs) => rs.restaurantId === restaurantId
@@ -134,9 +137,10 @@ export class InMemoryReserveRepository implements IReserveRepository {
   }
 
   public async findMany(
-    restaurantId: string,
     page: number,
-    searchQuery: string
+    searchQuery: string,
+    restaurantId?: string,
+    customerId?: string
   ): Promise<ReservationWithCount | null> {
     const result =
       this._reserves.filter((rs) => rs.restaurantId === restaurantId) ?? null;

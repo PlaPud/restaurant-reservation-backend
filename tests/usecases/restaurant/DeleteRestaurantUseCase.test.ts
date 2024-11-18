@@ -25,6 +25,7 @@ const setUp = () => {
     find: jest.fn(),
     findMany: jest.fn(),
     findByEmail: jest.fn(),
+    getRecordsCount: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
     updateProfileImgPath: jest.fn(),

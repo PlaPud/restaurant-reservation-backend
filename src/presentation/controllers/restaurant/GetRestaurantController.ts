@@ -42,9 +42,6 @@ export class GetRestaurantController {
         reservation: result.reservation,
       };
 
-      console.log("result: ", result);
-      console.log("response: ", response);
-
       res.status(StatusCode.OK).send(response);
     } catch (err) {
       console.log(err);

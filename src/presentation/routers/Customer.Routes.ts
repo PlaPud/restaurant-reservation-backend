@@ -82,6 +82,7 @@ export const customerRouter = (controllers: CustomerControllers): Router => {
   router.delete(
     "/profile-img",
     checkRequestToken,
+    useSelfData([TokenRole.CUSTOMER]),
     authorizeReqFromOwner([TokenRole.CUSTOMER]),
     (req, res) => {
       controllers.deleteProfImg.handle(req, res);

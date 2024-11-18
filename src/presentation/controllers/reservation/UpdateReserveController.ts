@@ -35,6 +35,7 @@ export class UpdateReserveController {
 
       res.status(StatusCode.OK).json(response);
     } catch (err) {
+      console.log(err);
       sendErrorResponse(res, err);
     }
   }

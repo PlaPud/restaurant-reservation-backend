@@ -194,7 +194,7 @@ describe("[UPDATE] PrismaCustomerRepository", () => {
       lName: updateDto.data.lName,
       email: updateDto.data.email,
       phone: updateDto.data.phone,
-      hashPassword: updateDto.data.password as string,
+      hashPassword: "",
     });
 
     mockCtx.prisma.customer.update.mockResolvedValue(updatedData.toObject());
@@ -205,7 +205,7 @@ describe("[UPDATE] PrismaCustomerRepository", () => {
 
     expect(mockCtx.prisma.customer.update).toHaveBeenCalledWith({
       where: { customerId: updatedData.customerId },
-      data: { fName, lName, email, phone, hashPassword },
+      data: { fName, lName, email, phone },
       include: { reservation: true },
     });
 
