@@ -60,18 +60,6 @@ export class PrismaReservationRepository implements IReserveRepository {
       }),
     ]);
 
-    // console.log(
-    //   await this._client.reservation.count({
-    //     where: {
-    //       restaurantId: restaurantId,
-    //       payImgUrl: "",
-    //       reserveDate: {
-    //         gte: getReservationCutOffTime(),
-    //       },
-    //     },
-    //   })
-    // );
-
     const data = result.map((obj) => Reservation.fromJSON(obj));
 
     return { count, data };
@@ -161,8 +149,6 @@ export class PrismaReservationRepository implements IReserveRepository {
     restaurantId?: string,
     customerId?: string
   ): Promise<ReservationWithCount | null> {
-    console.log(restaurantId);
-
     const idCondition = this.buildIdCondition(customerId, restaurantId);
 
     const queryCondition = {
@@ -182,8 +168,6 @@ export class PrismaReservationRepository implements IReserveRepository {
       },
       ...this.buildSearchQuery(searchQuery),
     };
-
-    console.log(queryCondition.AND);
 
     const [count, result] = await Promise.all([
       this._client.reservation.count({
@@ -214,8 +198,6 @@ export class PrismaReservationRepository implements IReserveRepository {
     const idCondition = this.buildIdCondition(customerId, restaurantId);
     const searchCondition = this.buildSearchQuery(searchQuery);
 
-    console.log(idCondition);
-
     const [count, result] = await Promise.all([
       this._client.reservation.count({
         where: { ...idCondition, ...searchCondition },
@@ -230,8 +212,6 @@ export class PrismaReservationRepository implements IReserveRepository {
         },
       }),
     ]);
-
-    console.log({ searchQuery, page });
 
     const data = result.map((r) => Reservation.fromJSON(r));
 
@@ -259,7 +239,6 @@ export class PrismaReservationRepository implements IReserveRepository {
 
       return Reservation.fromJSON(result);
     } catch (err) {
-      console.log(err);
       throw getExternalError(err);
     }
   }
@@ -294,7 +273,6 @@ export class PrismaReservationRepository implements IReserveRepository {
 
       return Reservation.fromJSON(result);
     } catch (err) {
-      console.log(err);
       throw getExternalError(err, id);
     }
   }

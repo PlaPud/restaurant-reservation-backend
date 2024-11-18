@@ -32,6 +32,7 @@ const setUp = () => {
     find: jest.fn(),
     findMany: jest.fn(),
     findByEmail: jest.fn(),
+    getRecordsCount: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
     updateProfileImgPath: jest.fn(),
@@ -85,11 +86,11 @@ describe("UpdateRestaurantUseCase", () => {
         phone: existedData.phone,
         address: existedData.address,
         email: existedData.email,
-        password: existedData.hashPassword,
         subDistrict: "",
         district: "",
         province: "",
         description: "",
+        paymentInfo: "",
       },
     };
 
@@ -100,7 +101,7 @@ describe("UpdateRestaurantUseCase", () => {
         phone: userInput.data.phone,
         address: userInput.data.address,
         email: userInput.data.email,
-        hashPassword: userInput.data.password,
+        hashPassword: "",
         subDistrict: "",
         district: "",
         province: "",
@@ -124,11 +125,11 @@ describe("UpdateRestaurantUseCase", () => {
         phone: existedData.phone,
         address: existedData.address,
         email: existedData.email,
-        password: existedData.hashPassword,
         subDistrict: "",
         district: "",
         province: "",
         description: "",
+        paymentInfo: "",
       },
     };
 

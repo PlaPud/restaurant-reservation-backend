@@ -28,8 +28,6 @@ export class GetManyReserveController {
         req.query.searchQuery ? String(req.query.searchQuery) : ""
       );
 
-      // console.log(req.query);
-
       const userInput: IGetManyReserveDto = {
         restaurantId: req.query.restaurantId
           ? String(req.query.restaurantId)
@@ -38,8 +36,6 @@ export class GetManyReserveController {
           ? String(req.query.customerId)
           : undefined,
       };
-
-      console.log(userInput);
 
       const result = await this._useCase.execute(userInput);
 

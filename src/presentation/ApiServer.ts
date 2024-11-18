@@ -71,7 +71,6 @@ export class ApiServer {
     });
 
     app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
-      console.log(err);
       sendErrorResponse(res, err);
     });
 

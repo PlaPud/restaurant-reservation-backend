@@ -53,8 +53,8 @@ model restaurant {
   email          String        @unique(map: "Restaurant_email_key")
   hashPassword   String
   isVerified     Boolean       @default(false)
-  description    String        @default("")
-  paymentInfo    String        @default("")
+  description    String        @default("") @db.VarChar(1000)
+  paymentInfo    String        @default("") @db.VarChar(500)
   profileImgPath String        @default("")
   district       String
   province       String

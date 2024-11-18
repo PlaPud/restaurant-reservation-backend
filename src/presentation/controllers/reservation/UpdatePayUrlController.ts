@@ -17,8 +17,6 @@ export class UpdatePayUrlController {
 
   public async handle(req: Request, res: Response) {
     try {
-      console.log(req.file);
-      console.log(req.query);
       if (!req.query.reserveId || !req.file) throw new BadRequestError();
 
       const userInput: IUpdatePayUrlDto = {

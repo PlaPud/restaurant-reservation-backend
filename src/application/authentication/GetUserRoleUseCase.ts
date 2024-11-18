@@ -26,13 +26,8 @@ export class GetUserRoleUseCase
 
     if (input.token) {
       const payload = await this._jwtService.verifyToken(input.token);
-
-      console.log(payload);
-
       role = payload.role;
       id = payload.sub ?? null;
-
-      console.log(id);
     }
 
     const result = new User({ role, id });

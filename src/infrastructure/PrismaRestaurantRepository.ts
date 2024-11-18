@@ -100,8 +100,6 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
         : {}),
     };
 
-    console.log(where);
-
     const results = await this._client.restaurant.findMany({
       skip: PAGE_SIZE * (page - 1),
       take: PAGE_SIZE,
@@ -114,8 +112,6 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
         },
       },
     });
-
-    // console.log(results);
 
     return results.map((rs) => Restaurant.fromJSON(rs));
   }
@@ -200,6 +196,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
         district,
         province,
         description,
+        paymentInfo,
       } = data.toObject();
       const result = await this._client.restaurant.update({
         where: { restaurantId: id },
@@ -211,6 +208,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
           district,
           province,
           description,
+          paymentInfo,
         },
         include: { reservation: true },
       });
@@ -252,6 +250,5 @@ function getExternalError(err: unknown, id?: string) {
   if (id && err.code === "P2025")
     return new EntityNotFoundError(`Cannot Find Restaurant (ID: ${id})`);
 
-  console.log(err);
   return new RepositoryError("Prisma Client Error.");
 }

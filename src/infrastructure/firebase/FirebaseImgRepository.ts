@@ -16,8 +16,6 @@ export class FirebaseImgRepository implements IImageRepository {
 
     const result = await uploadBytes(paymentPath, img);
 
-    console.log(result.metadata.fullPath);
-
     return result.metadata.fullPath;
   }
 
@@ -44,8 +42,6 @@ export class FirebaseImgRepository implements IImageRepository {
       );
 
       const result = await uploadBytes(profilePath, img);
-
-      console.log(result.metadata.fullPath);
 
       return result.metadata.fullPath;
     } catch (err) {

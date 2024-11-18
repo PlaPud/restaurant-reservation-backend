@@ -51,7 +51,6 @@ export const checkRequestToken = (
   next: NextFunction
 ) => {
   try {
-    console.log(req.cookies[TOKEN_NAME]);
     if (!req.cookies[TOKEN_NAME])
       throw new UnauthorizedActionError(`missing token.`);
     next();
@@ -111,12 +110,7 @@ export const authorizeReqFromOwner = (rolesContext: TokenRole[]) => {
   const validateOwnership = (req: Request, payload: JwtPayload) => {
     let targetIdKey = "";
 
-    console.log(req.query);
-
     for (const [roleId, tokenRole] of Object.entries(roles)) {
-      // if (!req.query[roleId])
-      //   throw new BadRequestError(`Authorized Role Token not exist`);
-
       if (req.query[roleId] && rolesContext.includes(tokenRole)) {
         targetIdKey = roleId.toString();
       }

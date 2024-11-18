@@ -134,7 +134,7 @@ describe("[GET] PrismaRestaurantRepository", () => {
       restaurants.map((r) => r.toObject())
     );
 
-    const result = await sut.findMany(1, null);
+    const result = await sut.findMany(1);
 
     expect(result.length).toBe(restaurants.length);
     expect(result[0]).toBeInstanceOf(Restaurant);
@@ -155,7 +155,7 @@ describe("[GET] PrismaRestaurantRepository", () => {
 
   it("Should also return empty array if prisma return empty array", async () => {
     mockCtx.prisma.restaurant.findMany.mockResolvedValue([]);
-    const result = await sut.findMany(1, null);
+    const result = await sut.findMany(1);
     expect(result.length).toBe(0);
   });
 });
@@ -181,7 +181,7 @@ describe("[UPDATE] PrismaRestaurantRepository", () => {
       district: restData.district,
       province: restData.province,
       email: restData.email,
-      hashPassword: restData.hashPassword,
+      hashPassword: "",
       isVerified: restData.isVerified,
       description: restData.description,
     });
@@ -195,10 +195,11 @@ describe("[UPDATE] PrismaRestaurantRepository", () => {
       subDistrict,
       district,
       province,
-      hashPassword,
       isVerified,
       description,
+      hashPassword,
       profileImgPath,
+      paymentInfo,
     } = updatedData;
 
     mockCtx.prisma.restaurant.update.mockResolvedValue({
@@ -214,6 +215,7 @@ describe("[UPDATE] PrismaRestaurantRepository", () => {
       isVerified,
       description,
       profileImgPath,
+      paymentInfo,
     });
 
     const result = await sut.update(restaurantId, updatedData);

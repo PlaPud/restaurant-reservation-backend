@@ -88,7 +88,6 @@ describe("UpdateCustomerUseCase", () => {
         lName: customer.lName,
         email: customer.email,
         phone: customer.phone,
-        password: customer.hashPassword,
       },
     };
 
@@ -121,7 +120,6 @@ describe("UpdateCustomerUseCase", () => {
         lName: customer.lName,
         email: customer.email,
         phone: customer.phone,
-        password: customer.hashPassword,
       },
     };
 

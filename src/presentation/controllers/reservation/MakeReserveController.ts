@@ -15,8 +15,6 @@ export class MakeReserveController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
-      console.log(req.query.customerId);
-
       if (!req.query.reserveId || !req.query.customerId)
         throw new BadRequestError();
 
@@ -33,7 +31,6 @@ export class MakeReserveController {
 
       res.status(StatusCode.OK).json(response);
     } catch (err) {
-      // console.log(err);
       sendErrorResponse(res, err);
     }
   }

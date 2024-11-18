@@ -48,7 +48,6 @@ export const restaurantRouter = (
     useSelfData([TokenRole.RESTAURANT]),
     authorizeReqFromOwner([TokenRole.RESTAURANT]),
     (req, res) => {
-      console.log(req.query);
       controllers.update.handle(req, res);
     }
   );

@@ -5,7 +5,7 @@ import {
   UpdateCustomerUseCase,
 } from "../../../application/customer/UpdateCustomerUseCase";
 import { sendErrorResponse } from "../../../shared/sendErrorResponse";
-import { createCustomerSchema as updateCustomerSchema } from "../../../domain/validation_schemas/Customer.Schema";
+import { updateCustomerSchema } from "../../../domain/validation_schemas/Customer.Schema";
 import { BadRequestError } from "../../../errors/HttpError";
 import { StatusCode } from "../../../shared/enum/StatusCode";
 import { TOKEN_NAME } from "../../../shared/constants";
@@ -33,7 +33,7 @@ export class UpdateCustomerController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
-      if (!req.query.customerId || !req.body.data) throw new BadRequestError();
+      if (!req.query.customerId || !req.body) throw new BadRequestError();
 
       if (!req.cookies[TOKEN_NAME]) throw new UnauthorizedActionError();
 
@@ -59,11 +59,10 @@ export class UpdateCustomerController {
       const userInput = {
         customerId: req.query.customerId as string,
         data: {
-          fName: req.body.data.fName,
-          lName: req.body.data.lName,
-          email: req.body.data.email,
-          phone: req.body.data.phone,
-          password: req.body.data.password,
+          fName: req.body.fName,
+          lName: req.body.lName,
+          email: req.body.email,
+          phone: req.body.phone,
         },
       };
 

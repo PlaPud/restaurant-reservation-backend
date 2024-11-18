@@ -18,8 +18,6 @@ export class ReservationAuthService {
 
     const { customerId, restaurantId } = target;
 
-    console.log(customerId, restaurantId);
-
     switch (payload.role) {
       case TokenRole.CUSTOMER:
         if (customerId && customerId !== payload.sub)

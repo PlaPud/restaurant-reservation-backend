@@ -46,8 +46,6 @@ export class GetRestaurantUseCase implements IGetRestaurantUseCase {
 
     const body = result.toObject();
 
-    console.log(body);
-
     return body;
   }
 }
