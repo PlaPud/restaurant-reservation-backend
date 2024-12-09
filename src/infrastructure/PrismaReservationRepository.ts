@@ -73,11 +73,11 @@ export class PrismaReservationRepository implements IReserveRepository {
   ): Promise<ReservationWithCount | null> {
     const queryCondition = {
       AND: {
-        ...this.buildIdCondition(customerId, restaurantId),
-        isPayed: false,
         customerId: {
           not: null,
         },
+        ...this.buildIdCondition(customerId, restaurantId),
+        isPayed: false,
         reserveDate: {
           gte: getReservationCutOffTime(),
         },
@@ -338,6 +338,7 @@ export class PrismaReservationRepository implements IReserveRepository {
           reserveId: id,
         },
         data: {
+          lastModified: Math.floor(Date.now() / 1000),
           customerId: null,
           isAttended: false,
           isPayed: false,
@@ -370,6 +371,7 @@ export class PrismaReservationRepository implements IReserveRepository {
         },
         data: {
           payImgUrl,
+          lastModified: Math.floor(Date.now() / 1000),
         },
         include: {
           customer: true,

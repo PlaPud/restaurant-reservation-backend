@@ -20,6 +20,7 @@ export interface IGetRestaurantResult {
   province: string;
   profileImgPath: string;
   description: string;
+  paymentInfo: string;
   reservation?: ReservationJSONResponse[];
 }
 
