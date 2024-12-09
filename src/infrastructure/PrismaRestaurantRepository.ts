@@ -10,6 +10,7 @@ import { RESTAURANT_T } from "../shared/inversify/restaurant.types";
 import { TYPES } from "../shared/inversify/types";
 import { IFilterRestaurant } from "../shared/searchFilter";
 import { PAGE_SIZE } from "../shared/constants";
+import { getReservationCutOffTime } from "../shared/utilsFunc";
 
 @injectable()
 export class PrismaRestaurantRepository implements IRestaurantRepository {
@@ -45,6 +46,9 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
         reservation: {
           where: {
             customerId: null,
+            reserveDate: {
+              gte: getReservationCutOffTime(),
+            },
           },
         },
       },
@@ -63,6 +67,9 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
         reservation: {
           where: {
             customerId: null,
+            reserveDate: {
+              gte: getReservationCutOffTime(),
+            },
           },
         },
       },
@@ -108,6 +115,9 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
         reservation: {
           where: {
             customerId: null,
+            reserveDate: {
+              gte: getReservationCutOffTime(),
+            },
           },
         },
       },

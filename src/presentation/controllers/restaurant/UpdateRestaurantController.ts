@@ -19,8 +19,6 @@ export class UpdateRestaurantController {
 
   public async handle(req: Request, res: Response): Promise<void> {
     try {
-      console.log(req.body);
-
       if (!req.query.restaurantId || !req.body) throw new BadRequestError();
 
       const {

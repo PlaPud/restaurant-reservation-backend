@@ -39,6 +39,7 @@ export class GetRestaurantController {
         province: result.province,
         profileImgPath: result.profileImgPath,
         description: result.description,
+        paymentInfo: result.paymentInfo,
         reservation: result.reservation,
       };
 
