@@ -52,6 +52,7 @@ export class PrismaReservationRepository implements IReserveRepository {
       this._client.reservation.findMany({
         skip: PAGE_SIZE * (page - 1),
         take: PAGE_SIZE,
+        orderBy: { reserveDate: "asc" },
         where: queryCondition,
         include: {
           customer: true,
@@ -92,6 +93,7 @@ export class PrismaReservationRepository implements IReserveRepository {
       this._client.reservation.findMany({
         skip: PAGE_SIZE * (page - 1),
         take: PAGE_SIZE,
+        orderBy: { reserveDate: "asc" },
         where: queryCondition,
         include: {
           customer: true,
@@ -130,6 +132,7 @@ export class PrismaReservationRepository implements IReserveRepository {
       this._client.reservation.findMany({
         skip: PAGE_SIZE * (page - 1),
         take: PAGE_SIZE,
+        orderBy: { reserveDate: "asc" },
         where: queryCondition,
         include: {
           customer: true,
@@ -176,6 +179,7 @@ export class PrismaReservationRepository implements IReserveRepository {
       this._client.reservation.findMany({
         skip: PAGE_SIZE * (page - 1),
         take: PAGE_SIZE,
+        orderBy: { reserveDate: "desc" },
         where: queryCondition,
         include: {
           customer: true,
@@ -205,6 +209,7 @@ export class PrismaReservationRepository implements IReserveRepository {
       this._client.reservation.findMany({
         skip: PAGE_SIZE * (page - 1),
         take: PAGE_SIZE,
+        orderBy: { reserveDate: "desc" },
         where: { ...idCondition, ...searchCondition },
         include: {
           restaurant: true,

@@ -44,6 +44,7 @@ export class PrismaRestaurantRepository implements IRestaurantRepository {
       where: { restaurantId: id },
       include: {
         reservation: {
+          orderBy: { reserveDate: "asc" },
           where: {
             customerId: null,
             reserveDate: {

@@ -18,7 +18,6 @@ import { EntityNotFoundError } from "../../src/errors/DomainError";
 import { Restaurant } from "../../src/domain/Restaurant";
 
 let mockCtx: MockContext;
-let ctx: Context;
 let testContainer: Container;
 let idCount: number;
 
@@ -57,7 +56,7 @@ const clearDown = () => {
   idCount = 0;
 };
 
-describe("[find()] PrismaReservationRepository", () => {
+describe("PrismaReservationRepository", () => {
   beforeEach(() => {
     setUp();
   });
@@ -100,13 +99,6 @@ describe("[find()] PrismaReservationRepository", () => {
     newReservation.restaurant = rest;
 
     mockCtx.prisma.reservation.findUnique.mockResolvedValue(null);
-
-    // expect(mockCtx.prisma.reservation.findUnique).toHaveBeenCalledWith({
-    //   where: {
-    //     reserveId: newReservation.reserveId,
-    //   },
-    //   include: { restaurant: true, customer: true },
-    // });
 
     const result: Promise<Reservation | null> = sut.find(
       newReservation.reserveId
