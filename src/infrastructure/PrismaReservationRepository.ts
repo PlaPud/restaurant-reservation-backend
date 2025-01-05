@@ -83,7 +83,7 @@ export class PrismaReservationRepository implements IReserveRepository {
           gte: getReservationCutOffTime(),
         },
       },
-      ...this.buildSearchQuery(searchQuery),
+      ...this.buildSearchQuery(searchQuery, customerId, restaurantId),
     };
 
     const [count, result] = await Promise.all([
@@ -122,7 +122,7 @@ export class PrismaReservationRepository implements IReserveRepository {
           gte: getReservationCutOffTime(),
         },
       },
-      ...this.buildSearchQuery(searchQuery),
+      ...this.buildSearchQuery(searchQuery, customerId, restaurantId),
     };
 
     const [count, result] = await Promise.all([
@@ -169,7 +169,7 @@ export class PrismaReservationRepository implements IReserveRepository {
           },
         ],
       },
-      ...this.buildSearchQuery(searchQuery),
+      ...this.buildSearchQuery(searchQuery, customerId, restaurantId),
     };
 
     const [count, result] = await Promise.all([
@@ -200,7 +200,11 @@ export class PrismaReservationRepository implements IReserveRepository {
     customerId?: string
   ): Promise<ReservationWithCount | null> {
     const idCondition = this.buildIdCondition(customerId, restaurantId);
-    const searchCondition = this.buildSearchQuery(searchQuery);
+    const searchCondition = this.buildSearchQuery(
+      searchQuery,
+      customerId,
+      restaurantId
+    );
 
     const [count, result] = await Promise.all([
       this._client.reservation.count({
@@ -450,10 +454,14 @@ export class PrismaReservationRepository implements IReserveRepository {
     };
   }
 
-  private buildSearchQuery(searchQuery: string): Prisma.reservationWhereInput {
+  private buildSearchQuery(
+    searchQuery: string,
+    customerId?: string,
+    restaurantId?: string
+  ): Prisma.reservationWhereInput {
     if (searchQuery === "") return {};
 
-    return {
+    const searchCustomer = {
       OR: [
         {
           customer: {
@@ -470,6 +478,19 @@ export class PrismaReservationRepository implements IReserveRepository {
           },
         },
       ],
+    };
+
+    const searchRestaurant = {
+      restaurant: {
+        name: {
+          contains: searchQuery,
+        },
+      },
+    };
+
+    return {
+      ...(customerId ? searchRestaurant : {}),
+      ...(restaurantId ? searchCustomer : {}),
     };
   }
 }
